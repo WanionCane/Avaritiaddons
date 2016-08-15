@@ -1,0 +1,7 @@
+itemGroup.avaritiaddons=Avaritiaddons
+
+tile.CompressedChest.name=Compressed Chest
+tile.InfinityChest.name=Infinity Chest
+
+container.CompressedChest=Compressed Chest
+container.InfinityChest=Infinity Chest

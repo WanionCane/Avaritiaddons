@@ -1,0 +1,5 @@
+tile.CompressedChest.name=Baú Comprimido
+tile.InfinityChest.name=Baú do Infinito
+
+container.CompressedChest=Baú Comprimido
+container.InfinityChest=Baú do Infinito

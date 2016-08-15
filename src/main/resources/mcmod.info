@@ -1,0 +1,16 @@
+[
+{
+  "modid": "avaritiaddons",
+  "name": "Avaritiaddons",
+  "description": "A mod that add some useful stuff.",
+  "version": "1.0",
+  "mcversion": "${mcversion}",
+  "url": "http://minecraft.curseforge.com/projects/avaritiaddons",
+  "updateUrl": "",
+  "authorList": ["WanionCane"],
+  "credits": "SpitefulFox, TTFTCUTS",
+  "logoFile": "AvaritiaddonsLogo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
