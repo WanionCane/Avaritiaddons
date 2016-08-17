@@ -9,7 +9,6 @@ package wanion.avaritiaddons.block.chest.compressed;
  */
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
@@ -27,8 +26,7 @@ public final class BlockCompressedChest extends BlockAvaritiaddonsChest
 	private BlockCompressedChest()
 	{
 		super(Material.wood);
-		setHarvestLevel("axe", 2);
-		GameRegistry.registerBlock(setBlockName("CompressedChest").setHardness(5.0F).setStepSound(soundTypeWood), "CompressedChest");
+		setBlockName("CompressedChest").setHardness(5.0F).setStepSound(soundTypeWood).setHarvestLevel("axe", 2);
 	}
 
 	@Override

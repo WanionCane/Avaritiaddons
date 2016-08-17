@@ -40,24 +40,22 @@ public abstract class ContainerAvaritiaddonsChest extends Container
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot)
+	public final ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot)
 	{
 		ItemStack itemstack = null;
 		final Slot actualSlot = (Slot) this.inventorySlots.get(slot);
-
 		if (actualSlot != null && actualSlot.getHasStack()) {
 			ItemStack itemstack1 = actualSlot.getStack();
 			itemstack = itemstack1.copy();
-
 			if (slot > 242) {
 				if (!mergeItemStack(itemstack1, 0, 243, false))
 					return null;
 			} else if (!mergeItemStack(itemstack1, 243, 279, true))
 				return null;
-
 			if (itemstack1.stackSize == 0)
 				actualSlot.putStack(null);
-			actualSlot.onSlotChanged();
+			else
+				actualSlot.onSlotChanged();
 		}
 		return itemstack;
 	}

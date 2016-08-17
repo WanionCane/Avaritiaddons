@@ -21,7 +21,7 @@ public final class InventoryAvaritiaddonsChest implements IInventory
 	private final int maxStackSize;
 	public final ItemStack[] contents = new ItemStack[243];
 
-	public InventoryAvaritiaddonsChest(@Nonnull final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest,final int maxStackSize)
+	public InventoryAvaritiaddonsChest(@Nonnull final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest, final int maxStackSize)
 	{
 		this.tileEntityAvaritiaddonsChest = tileEntityAvaritiaddonsChest;
 		this.maxStackSize = maxStackSize;

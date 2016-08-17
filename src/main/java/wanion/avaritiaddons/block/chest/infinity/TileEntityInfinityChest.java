@@ -32,14 +32,14 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, final ItemStack itemStack)
+	public final void setInventorySlotContents(int slot, final ItemStack itemStack)
 	{
 		if (itemStack == null) {
 			inventoryAvaritiaddonsChest.contents[slot] = null;
 			return;
 		}
 		final int perfectSlot = findSlotFor(itemStack);
-		if (slot == 242 && perfectSlot == -1)
+		if (slot == 243 && perfectSlot == -1)
 			return;
 		if (perfectSlot != -1 && perfectSlot != slot) {
 			slot = perfectSlot;
@@ -60,7 +60,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 
 	private int findSlotFor(@Nonnull final ItemStack itemStack)
 	{
-		for (int i = 0; i < 242; i++) {
+		for (int i = 0; i < 243; i++) {
 			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[i];
 			if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack))
 				return i;
@@ -69,7 +69,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	}
 
 	@Override
-	public void readCustomNBT(final NBTTagCompound nbtTagCompound)
+	public final void readCustomNBT(final NBTTagCompound nbtTagCompound)
 	{
 		final NBTTagList nbtTagList = nbtTagCompound.getTagList("Contents", 10);
 		for (int i = 0; i < nbtTagList.tagCount(); i++) {
@@ -81,10 +81,10 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	}
 
 	@Override
-	public NBTTagCompound writeCustomNBT(final NBTTagCompound nbtTagCompound)
+	public final NBTTagCompound writeCustomNBT(final NBTTagCompound nbtTagCompound)
 	{
 		final NBTTagList nbtTagList = new NBTTagList();
-		for (int i = 0; i < inventoryAvaritiaddonsChest.getSizeInventory(); i++) {
+		for (int i = 0; i < 243; i++) {
 			final ItemStack itemStack = inventoryAvaritiaddonsChest.getStackInSlot(i);
 			if (itemStack != null) {
 				final NBTTagCompound slotCompound = new NBTTagCompound();
@@ -96,7 +96,8 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		return nbtTagCompound;
 	}
 
-	private NBTTagCompound writeItemStackToNbt(@Nonnull final NBTTagCompound nbtTagCompound, @Nonnull final ItemStack itemStack){
+	private NBTTagCompound writeItemStackToNbt(@Nonnull final NBTTagCompound nbtTagCompound, @Nonnull final ItemStack itemStack)
+	{
 		itemStack.writeToNBT(nbtTagCompound);
 		nbtTagCompound.setInteger("intCount", itemStack.stackSize);
 		if (itemStack.stackTagCompound != null)
@@ -104,12 +105,31 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		return nbtTagCompound;
 	}
 
-	private ItemStack readItemStackFromNbt(final NBTTagCompound nbtTagCompound) {
+	private ItemStack readItemStackFromNbt(final NBTTagCompound nbtTagCompound)
+	{
 		final ItemStack itemStack = ItemStack.loadItemStackFromNBT(nbtTagCompound);
 		itemStack.stackSize = nbtTagCompound.getInteger("intCount");
 		if (nbtTagCompound.hasKey("tag"))
 			itemStack.setTagCompound(nbtTagCompound.getCompoundTag("tag"));
 		return itemStack;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(final int slot)
+	{
+		return slot <= 242 ? inventoryAvaritiaddonsChest.getStackInSlot(slot) : null;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(final int slot, final ItemStack itemStack)
+	{
+		return slot != 243 || findSlotFor(itemStack) != -1;
+	}
+
+	@Override
+	public final int getSizeInventory()
+	{
+		return 244;
 	}
 
 	@Override

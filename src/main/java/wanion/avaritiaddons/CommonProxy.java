@@ -36,6 +36,8 @@ public class CommonProxy
 
 	public void preInit()
 	{
+		GameRegistry.registerBlock(BlockCompressedChest.instance, "CompressedChest");
+		GameRegistry.registerBlock(BlockInfinityChest.instance, "InfinityChest");
 		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, "compressedChest");
 		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, "infinityChest");
 		NetworkRegistry.INSTANCE.registerGuiHandler(Avaritiaddons.instance, GuiHandler.instance);

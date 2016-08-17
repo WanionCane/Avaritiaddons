@@ -9,7 +9,6 @@ package wanion.avaritiaddons.block.chest.infinity;
  */
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -28,8 +27,7 @@ public final class BlockInfinityChest extends BlockAvaritiaddonsChest
 	private BlockInfinityChest()
 	{
 		super(Material.iron);
-		setHarvestLevel("pickaxe", 3);
-		GameRegistry.registerBlock(setBlockName("InfinityChest").setStepSound(Block.soundTypeMetal).setHardness(50.0F).setResistance(2000.0F), "InfinityChest");
+		setBlockName("InfinityChest").setStepSound(Block.soundTypeMetal).setHardness(50.0F).setResistance(2000.0F).setLightLevel(1.0F).setHarvestLevel("pickaxe", 3);
 	}
 
 	@Override

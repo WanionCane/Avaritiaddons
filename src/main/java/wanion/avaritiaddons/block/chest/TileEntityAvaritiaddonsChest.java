@@ -69,7 +69,7 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public final Packet getDescriptionPacket()
 	{
 		final NBTTagCompound nbttagcompound = new NBTTagCompound();
 		writeToNBT(nbttagcompound);
@@ -77,13 +77,24 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	}
 
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, final S35PacketUpdateTileEntity packet)
+	public final void onDataPacket(final NetworkManager networkManager, final S35PacketUpdateTileEntity packet)
 	{
 		readFromNBT(packet.func_148857_g());
 	}
 
 	@Override
-	public void readFromNBT(final NBTTagCompound nbtTagCompound)
+	public final boolean receiveClientEvent(final int argument, final int value)
+	{
+		if (argument == 1) {
+			this.numPlayersUsing = value;
+			return true;
+		} else {
+			return super.receiveClientEvent(argument, value);
+		}
+	}
+
+	@Override
+	public final void readFromNBT(final NBTTagCompound nbtTagCompound)
 	{
 		super.readFromNBT(nbtTagCompound);
 		facingSide = nbtTagCompound.getInteger("FacingSide");
@@ -91,7 +102,7 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	}
 
 	@Override
-	public void writeToNBT(final NBTTagCompound nbtTagCompound)
+	public final void writeToNBT(final NBTTagCompound nbtTagCompound)
 	{
 		super.writeToNBT(nbtTagCompound);
 		nbtTagCompound.setInteger("FacingSide", facingSide);
@@ -125,7 +136,7 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	}
 
 	@Override
-	public final int getSizeInventory()
+	public int getSizeInventory()
 	{
 		return 243;
 	}
@@ -177,17 +188,6 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 
 			if (lidAngle < 0.0F)
 				lidAngle = 0.0F;
-		}
-	}
-
-	@Override
-	public boolean receiveClientEvent(final int argument, final int value)
-	{
-		if (argument == 1) {
-			this.numPlayersUsing = value;
-			return true;
-		} else {
-			return super.receiveClientEvent(argument, value);
 		}
 	}
 
