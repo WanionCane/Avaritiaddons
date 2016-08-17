@@ -10,7 +10,6 @@ package wanion.avaritiaddons.block.chest;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -37,8 +36,6 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	float lidAngle;
 	float prevLidAngle;
 	private int numPlayersUsing;
-
-	final ModelChest modelChest = new ModelChest();
 
 	public TileEntityAvaritiaddonsChest(final int maxStackSize)
 	{

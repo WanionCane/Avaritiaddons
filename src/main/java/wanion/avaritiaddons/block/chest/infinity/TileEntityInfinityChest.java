@@ -17,15 +17,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
 import wanion.avaritiaddons.client.ClientConstants;
-import wanion.avaritiaddons.client.animation.ComplexHalfAnimation;
 
 import javax.annotation.Nonnull;
 
 public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 {
-	@SideOnly(Side.CLIENT)
-	private static ComplexHalfAnimation infinityChestAnimation = new ComplexHalfAnimation(ClientConstants.INFINITY_CHEST_FRAMES, ClientConstants.INFINITY_CHEST_ANIMATION_STAGES);
-
 	public TileEntityInfinityChest()
 	{
 		super(Integer.MAX_VALUE);
@@ -137,7 +133,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	@Nonnull
 	protected ResourceLocation getTexture()
 	{
-		return infinityChestAnimation.getCurrentFrame();
+		return ClientConstants.INFINITY_CHEST_ANIMATION.getCurrentFrame();
 	}
 
 	@Override

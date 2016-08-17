@@ -35,5 +35,6 @@ public final class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfinityChest.class, RendererAvaritiaddonsChest.instance);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockInfinityChest.instance), new ItemRendererInfinityChest());
 		FMLCommonHandler.instance().bus().register(ClientTickHandler.instance);
+		ClientTickHandler.instance.registerAnimation(ClientConstants.INFINITY_CHEST_ANIMATION);
 	}
 }

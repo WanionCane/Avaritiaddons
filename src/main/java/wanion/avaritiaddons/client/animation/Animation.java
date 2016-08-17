@@ -11,7 +11,6 @@ package wanion.avaritiaddons.client.animation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
-import wanion.avaritiaddons.client.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +25,6 @@ public abstract class Animation
 	{
 		if ((lastFrameIndex = (this.frames = frames).length) - 1 == -1)
 			throw new RuntimeException("What is an Animation with no frames?");
-		ClientTickHandler.instance.registerAnimation(this);
 	}
 
 	public abstract void updateAnimation();

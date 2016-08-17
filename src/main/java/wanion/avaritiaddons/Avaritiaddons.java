@@ -13,11 +13,14 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
+
+import java.util.Map;
 
 import static wanion.avaritiaddons.common.Reference.*;
 
@@ -58,5 +61,11 @@ public final class Avaritiaddons
 	public void postInit(final FMLPostInitializationEvent event)
 	{
 		proxy.postInit();
+	}
+
+	@NetworkCheckHandler
+	public boolean matchModVersions(Map<String, String> remoteVersions, Side side)
+	{
+		return remoteVersions.containsKey(MOD_ID) && remoteVersions.get(MOD_ID).equals(MOD_VERSION);
 	}
 }

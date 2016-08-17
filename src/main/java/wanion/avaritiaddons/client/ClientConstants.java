@@ -11,12 +11,13 @@ package wanion.avaritiaddons.client;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
+import wanion.avaritiaddons.client.animation.ComplexHalfAnimation;
 import wanion.avaritiaddons.common.Reference;
 
 @SideOnly(Side.CLIENT)
 public final class ClientConstants
 {
-	public static final ResourceLocation[] INFINITY_CHEST_FRAMES = new ResourceLocation[]{
+	private static final ResourceLocation[] INFINITY_CHEST_FRAMES = new ResourceLocation[]{
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/0.png"),
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/1.png"),
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/2.png"),
@@ -27,7 +28,11 @@ public final class ClientConstants
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/7.png"),
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/8.png")
 	};
-	public static final int[] INFINITY_CHEST_ANIMATION_STAGES = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1};
+	private static final int[] INFINITY_CHEST_ANIMATION_STAGES = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1};
+
+	public static final ComplexHalfAnimation INFINITY_CHEST_ANIMATION = new ComplexHalfAnimation(INFINITY_CHEST_FRAMES, INFINITY_CHEST_ANIMATION_STAGES);
+
+	public static final ResourceLocation COMPRESSED_CHEST_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/entity/compressedChest.png");
 
 	private ClientConstants() {}
 }

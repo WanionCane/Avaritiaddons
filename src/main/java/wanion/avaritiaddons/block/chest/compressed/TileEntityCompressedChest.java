@@ -13,15 +13,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
-import wanion.avaritiaddons.common.Reference;
+import wanion.avaritiaddons.client.ClientConstants;
 
 import javax.annotation.Nonnull;
 
 public final class TileEntityCompressedChest extends TileEntityAvaritiaddonsChest
 {
-	@SideOnly(Side.CLIENT)
-	private static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID, "textures/entity/compressedChest.png");
-
 	public TileEntityCompressedChest()
 	{
 		super(64);
@@ -35,9 +32,10 @@ public final class TileEntityCompressedChest extends TileEntityAvaritiaddonsChes
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	@Nonnull
 	protected ResourceLocation getTexture()
 	{
-		return texture;
+		return ClientConstants.COMPRESSED_CHEST_TEXTURE;
 	}
 }
