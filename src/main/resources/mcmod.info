@@ -2,8 +2,8 @@
 {
   "modid": "avaritiaddons",
   "name": "Avaritiaddons",
-  "description": "A mod that add some useful stuff.",
-  "version": "1.0",
+  "description": "A Mod that tries to expand the meaning of Infinity!",
+  "version": "1.0b",
   "mcversion": "${mcversion}",
   "url": "http://minecraft.curseforge.com/projects/avaritiaddons",
   "updateUrl": "",
