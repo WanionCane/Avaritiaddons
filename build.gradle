@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0c"
+version = "1.0d"
 group= "wanion.avaritiaddons" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Avaritiaddons"
 

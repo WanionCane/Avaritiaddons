@@ -9,12 +9,14 @@ package wanion.avaritiaddons;
  */
 
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
 import fox.spiteful.avaritia.crafting.Grinder;
 import fox.spiteful.avaritia.items.LudicrousItems;
 import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,6 +35,11 @@ public class CommonProxy
 {
 	private final TIntSet oresToRemove = new TIntHashSet();
 	private final TIntSet stacksToRemove = new TIntHashSet();
+
+	public EntityPlayer getPlayerEntity(final MessageContext context)
+	{
+		return context.getServerHandler().playerEntity;
+	}
 
 	public void preInit()
 	{
@@ -61,7 +68,7 @@ public class CommonProxy
 		for (final Iterator<Object> catalystRecipeIterator = Grinder.catalyst.getInput().iterator(); catalystRecipeIterator.hasNext(); )
 		{
 			final Object catalystRecipeInput = catalystRecipeIterator.next();
-			final int hash = catalystRecipeInput instanceof List ? System.identityHashCode(catalystRecipeInput) : catalystRecipeInput instanceof ItemStack ? BasicMetaItem.get((ItemStack)catalystRecipeInput) : 0;
+			final int hash = catalystRecipeInput instanceof List ? System.identityHashCode(catalystRecipeInput) : catalystRecipeInput instanceof ItemStack ? BasicMetaItem.get((ItemStack) catalystRecipeInput) : 0;
 			if (hash == 0)
 				continue;
 			if ((catalystRecipeInput instanceof List && oresToRemove.contains(hash)) || (catalystRecipeInput instanceof ItemStack && stacksToRemove.contains(hash)))
@@ -72,16 +79,15 @@ public class CommonProxy
 	private void populateRemovalSets()
 	{
 		Config.thingsToRemoveFromInfinityCatalystRecipe.forEach(toRemove -> {
-			if (toRemove.indexOf(':') == -1){
+			if (toRemove.indexOf(':') == -1) {
 				final List<ItemStack> ores = OreDictionary.getOres(toRemove, false);
 				if (ores != null && !ores.isEmpty())
 					oresToRemove.add(System.identityHashCode(ores));
 			} else {
 				final int separatorChar = toRemove.indexOf('#');
 				final Item item = BasicMetaItem.itemRegistry.getRaw(separatorChar == -1 ? toRemove : toRemove.substring(0, separatorChar));
-				if (item != null)
-				{
-					final int metadata = separatorChar == -1 ? 0 : Integer.parseInt(toRemove.substring(separatorChar+1, toRemove.length()));
+				if (item != null) {
+					final int metadata = separatorChar == -1 ? 0 : Integer.parseInt(toRemove.substring(separatorChar + 1, toRemove.length()));
 					final int hash = BasicMetaItem.get(new ItemStack(item, 1, metadata));
 					if (hash > 0)
 						stacksToRemove.add(hash);

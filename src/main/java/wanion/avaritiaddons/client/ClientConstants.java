@@ -28,6 +28,7 @@ public final class ClientConstants
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/7.png"),
 			new ResourceLocation(Reference.MOD_ID, "textures/entity/InfinityChest/8.png")
 	};
+
 	private static final int[] INFINITY_CHEST_ANIMATION_STAGES = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1};
 
 	public static final ComplexHalfAnimation INFINITY_CHEST_ANIMATION = new ComplexHalfAnimation(INFINITY_CHEST_FRAMES, INFINITY_CHEST_ANIMATION_STAGES);

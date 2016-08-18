@@ -141,4 +141,26 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 		else
 			return super.slotClick(slot, mouseButton, modifier, entityPlayer);
 	}
+
+	/*
+	@SuppressWarnings("unchecked")
+	@Override
+	public void detectAndSendChanges()
+	{
+		if (crafters.isEmpty())
+			return;
+		for (int i = 0; i < inventorySlots.size(); ++i) {
+			ItemStack itemstack = ((Slot) inventorySlots.get(i)).getStack();
+			ItemStack itemstack1 = (ItemStack) inventoryItemStacks.get(i);
+
+			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+				itemstack1 = itemstack == null ? null : itemstack.copy();
+				inventoryItemStacks.set(i, itemstack1);
+
+				for (int crafters = 0; crafters < this.crafters.size(); crafters++)
+					((ICrafting) this.crafters.get(crafters)).sendSlotContents(this, i, itemstack1);
+			}
+		}
+	}
+	*/
 }

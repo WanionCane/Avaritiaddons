@@ -10,8 +10,11 @@ package wanion.avaritiaddons.client;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import wanion.avaritiaddons.CommonProxy;
@@ -36,5 +39,11 @@ public final class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockInfinityChest.instance), new ItemRendererInfinityChest());
 		FMLCommonHandler.instance().bus().register(ClientTickHandler.instance);
 		ClientTickHandler.instance.registerAnimation(ClientConstants.INFINITY_CHEST_ANIMATION);
+	}
+
+	@Override
+	public EntityPlayer getPlayerEntity(final MessageContext context)
+	{
+		return context.side.isClient() ? Minecraft.getMinecraft().thePlayer : super.getPlayerEntity(context);
 	}
 }

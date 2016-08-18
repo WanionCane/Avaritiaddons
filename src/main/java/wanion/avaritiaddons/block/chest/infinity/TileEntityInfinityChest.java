@@ -32,6 +32,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	{
 		if (itemStack == null) {
 			inventoryAvaritiaddonsChest.contents[slot] = null;
+			markDirty();
 			return;
 		}
 		final int perfectSlot = findSlotFor(itemStack);
