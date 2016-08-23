@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public final class RenderItemInfinity extends RenderItem
 {
@@ -24,18 +23,15 @@ public final class RenderItemInfinity extends RenderItem
 		{
 			final String humanReadableValue = itemStack.stackSize > 1 ? humanReadableValue(itemStack.stackSize) : null;
 			if (humanReadableValue != null) {
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
-				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glDisable( GL11.GL_LIGHTING );
+				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
-				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 				final float scaleFactor = humanReadableValue.length() == 1 || humanReadableValue.length() == 2 ? 0.9f : humanReadableValue.length() == 3 ? 0.8f : 0.6f;
 				GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
 				final float inverseScaleFactor = 1.0f / scaleFactor;
 				fontRenderer.drawStringWithShadow(humanReadableValue,
 						(int) (((float) x + 16.0f * scaleFactor * inverseScaleFactor - fontRenderer.getStringWidth(humanReadableValue) * scaleFactor) * inverseScaleFactor),
-						(int) (((float) y + 16.0f - (7.0f * scaleFactor)) * inverseScaleFactor), 0xffffff);
-				GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+						(int) (((float) y + 16.0f - (8.0f * scaleFactor)) * inverseScaleFactor), 0xffffff);
 				GL11.glPopMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);

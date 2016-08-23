@@ -8,6 +8,21 @@ package wanion.avaritiaddons.block.extremeautocrafter;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-public class ExtremeAutoCrafterBlock
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+public class ExtremeAutoCrafterBlock extends BlockContainer
 {
+	protected ExtremeAutoCrafterBlock()
+	{
+		super(Material.iron);
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World world, int metadata)
+	{
+		return new TileEntityExtremeAutoCrafter();
+	}
 }

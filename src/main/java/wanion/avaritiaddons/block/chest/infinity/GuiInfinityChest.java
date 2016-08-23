@@ -27,9 +27,11 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import wanion.avaritiaddons.CommonProxy;
 import wanion.avaritiaddons.block.chest.GuiAvaritiaddonsChest;
 import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
 import wanion.avaritiaddons.client.RenderItemInfinity;
+import wanion.avaritiaddons.network.InfinityChestClick;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -432,11 +434,20 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 	}
 
 	@Override
+	protected void handleMouseClick(final Slot slot, int slotNumber, final int mouseButton, final int modifier)
+	{
+		if (slot != null)
+			slotNumber = slot.slotNumber;
+		mc.thePlayer.openContainer.slotClick(slotNumber, mouseButton, modifier, mc.thePlayer);
+		CommonProxy.networkWrapper.sendToServer(new InfinityChestClick(slotNumber, mouseButton, modifier));
+	}
+
+	@Override
 	protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
 	{
-		if (this.selectedButton != null && p_146286_3_ == 0) {
-			this.selectedButton.mouseReleased(p_146286_1_, p_146286_2_);
-			this.selectedButton = null;
+		if (selectedButton != null && p_146286_3_ == 0) {
+			selectedButton.mouseReleased(p_146286_1_, p_146286_2_);
+			selectedButton = null;
 		}
 		Slot slot = getSlotAtPosition(p_146286_1_, p_146286_2_);
 		int l = guiLeft;

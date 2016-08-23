@@ -8,9 +8,12 @@ package wanion.avaritiaddons;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
 import fox.spiteful.avaritia.crafting.Grinder;
 import fox.spiteful.avaritia.items.LudicrousItems;
@@ -27,12 +30,19 @@ import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
 import wanion.avaritiaddons.core.GuiHandler;
+import wanion.avaritiaddons.network.InfinityChestClick;
+import wanion.avaritiaddons.network.InfinityChestSlotSync;
 
 import java.util.Iterator;
 import java.util.List;
 
+import static wanion.avaritiaddons.common.Reference.MOD_ID;
+
 public class CommonProxy
 {
+	public static SimpleNetworkWrapper networkWrapper;
+
+
 	private final TIntSet oresToRemove = new TIntHashSet();
 	private final TIntSet stacksToRemove = new TIntHashSet();
 
@@ -48,6 +58,11 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, "compressedChest");
 		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, "infinityChest");
 		NetworkRegistry.INSTANCE.registerGuiHandler(Avaritiaddons.instance, GuiHandler.instance);
+		networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 0, Side.SERVER);
+		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 1, Side.CLIENT);
+		networkWrapper.registerMessage(InfinityChestClick.Handler.class, InfinityChestClick.class, 2, Side.SERVER);
+		networkWrapper.registerMessage(InfinityChestClick.Handler.class, InfinityChestClick.class, 3, Side.CLIENT);
 	}
 
 	public final void init()
@@ -94,5 +109,20 @@ public class CommonProxy
 				}
 			}
 		});
+	}
+
+	public EntityPlayer getEntityPlayerFromContext(MessageContext ctx)
+	{
+		return ctx.getServerHandler().playerEntity;
+	}
+
+	public static boolean isClient()
+	{
+		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+	}
+
+	public static boolean isServer()
+	{
+		return FMLCommonHandler.instance().getEffectiveSide().isServer();
 	}
 }

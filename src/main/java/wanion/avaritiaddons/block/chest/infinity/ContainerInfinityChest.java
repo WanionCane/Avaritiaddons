@@ -8,13 +8,17 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import wanion.avaritiaddons.CommonProxy;
 import wanion.avaritiaddons.block.chest.ContainerAvaritiaddonsChest;
+import wanion.avaritiaddons.network.InfinityChestSlotSync;
 
 import javax.annotation.Nonnull;
 
@@ -29,7 +33,7 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 	@Override
 	public boolean mergeItemStack(final ItemStack itemStack, final int start, final int end, final boolean backwards)
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (CommonProxy.isClient())
 			return false;
 		int currentSlot = !backwards ? start : end - 1;
 		boolean someThingChanged = false;
@@ -39,7 +43,6 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 			final ItemStack slotStack = slot.getStack();
 			boolean changed = false;
 
-			// do inventário do player para o inventario do baú
 			if (!backwards) {
 				if (slotStack == null) {
 					slot.putStack(itemStack.copy());
@@ -51,7 +54,6 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 					changed = true;
 				}
 				++currentSlot;
-				// do baú para o inventário do player
 			} else {
 				if (slotStack == null) {
 					final int dif = MathHelper.clamp_int(itemStack.getMaxStackSize(), 1, itemStack.stackSize);
@@ -142,13 +144,13 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 			return super.slotClick(slot, mouseButton, modifier, entityPlayer);
 	}
 
-	/*
 	@SuppressWarnings("unchecked")
 	@Override
 	public void detectAndSendChanges()
 	{
-		if (crafters.isEmpty())
+		if (CommonProxy.isClient() || crafters.isEmpty())
 			return;
+		ICrafting bCrafting;
 		for (int i = 0; i < inventorySlots.size(); ++i) {
 			ItemStack itemstack = ((Slot) inventorySlots.get(i)).getStack();
 			ItemStack itemstack1 = (ItemStack) inventoryItemStacks.get(i);
@@ -157,10 +159,24 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 				itemstack1 = itemstack == null ? null : itemstack.copy();
 				inventoryItemStacks.set(i, itemstack1);
 
-				for (int crafters = 0; crafters < this.crafters.size(); crafters++)
-					((ICrafting) this.crafters.get(crafters)).sendSlotContents(this, i, itemstack1);
+				final NBTTagCompound nbtTagCompound = new NBTTagCompound();
+				nbtTagCompound.setShort("Slot", (short) i);
+				if (itemstack1 != null)
+					nbtTagCompound.setInteger("intCount", itemstack1.stackSize);
+				for (Object crafter : crafters)
+					if ((bCrafting = (ICrafting) crafter) instanceof EntityPlayerMP)
+						CommonProxy.networkWrapper.sendTo(new InfinityChestSlotSync(itemstack1, i), (EntityPlayerMP) bCrafting);
 			}
 		}
 	}
-	*/
+
+	@SuppressWarnings("unchecked")
+	public void syncData(final ItemStack itemStack, final int slot, final int stackSize)
+	{
+		if (itemStack != null) {
+			itemStack.stackSize = stackSize;
+			((Slot) inventorySlots.get(slot)).putStack(itemStack);
+		} else
+			((Slot) inventorySlots.get(slot)).putStack(null);
+	}
 }

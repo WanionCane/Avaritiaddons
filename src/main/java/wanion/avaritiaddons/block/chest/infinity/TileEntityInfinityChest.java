@@ -93,7 +93,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		return nbtTagCompound;
 	}
 
-	private NBTTagCompound writeItemStackToNbt(@Nonnull final NBTTagCompound nbtTagCompound, @Nonnull final ItemStack itemStack)
+	public static NBTTagCompound writeItemStackToNbt(@Nonnull final NBTTagCompound nbtTagCompound, @Nonnull final ItemStack itemStack)
 	{
 		itemStack.writeToNBT(nbtTagCompound);
 		nbtTagCompound.setInteger("intCount", itemStack.stackSize);
@@ -102,7 +102,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		return nbtTagCompound;
 	}
 
-	private ItemStack readItemStackFromNbt(final NBTTagCompound nbtTagCompound)
+	public static ItemStack readItemStackFromNbt(final NBTTagCompound nbtTagCompound)
 	{
 		final ItemStack itemStack = ItemStack.loadItemStackFromNBT(nbtTagCompound);
 		itemStack.stackSize = nbtTagCompound.getInteger("intCount");
