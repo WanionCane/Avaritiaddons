@@ -49,7 +49,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 			final int dif = slotStack.stackSize - itemStack.stackSize;
 			slotStack.stackSize -= dif;
 			itemStack.stackSize += dif;
-			if (slotStack.stackSize < 0)
+			if (slotStack.stackSize <= 0)
 				inventoryAvaritiaddonsChest.contents[slot] = null;
 		} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
 		markDirty();

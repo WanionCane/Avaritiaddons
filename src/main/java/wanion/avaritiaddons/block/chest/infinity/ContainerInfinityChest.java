@@ -16,6 +16,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.CommonProxy;
 import wanion.avaritiaddons.block.chest.ContainerAvaritiaddonsChest;
 import wanion.avaritiaddons.network.InfinityChestSlotSync;
@@ -85,8 +86,10 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 	}
 
 	@Override
-	public ItemStack slotClick(final int slot, final int mouseButton, final int modifier, final EntityPlayer entityPlayer)
+	public ItemStack slotClick(int slot, final int mouseButton, final int modifier, final EntityPlayer entityPlayer)
 	{
+		if (slot < 0 || slot > 279)
+			slot = -999;
 		if (slot >= 0 && slot < 243 && modifier == 0) {
 			Slot actualSlot = (Slot) inventorySlots.get(slot);
 			final ItemStack slotStack = actualSlot.getStack();
@@ -148,7 +151,7 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 	@Override
 	public void detectAndSendChanges()
 	{
-		if (CommonProxy.isClient() || crafters.isEmpty())
+		if (crafters.isEmpty())
 			return;
 		ICrafting bCrafting;
 		for (int i = 0; i < inventorySlots.size(); ++i) {
@@ -165,7 +168,7 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 					nbtTagCompound.setInteger("intCount", itemstack1.stackSize);
 				for (Object crafter : crafters)
 					if ((bCrafting = (ICrafting) crafter) instanceof EntityPlayerMP)
-						CommonProxy.networkWrapper.sendTo(new InfinityChestSlotSync(itemstack1, i), (EntityPlayerMP) bCrafting);
+						Avaritiaddons.networkWrapper.sendTo(new InfinityChestSlotSync(itemstack1, i), (EntityPlayerMP) bCrafting);
 			}
 		}
 	}

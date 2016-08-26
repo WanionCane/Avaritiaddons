@@ -27,7 +27,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import wanion.avaritiaddons.CommonProxy;
+import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.block.chest.GuiAvaritiaddonsChest;
 import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
 import wanion.avaritiaddons.client.RenderItemInfinity;
@@ -41,7 +41,6 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 	private static final RenderItemInfinity renderItemInfinity = new RenderItemInfinity();
 	private final TileEntityInfinityChest tileEntityInfinityChest;
 
-	private Slot theSlot;
 	private Slot clickedSlot;
 	private boolean isRightMouseClick;
 	private GuiButton selectedButton;
@@ -92,7 +91,7 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 		GL11.glTranslatef((float) guiLeft, (float) guiTop, 0.0F);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		theSlot = null;
+		Slot theSlot = null;
 		short short1 = 240;
 		short short2 = 240;
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) short1 / 1.0F, (float) short2 / 1.0F);
@@ -364,7 +363,7 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 							byte b0 = 0;
 
 							if (flag2) {
-								field_146994_N = slot != null && slot.getHasStack() ? slot.getStack() : null;
+								field_146994_N = slot.getHasStack() ? slot.getStack() : null;
 								b0 = 1;
 							} else if (k1 == -999) {
 								b0 = 4;
@@ -438,8 +437,9 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 	{
 		if (slot != null)
 			slotNumber = slot.slotNumber;
-		mc.thePlayer.openContainer.slotClick(slotNumber, mouseButton, modifier, mc.thePlayer);
-		CommonProxy.networkWrapper.sendToServer(new InfinityChestClick(slotNumber, mouseButton, modifier));
+		final short nextTransactionID = mc.thePlayer.openContainer.getNextTransactionID(mc.thePlayer.inventory);
+		final ItemStack itemStack = mc.thePlayer.openContainer.slotClick(slotNumber, mouseButton, modifier, mc.thePlayer);
+		Avaritiaddons.networkWrapper.sendToServer(new InfinityChestClick(inventorySlots.windowId, slotNumber, mouseButton, modifier, itemStack, nextTransactionID));
 	}
 
 	@Override
@@ -468,7 +468,7 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest
 
 		if (field_146993_M && slot != null && p_146286_3_ == 0 && inventorySlots.func_94530_a(null, slot)) {
 			if (isShiftKeyDown()) {
-				if (slot != null && slot.inventory != null && field_146994_N != null) {
+				if (slot.inventory != null && field_146994_N != null) {
 					iterator = inventorySlots.inventorySlots.iterator();
 
 					while (iterator.hasNext()) {

@@ -14,6 +14,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,6 +31,8 @@ public final class Avaritiaddons
 {
 	@Mod.Instance
 	public static Avaritiaddons instance;
+
+	public static SimpleNetworkWrapper networkWrapper;
 
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
 	public static CommonProxy proxy;
@@ -48,6 +52,7 @@ public final class Avaritiaddons
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event)
 	{
+		networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 		proxy.preInit();
 	}
 

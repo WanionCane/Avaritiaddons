@@ -11,7 +11,6 @@ package wanion.avaritiaddons;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
@@ -23,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import wanion.avaritiaddons.block.chest.compressed.BlockCompressedChest;
@@ -31,18 +31,17 @@ import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
 import wanion.avaritiaddons.core.GuiHandler;
 import wanion.avaritiaddons.network.InfinityChestClick;
+import wanion.avaritiaddons.network.InfinityChestConfirmation;
 import wanion.avaritiaddons.network.InfinityChestSlotSync;
+import wanion.avaritiaddons.network.InfinityChestSyncAllSlots;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static wanion.avaritiaddons.common.Reference.MOD_ID;
+import static wanion.avaritiaddons.Avaritiaddons.networkWrapper;
 
 public class CommonProxy
 {
-	public static SimpleNetworkWrapper networkWrapper;
-
-
 	private final TIntSet oresToRemove = new TIntHashSet();
 	private final TIntSet stacksToRemove = new TIntHashSet();
 
@@ -55,14 +54,17 @@ public class CommonProxy
 	{
 		GameRegistry.registerBlock(BlockCompressedChest.instance, "CompressedChest");
 		GameRegistry.registerBlock(BlockInfinityChest.instance, "InfinityChest");
-		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, "compressedChest");
-		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, "infinityChest");
+		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, "Avaritiaddons:CompressedChest");
+		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, "Avaritiaddons:InfinityChest");
 		NetworkRegistry.INSTANCE.registerGuiHandler(Avaritiaddons.instance, GuiHandler.instance);
-		networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 0, Side.SERVER);
 		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 1, Side.CLIENT);
 		networkWrapper.registerMessage(InfinityChestClick.Handler.class, InfinityChestClick.class, 2, Side.SERVER);
 		networkWrapper.registerMessage(InfinityChestClick.Handler.class, InfinityChestClick.class, 3, Side.CLIENT);
+		networkWrapper.registerMessage(InfinityChestConfirmation.Handler.class, InfinityChestConfirmation.class, 4, Side.SERVER);
+		networkWrapper.registerMessage(InfinityChestConfirmation.Handler.class, InfinityChestConfirmation.class, 5, Side.CLIENT);
+		networkWrapper.registerMessage(InfinityChestSyncAllSlots.Handler.class, InfinityChestSyncAllSlots.class, 6, Side.SERVER);
+		networkWrapper.registerMessage(InfinityChestSyncAllSlots.Handler.class, InfinityChestSyncAllSlots.class, 7, Side.CLIENT);
 	}
 
 	public final void init()
@@ -124,5 +126,10 @@ public class CommonProxy
 	public static boolean isServer()
 	{
 		return FMLCommonHandler.instance().getEffectiveSide().isServer();
+	}
+
+	public static boolean isDedicatedServer()
+	{
+		return MinecraftServer.getServer().isDedicatedServer();
 	}
 }

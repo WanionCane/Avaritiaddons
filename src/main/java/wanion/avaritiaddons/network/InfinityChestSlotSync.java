@@ -40,7 +40,7 @@ public final class InfinityChestSlotSync implements IMessage
 	{
 		itemStack = ByteBufUtils.readItemStack(buf);
 		slot = ByteBufUtils.readVarShort(buf);
-		stackSize = ByteBufUtils.readVarInt(buf, 4);
+		stackSize = ByteBufUtils.readVarInt(buf, 5);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public final class InfinityChestSlotSync implements IMessage
 	{
 		ByteBufUtils.writeItemStack(buf, itemStack);
 		ByteBufUtils.writeVarShort(buf, slot);
-		ByteBufUtils.writeVarInt(buf, stackSize, 4);
+		ByteBufUtils.writeVarInt(buf, stackSize, 5);
 	}
 
 	public static class Handler implements IMessageHandler<InfinityChestSlotSync, IMessage>

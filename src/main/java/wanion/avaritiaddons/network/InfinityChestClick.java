@@ -13,49 +13,91 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import wanion.avaritiaddons.Avaritiaddons;
-import wanion.avaritiaddons.block.chest.infinity.ContainerInfinityChest;
 
 public class InfinityChestClick implements IMessage
 {
-	private int slot;
+	private int windowId;
+	private int slotNumber;
 	private int mouseButton;
 	private int modifier;
+	private ItemStack itemStack;
+	private int stackSize;
+	private short transactionID;
 
 	public InfinityChestClick() {}
 
-	public InfinityChestClick(final int slot, final int mouseButton, final int modifier)
+	public InfinityChestClick(final int windowId, final int slotNumber, final int mouseButton, final int modifier, final ItemStack itemStack, final short transactionID)
 	{
-		this.slot = slot;
+		this.windowId = windowId;
+		this.slotNumber = slotNumber;
 		this.mouseButton = mouseButton;
 		this.modifier = modifier;
+		stackSize = (this.itemStack = itemStack) != null ? itemStack.stackSize : 0;
+		this.transactionID = transactionID;
 	}
 
 	@Override
 	public void fromBytes(final ByteBuf buf)
 	{
-		slot = ByteBufUtils.readVarShort(buf);
-		mouseButton = ByteBufUtils.readVarShort(buf);
-		modifier = ByteBufUtils.readVarShort(buf);
+		windowId = ByteBufUtils.readVarInt(buf, 4);
+		slotNumber = ByteBufUtils.readVarShort(buf);
+		if (slotNumber < 0 || slotNumber > 279)
+			slotNumber = -999;
+		mouseButton = ByteBufUtils.readVarInt(buf, 4);
+		modifier = ByteBufUtils.readVarInt(buf, 4);
+		itemStack = ByteBufUtils.readItemStack(buf);
+		stackSize = ByteBufUtils.readVarInt(buf, 5);
+		if (itemStack != null)
+			itemStack.stackSize = stackSize;
+		transactionID = (short) ByteBufUtils.readVarShort(buf);
 	}
 
 	@Override
 	public void toBytes(final ByteBuf buf)
 	{
-		ByteBufUtils.writeVarShort(buf, slot);
-		ByteBufUtils.writeVarShort(buf, mouseButton);
-		ByteBufUtils.writeVarShort(buf, modifier);
+		ByteBufUtils.writeVarInt(buf, windowId, 4);
+		ByteBufUtils.writeVarShort(buf, slotNumber);
+		ByteBufUtils.writeVarInt(buf, mouseButton, 4);
+		ByteBufUtils.writeVarInt(buf, modifier, 4);
+		ByteBufUtils.writeItemStack(buf, itemStack);
+		ByteBufUtils.writeVarInt(buf, stackSize, 5);
+		ByteBufUtils.writeVarShort(buf, transactionID);
 	}
 
 	public static class Handler implements IMessageHandler<InfinityChestClick, IMessage>
 	{
+		@SuppressWarnings("unchecked")
 		@Override
 		public IMessage onMessage(InfinityChestClick message, MessageContext ctx)
 		{
-			final EntityPlayer entityPlayer = Avaritiaddons.proxy.getEntityPlayerFromContext(ctx);
-			if (entityPlayer.openContainer instanceof ContainerInfinityChest)
-				entityPlayer.openContainer.slotClick(message.slot, message.mouseButton, message.modifier, entityPlayer);
+			final EntityPlayerMP entityPlayer = ctx.getServerHandler().playerEntity;
+			entityPlayer.func_143004_u();
+			if (entityPlayer.openContainer == null)
+				return null;
+			if (entityPlayer.openContainer.windowId == message.windowId && entityPlayer.openContainer.isPlayerNotUsingContainer(entityPlayer)) {
+				final ItemStack itemstack = entityPlayer.openContainer.slotClick(message.slotNumber, message.mouseButton, message.modifier, entityPlayer);
+
+				if (ItemStack.areItemStacksEqual(message.itemStack, itemstack)) {
+					Avaritiaddons.networkWrapper.sendTo(new InfinityChestConfirmation(message.windowId, message.transactionID, true), entityPlayer);
+					entityPlayer.isChangingQuantityOnly = true;
+					entityPlayer.openContainer.detectAndSendChanges();
+					entityPlayer.updateHeldItem();
+					entityPlayer.isChangingQuantityOnly = false;
+				} else {
+					InfinityChestConfirmation.Handler.transactionMap.put(entityPlayer.openContainer.windowId, message.transactionID);
+					Avaritiaddons.networkWrapper.sendTo(new InfinityChestConfirmation(message.windowId, message.transactionID, false), entityPlayer);
+					entityPlayer.openContainer.setPlayerIsPresent(entityPlayer, false);
+
+					final ItemStack[] itemStacks = new ItemStack[entityPlayer.openContainer.inventorySlots.size()];
+					for (int i = 0; i < entityPlayer.openContainer.inventorySlots.size(); ++i)
+						itemStacks[i]= (((Slot) entityPlayer.openContainer.inventorySlots.get(i)).getStack());
+					Avaritiaddons.networkWrapper.sendTo(new InfinityChestSyncAllSlots(itemStacks), entityPlayer);
+				}
+			}
 			return null;
 		}
 	}
