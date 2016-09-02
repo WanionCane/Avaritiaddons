@@ -36,7 +36,7 @@ public class InfinityChestConfirmation implements IMessage
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public void fromBytes(final ByteBuf buf)
 	{
 		windowID = ByteBufUtils.readVarInt(buf, 4);
 		transactionID = (short) ByteBufUtils.readVarShort(buf);
@@ -44,7 +44,7 @@ public class InfinityChestConfirmation implements IMessage
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(final ByteBuf buf)
 	{
 		ByteBufUtils.writeVarInt(buf, windowID, 4);
 		ByteBufUtils.writeVarShort(buf, transactionID);
@@ -56,7 +56,7 @@ public class InfinityChestConfirmation implements IMessage
 		static final TIntShortMap transactionMap = new TIntShortHashMap(10, 0.5f, -1, (short) -1);
 
 		@Override
-		public InfinityChestConfirmation onMessage(InfinityChestConfirmation message, MessageContext ctx)
+		public InfinityChestConfirmation onMessage(final InfinityChestConfirmation message, final MessageContext ctx)
 		{
 			final EntityPlayer entityPlayer = ctx.side == Side.SERVER ? ctx.getServerHandler().playerEntity : Avaritiaddons.proxy.getEntityPlayerFromContext(ctx);
 			switch (ctx.side) {

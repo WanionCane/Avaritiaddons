@@ -141,7 +141,6 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	@Override
 	public final void updateEntity()
 	{
-		super.updateEntity();
 		++ticksSinceSync;
 		float f;
 

@@ -88,8 +88,6 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 	@Override
 	public ItemStack slotClick(int slot, final int mouseButton, final int modifier, final EntityPlayer entityPlayer)
 	{
-		if (slot < 0 || slot > 279)
-			slot = -999;
 		if (slot >= 0 && slot < 243 && modifier == 0) {
 			Slot actualSlot = (Slot) inventorySlots.get(slot);
 			final ItemStack slotStack = actualSlot.getStack();

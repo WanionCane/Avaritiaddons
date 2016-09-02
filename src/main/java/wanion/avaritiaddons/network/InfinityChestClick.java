@@ -72,7 +72,7 @@ public class InfinityChestClick implements IMessage
 	{
 		@SuppressWarnings("unchecked")
 		@Override
-		public IMessage onMessage(InfinityChestClick message, MessageContext ctx)
+		public IMessage onMessage(final InfinityChestClick message, final MessageContext ctx)
 		{
 			final EntityPlayerMP entityPlayer = ctx.getServerHandler().playerEntity;
 			entityPlayer.func_143004_u();
@@ -94,7 +94,7 @@ public class InfinityChestClick implements IMessage
 
 					final ItemStack[] itemStacks = new ItemStack[entityPlayer.openContainer.inventorySlots.size()];
 					for (int i = 0; i < entityPlayer.openContainer.inventorySlots.size(); ++i)
-						itemStacks[i]= (((Slot) entityPlayer.openContainer.inventorySlots.get(i)).getStack());
+						itemStacks[i] = (((Slot) entityPlayer.openContainer.inventorySlots.get(i)).getStack());
 					Avaritiaddons.networkWrapper.sendTo(new InfinityChestSyncAllSlots(itemStacks), entityPlayer);
 				}
 			}

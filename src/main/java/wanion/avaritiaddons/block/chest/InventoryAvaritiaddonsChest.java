@@ -30,7 +30,7 @@ public final class InventoryAvaritiaddonsChest implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return contents.length;
+		return 243;
 	}
 
 	@Override
@@ -49,6 +49,7 @@ public final class InventoryAvaritiaddonsChest implements IInventory
 			newStack.stackSize = quantity;
 			if ((slotStack.stackSize -= quantity) == 0)
 				contents[slot] = null;
+			markDirty();
 			return newStack;
 		} else
 			return null;

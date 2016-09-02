@@ -19,6 +19,9 @@ import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.ContainerInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.GuiInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
+import wanion.avaritiaddons.block.extremeautocrafter.ContainerExtremeAutoCrafter;
+import wanion.avaritiaddons.block.extremeautocrafter.GuiExtremeAutoCrafter;
+import wanion.avaritiaddons.block.extremeautocrafter.TileEntityExtremeAutoCrafter;
 
 public final class GuiHandler implements IGuiHandler
 {
@@ -39,6 +42,9 @@ public final class GuiHandler implements IGuiHandler
 			case Avaritiaddons.GUI_ID_INFINITY_CHEST:
 				if (tileEntity instanceof TileEntityInfinityChest)
 					return new ContainerInfinityChest((TileEntityInfinityChest) tileEntity, player.inventory);
+			case Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER:
+				if (tileEntity instanceof TileEntityExtremeAutoCrafter)
+					return new ContainerExtremeAutoCrafter((TileEntityExtremeAutoCrafter) tileEntity, player.inventory);
 			default:
 				return null;
 		}
@@ -57,6 +63,9 @@ public final class GuiHandler implements IGuiHandler
 			case Avaritiaddons.GUI_ID_INFINITY_CHEST:
 				if (tileEntity instanceof TileEntityInfinityChest)
 					return new GuiInfinityChest((TileEntityInfinityChest) tileEntity, player.inventory);
+			case Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER:
+				if (tileEntity instanceof TileEntityExtremeAutoCrafter)
+					return new GuiExtremeAutoCrafter((TileEntityExtremeAutoCrafter) tileEntity, player.inventory);
 			default:
 				return null;
 		}

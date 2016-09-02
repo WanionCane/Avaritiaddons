@@ -2,6 +2,10 @@ itemGroup.avaritiaddons=Avaritiaddons
 
 tile.CompressedChest.name=Compressed Chest
 tile.InfinityChest.name=Infinity Chest
+tile.ExtremeAutoCrafter.name=Dire Autocrafing Table
 
 container.CompressedChest=Compressed Chest
 container.InfinityChest=Infinity Chest
+container.ExtremeAutoCrafter=Dire Autocrafing Table
+
+tooltip.fillingRange=%1$s of %2$s

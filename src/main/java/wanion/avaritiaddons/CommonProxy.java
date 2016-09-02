@@ -25,10 +25,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import wanion.avaritiaddons.block.chest.ItemBlockAvaritiaddonsChest;
 import wanion.avaritiaddons.block.chest.compressed.BlockCompressedChest;
 import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
+import wanion.avaritiaddons.block.extremeautocrafter.BlockExtremeAutoCrafter;
+import wanion.avaritiaddons.block.extremeautocrafter.TileEntityExtremeAutoCrafter;
 import wanion.avaritiaddons.core.GuiHandler;
 import wanion.avaritiaddons.network.InfinityChestClick;
 import wanion.avaritiaddons.network.InfinityChestConfirmation;
@@ -52,10 +55,12 @@ public class CommonProxy
 
 	public void preInit()
 	{
-		GameRegistry.registerBlock(BlockCompressedChest.instance, "CompressedChest");
-		GameRegistry.registerBlock(BlockInfinityChest.instance, "InfinityChest");
+		GameRegistry.registerBlock(BlockCompressedChest.instance, ItemBlockAvaritiaddonsChest.class, "CompressedChest");
+		GameRegistry.registerBlock(BlockInfinityChest.instance, ItemBlockAvaritiaddonsChest.class, "InfinityChest");
+		GameRegistry.registerBlock(BlockExtremeAutoCrafter.instance, "ExtremeAutoCrafter");
 		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, "Avaritiaddons:CompressedChest");
 		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, "Avaritiaddons:InfinityChest");
+		GameRegistry.registerTileEntity(TileEntityExtremeAutoCrafter.class, "Avaritiaddons:ExtremeAutoCrafter");
 		NetworkRegistry.INSTANCE.registerGuiHandler(Avaritiaddons.instance, GuiHandler.instance);
 		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 0, Side.SERVER);
 		networkWrapper.registerMessage(InfinityChestSlotSync.Handler.class, InfinityChestSlotSync.class, 1, Side.CLIENT);
@@ -113,7 +118,7 @@ public class CommonProxy
 		});
 	}
 
-	public EntityPlayer getEntityPlayerFromContext(MessageContext ctx)
+	public EntityPlayer getEntityPlayerFromContext(final MessageContext ctx)
 	{
 		return ctx.getServerHandler().playerEntity;
 	}

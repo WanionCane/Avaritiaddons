@@ -37,7 +37,9 @@ public final class Avaritiaddons
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
 	public static CommonProxy proxy;
 
-	public static final int GUI_ID_COMPRESSED_CHEST = 0, GUI_ID_INFINITY_CHEST = 1;
+	public static final int GUI_ID_COMPRESSED_CHEST = 0,
+			GUI_ID_INFINITY_CHEST = 1,
+			GUI_ID_EXTREME_AUTO_CRAFTER = 2;
 
 	public static final CreativeTabs creativeTabs = new CreativeTabs(MOD_ID)
 	{
@@ -69,7 +71,7 @@ public final class Avaritiaddons
 	}
 
 	@NetworkCheckHandler
-	public boolean matchModVersions(Map<String, String> remoteVersions, Side side)
+	public boolean matchModVersions(final Map<String, String> remoteVersions, final Side side)
 	{
 		return remoteVersions.containsKey(MOD_ID) && remoteVersions.get(MOD_ID).equals(MOD_VERSION);
 	}

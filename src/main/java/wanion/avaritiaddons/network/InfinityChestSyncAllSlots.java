@@ -51,7 +51,7 @@ public class InfinityChestSyncAllSlots implements IMessage
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void toBytes(final ByteBuf buf)
 	{
 		ByteBufUtils.writeVarShort(buf, slotCount);
 		for (int i = 0; i < slotCount; i++) {
@@ -63,7 +63,7 @@ public class InfinityChestSyncAllSlots implements IMessage
 	public static class Handler implements IMessageHandler<InfinityChestSyncAllSlots, IMessage>
 	{
 		@Override
-		public IMessage onMessage(InfinityChestSyncAllSlots message, MessageContext ctx)
+		public IMessage onMessage(final InfinityChestSyncAllSlots message, final MessageContext ctx)
 		{
 			final EntityPlayer entityPlayer = Avaritiaddons.proxy.getEntityPlayerFromContext(ctx);
 			if (entityPlayer.openContainer instanceof ContainerInfinityChest)
