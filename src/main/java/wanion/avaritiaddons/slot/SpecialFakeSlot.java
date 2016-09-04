@@ -36,6 +36,6 @@ public class SpecialFakeSlot extends Slot
 	public boolean canTakeStack(final EntityPlayer entityPlayer)
 	{
 		final ItemStack slotStack = getStack();
-		return slotStack != null && slotStack.stackSize > 0;
+		return slotStack != null && slotStack.stackSize > 0 && (entityPlayer.inventory.getItemStack() == null || ItemStack.areItemStacksEqual(slotStack, entityPlayer.inventory.getItemStack()));
 	}
 }

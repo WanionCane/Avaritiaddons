@@ -13,6 +13,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import fox.spiteful.avaritia.blocks.LudicrousBlocks;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
 import fox.spiteful.avaritia.crafting.Grinder;
 import fox.spiteful.avaritia.items.LudicrousItems;
@@ -82,6 +83,8 @@ public class CommonProxy
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockInfinityChest.instance), "INI", "BCB", "IBI", 'I', "ingotInfinity", 'N', "blockCosmicNeutronium", 'B', "blockInfinity", 'C', BlockCompressedChest.instance));
 		else
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockInfinityChest.instance), "TNT", "ICI", "TIT", 'T', new ItemStack(LudicrousItems.resource, 1, 5), 'N', "blockCosmicNeutronium", 'I', "ingotInfinity", 'C', BlockCompressedChest.instance));
+		//if (Config.hardExtremeAutoCrafterRecipe)
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockExtremeAutoCrafter.instance), " S ", "NCN", " N ", 'S', new ItemStack(LudicrousItems.singularity, 1, 3), 'N', "blockCosmicNeutronium", 'C', new ItemStack(LudicrousBlocks.dire_crafting)));
 	}
 
 	public final void postInit()

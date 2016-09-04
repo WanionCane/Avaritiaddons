@@ -84,8 +84,7 @@ public class ContainerExtremeAutoCrafter extends Container
 				return slotStack;
 			}
 			return null;
-		} else
-			return super.slotClick(slot, mouseButton, modifier, entityPlayer);
+		} else return super.slotClick(slot, mouseButton, modifier, entityPlayer);
 	}
 
 	@Override

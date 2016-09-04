@@ -9,6 +9,8 @@ package wanion.avaritiaddons.block.extremeautocrafter;
  */
 
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
+import gnu.trove.map.TIntIntMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,6 +22,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import wanion.avaritiaddons.BasicMetaItem;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedInventory
 {
@@ -27,6 +33,8 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	private final InventoryCrafting craftingMatrix = new ExtremeCraftingMatrix();
 	private static final int[] slotsForAllSides = new int[82];
 	private boolean recipeChanged = true;
+	private TIntIntMap patternMap = null;
+	private int cooldownTime = 10;
 
 	static {
 		for (int i = 0; i < 81; i++)
@@ -37,20 +45,78 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	@Override
 	public void updateEntity()
 	{
-		if (!worldObj.isRemote && recipeChanged) {
+		if (worldObj.isRemote)
+			return;
+		if (--cooldownTime != 0)
+			return;
+		else
+			cooldownTime = 10;
+		if (recipeChanged) {
+			recipeChanged = false;
 			final ItemStack output = ExtremeCraftingManager.getInstance().findMatchingRecipe(craftingMatrix, worldObj);
 			final ItemStack slotStack = getStackInSlot(162);
-			if (slotStack != null && slotStack.stackSize > 0)
-				recipeChanged = false;
-			else if (output == null && slotStack != null && slotStack.stackSize == 0) {
+			if (output != null && slotStack != null && slotStack.getItem() == output.getItem() && (!output.getHasSubtypes() || output.getItemDamage() == slotStack.getItemDamage())){
+				patternMap = BasicMetaItem.getKeySizeMap(81, 162, itemStacks);
+			} else if (slotStack != null && slotStack.stackSize > 0) {
+				patternMap = null;
+			} else if (output == null && slotStack != null && slotStack.stackSize == 0) {
 				itemStacks[162] = null;
+				patternMap = null;
 				markDirty();
 			} else if (output != null) {
 				output.stackSize = 0;
 				itemStacks[162] = output;
+				patternMap = BasicMetaItem.getKeySizeMap(81, 162, itemStacks);
 				markDirty();
-			} else
-				recipeChanged = false;
+			}
+		}
+		if (patternMap != null && itemStacks[162] == null){
+			final ItemStack output = ExtremeCraftingManager.getInstance().findMatchingRecipe(craftingMatrix, worldObj);
+			if (output == null) {
+				patternMap = null;
+				return;
+			}
+			output.stackSize = 0;
+			itemStacks[162] = output;
+		}
+		if (patternMap == null)
+			return;
+		final ItemStack outputStack = itemStacks[162];
+		if (outputStack == null || outputStack.stackSize == outputStack.getMaxStackSize() || !matches(BasicMetaItem.getSmartKeySizeMap(0, 81, itemStacks), patternMap))
+			return;
+		cleanInput();
+		outputStack.stackSize++;
+		markDirty();
+	}
+
+	private boolean matches(@Nonnull final TIntIntMap inputMap, @Nonnull final TIntIntMap patternMap)
+	{
+		if (inputMap.keySet().containsAll(patternMap.keySet())) {
+			for (final int key : patternMap.keys())
+				if (inputMap.get(key) < patternMap.get(key))
+					return false;
+			return true;
+		} else
+			return false;
+	}
+
+	private void cleanInput()
+	{
+		final TIntIntMap patternMap = new TIntIntHashMap(this.patternMap);
+		for (int i = 0; i < 81 && !patternMap.isEmpty(); i++) {
+			final ItemStack itemStack = itemStacks[i];
+			final int key = BasicMetaItem.get(itemStack);
+			if (patternMap.containsKey(key)){
+				final int total = patternMap.get(key);
+				final int dif = MathHelper.clamp_int(total, 1, itemStack.stackSize);
+				itemStack.stackSize -= dif;
+				if (dif - total == 0)
+					patternMap.remove(key);
+				else
+					patternMap.put(key, total - dif);
+				if (itemStack.stackSize == 0)
+					itemStacks[i] = null;
+			}
 		}
 	}
 
@@ -67,7 +133,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, final int howMuch)
+	public ItemStack decrStackSize(final int slot, final int howMuch)
 	{
 		if (itemStacks[slot] == null)
 			return null;
@@ -88,9 +154,10 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	@Override
 	public void setInventorySlotContents(final int slot, final ItemStack itemStack)
 	{
-		if (slot > 80 && slot < 162)
+		if (slot > 80 && slot < 162) {
 			recipeChanged = true;
-		itemStacks[slot] = itemStack;
+			itemStacks[slot] = itemStack;
+		} else itemStacks[slot] = itemStack;
 		markDirty();
 	}
 
@@ -205,7 +272,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	@Override
 	public boolean canExtractItem(final int slot, final ItemStack itemStack, final int side)
 	{
-		return slot == 162;
+		return slot == 162 && itemStacks[162] != null && itemStacks[162].stackSize > 0;
 	}
 
 	public class ExtremeCraftingMatrix extends InventoryCrafting

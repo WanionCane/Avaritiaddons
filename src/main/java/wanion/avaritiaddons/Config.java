@@ -19,7 +19,7 @@ public final class Config
 {
 	public static final boolean hardCompressedChestRecipe;
 	public static final boolean hardInfinityChestRecipe;
-	public static final boolean disableExtremeAutoCrafter;
+	//public static final boolean hardExtremeAutoCrafterRecipe;
 
 	public static final List<String> thingsToRemoveFromInfinityCatalystRecipe;
 
@@ -27,7 +27,7 @@ public final class Config
 		final Configuration config = new Configuration(new File("." + Reference.SLASH + "config" + Reference.SLASH + Reference.MOD_NAME + ".cfg"));
 		hardCompressedChestRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardCompressedChestRecipe", false).getBoolean();
 		hardInfinityChestRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardInfinityChestRecipe", false).getBoolean();
-		disableExtremeAutoCrafter = config.get(Configuration.CATEGORY_GENERAL, "disableExtremeAutoCrafter", false).getBoolean();
+		//hardExtremeAutoCrafterRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardExtremeAutoCrafterRecipe", false).getBoolean();
 
 		final String infinityCatalyst = "infinityCatalystRecipeTweaks";
 		thingsToRemoveFromInfinityCatalystRecipe = Arrays.asList(config.get(infinityCatalyst, "thingsToRemove", new String[]{}).getStringList());
