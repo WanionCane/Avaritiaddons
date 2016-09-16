@@ -34,7 +34,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	private static final int[] slotsForAllSides = new int[82];
 	private boolean recipeChanged = true;
 	private TIntIntMap patternMap = null;
-	private int cooldownTime = 10;
+	private int coolDownTime = 10;
 
 	static {
 		for (int i = 0; i < 81; i++)
@@ -47,10 +47,10 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	{
 		if (worldObj.isRemote)
 			return;
-		if (--cooldownTime != 0)
+		if (--coolDownTime != 0)
 			return;
 		else
-			cooldownTime = 10;
+			coolDownTime = 10;
 		if (recipeChanged) {
 			recipeChanged = false;
 			final ItemStack output = ExtremeCraftingManager.getInstance().findMatchingRecipe(craftingMatrix, worldObj);
@@ -91,7 +91,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 
 	private boolean matches(@Nonnull final TIntIntMap inputMap, @Nonnull final TIntIntMap patternMap)
 	{
-		if (inputMap.keySet().containsAll(patternMap.keySet())) {
+		if (inputMap.size() >= patternMap.size() && inputMap.keySet().containsAll(patternMap.keySet())) {
 			for (final int key : patternMap.keys())
 				if (inputMap.get(key) < patternMap.get(key))
 					return false;

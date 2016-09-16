@@ -13,8 +13,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import wanion.avaritiaddons.slot.FakeSlot;
-import wanion.avaritiaddons.slot.SpecialFakeSlot;
+import wanion.avaritiaddons.common.slot.FakeSlot;
+import wanion.avaritiaddons.common.slot.SpecialSlot;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ public class ContainerExtremeAutoCrafter extends Container
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
 				addSlotToContainer(new FakeSlot(tileEntityExtremeAutoCrafter, 81 + y * 9 + x, 184 + (18 * x), 18 + (18 * y)));
-		addSlotToContainer(new SpecialFakeSlot(tileEntityExtremeAutoCrafter, 162, 256, 188));
+		addSlotToContainer(new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 256, 188));
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 9; x++)
 				addSlotToContainer(new Slot(inventoryPlayer, 9 + y * 9 + x, 8 + (18 * x), 194 + (18 * y)));

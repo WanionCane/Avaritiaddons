@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.slot;
+package wanion.avaritiaddons.common.slot;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -13,20 +13,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public final class FakeSlot extends Slot
+public class SpecialSlot extends Slot
 {
-	public FakeSlot(final IInventory inventory, final int id, final int x, final int y)
+	public SpecialSlot(final IInventory inventory, final int id, final int x, final int y)
 	{
 		super(inventory, id, x, y);
-	}
-
-	@Override
-	public void onPickupFromSlot(final EntityPlayer entityPlayer, final ItemStack itemStack) {}
-
-	@Override
-	public ItemStack decrStackSize(final int howMany)
-	{
-		return null;
 	}
 
 	@Override
@@ -44,6 +35,7 @@ public final class FakeSlot extends Slot
 	@Override
 	public boolean canTakeStack(final EntityPlayer entityPlayer)
 	{
-		return false;
+		final ItemStack slotStack = getStack();
+		return slotStack != null && slotStack.stackSize > 0 && (entityPlayer.inventory.getItemStack() == null || ItemStack.areItemStacksEqual(slotStack, entityPlayer.inventory.getItemStack()));
 	}
 }

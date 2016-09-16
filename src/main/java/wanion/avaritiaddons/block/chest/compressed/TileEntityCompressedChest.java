@@ -10,7 +10,6 @@ package wanion.avaritiaddons.block.chest.compressed;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
 import wanion.avaritiaddons.client.ClientConstants;
@@ -25,10 +24,9 @@ public final class TileEntityCompressedChest extends TileEntityAvaritiaddonsChes
 	}
 
 	@Override
-	@Nonnull
-	public String getDefaultInventoryName()
+	public final String getInventoryName()
 	{
-		return I18n.format("container.CompressedChest");
+		return "container.CompressedChest";
 	}
 
 	@Override

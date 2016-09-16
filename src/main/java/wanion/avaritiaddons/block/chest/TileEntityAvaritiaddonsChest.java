@@ -10,7 +10,6 @@ package wanion.avaritiaddons.block.chest;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -188,12 +187,6 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	}
 
 	@Override
-	public final String getInventoryName()
-	{
-		return I18n.format(getDefaultInventoryName());
-	}
-
-	@Override
 	public ItemStack getStackInSlot(final int slot)
 	{
 		return inventoryAvaritiaddonsChest.getStackInSlot(slot);
@@ -244,9 +237,6 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 	{
 		return facingSide;
 	}
-
-	@Nonnull
-	public abstract String getDefaultInventoryName();
 
 	@SideOnly(Side.CLIENT)
 	@Nonnull
