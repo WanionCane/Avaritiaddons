@@ -11,6 +11,7 @@ package wanion.avaritiaddons;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import fox.spiteful.avaritia.blocks.LudicrousBlocks;
@@ -38,6 +39,7 @@ import wanion.avaritiaddons.network.InfinityChestClick;
 import wanion.avaritiaddons.network.InfinityChestConfirmation;
 import wanion.avaritiaddons.network.InfinityChestSlotSync;
 import wanion.avaritiaddons.network.InfinityChestSyncAllSlots;
+import wanion.lib.common.MetaItem;
 
 import java.util.Iterator;
 import java.util.List;
@@ -93,7 +95,7 @@ public class CommonProxy
 		for (final Iterator<Object> catalystRecipeIterator = Grinder.catalyst.getInput().iterator(); catalystRecipeIterator.hasNext(); )
 		{
 			final Object catalystRecipeInput = catalystRecipeIterator.next();
-			final int hash = catalystRecipeInput instanceof List ? System.identityHashCode(catalystRecipeInput) : catalystRecipeInput instanceof ItemStack ? BasicMetaItem.get((ItemStack) catalystRecipeInput) : 0;
+			final int hash = catalystRecipeInput instanceof List ? System.identityHashCode(catalystRecipeInput) : catalystRecipeInput instanceof ItemStack ? MetaItem.get((ItemStack) catalystRecipeInput) : 0;
 			if (hash == 0)
 				continue;
 			if ((catalystRecipeInput instanceof List && oresToRemove.contains(hash)) || (catalystRecipeInput instanceof ItemStack && stacksToRemove.contains(hash)))
@@ -110,10 +112,10 @@ public class CommonProxy
 					oresToRemove.add(System.identityHashCode(ores));
 			} else {
 				final int separatorChar = toRemove.indexOf('#');
-				final Item item = BasicMetaItem.itemRegistry.getRaw(separatorChar == -1 ? toRemove : toRemove.substring(0, separatorChar));
+				final Item item = MetaItem.itemRegistry.getRaw(separatorChar == -1 ? toRemove : toRemove.substring(0, separatorChar));
 				if (item != null) {
 					final int metadata = separatorChar == -1 ? 0 : Integer.parseInt(toRemove.substring(separatorChar + 1, toRemove.length()));
-					final int hash = BasicMetaItem.get(new ItemStack(item, 1, metadata));
+					final int hash = MetaItem.get(new ItemStack(item, 1, metadata));
 					if (hash > 0)
 						stacksToRemove.add(hash);
 				}

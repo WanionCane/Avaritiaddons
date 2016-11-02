@@ -23,7 +23,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import wanion.avaritiaddons.BasicMetaItem;
+import wanion.lib.common.MetaItem;
 
 import javax.annotation.Nonnull;
 
@@ -56,7 +56,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 			final ItemStack output = ExtremeCraftingManager.getInstance().findMatchingRecipe(craftingMatrix, worldObj);
 			final ItemStack slotStack = getStackInSlot(162);
 			if (output != null && slotStack != null && slotStack.getItem() == output.getItem() && (!output.getHasSubtypes() || output.getItemDamage() == slotStack.getItemDamage())){
-				patternMap = BasicMetaItem.getKeySizeMap(81, 162, itemStacks);
+				patternMap = MetaItem.getKeySizeMap(81, 162, itemStacks);
 			} else if (slotStack != null && slotStack.stackSize > 0) {
 				patternMap = null;
 			} else if (output == null && slotStack != null && slotStack.stackSize == 0) {
@@ -66,7 +66,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 			} else if (output != null) {
 				output.stackSize = 0;
 				itemStacks[162] = output;
-				patternMap = BasicMetaItem.getKeySizeMap(81, 162, itemStacks);
+				patternMap = MetaItem.getKeySizeMap(81, 162, itemStacks);
 				markDirty();
 			}
 		}
@@ -82,7 +82,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 		if (patternMap == null)
 			return;
 		final ItemStack outputStack = itemStacks[162];
-		if (outputStack == null || outputStack.stackSize == outputStack.getMaxStackSize() || !matches(BasicMetaItem.getSmartKeySizeMap(0, 81, itemStacks), patternMap))
+		if (outputStack == null || outputStack.stackSize == outputStack.getMaxStackSize() || !matches(MetaItem.getSmartKeySizeMap(0, 81, itemStacks), patternMap))
 			return;
 		cleanInput();
 		outputStack.stackSize++;
@@ -105,7 +105,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 		final TIntIntMap patternMap = new TIntIntHashMap(this.patternMap);
 		for (int i = 0; i < 81 && !patternMap.isEmpty(); i++) {
 			final ItemStack itemStack = itemStacks[i];
-			final int key = BasicMetaItem.get(itemStack);
+			final int key = MetaItem.get(itemStack);
 			if (patternMap.containsKey(key)){
 				final int total = patternMap.get(key);
 				final int dif = MathHelper.clamp_int(total, 1, itemStack.stackSize);

@@ -73,6 +73,6 @@ public final class Avaritiaddons
 	@NetworkCheckHandler
 	public boolean matchModVersions(final Map<String, String> remoteVersions, final Side side)
 	{
-		return remoteVersions.containsKey(MOD_ID) && remoteVersions.get(MOD_ID).equals(MOD_VERSION);
+		return side == Side.CLIENT ? remoteVersions.containsKey(MOD_ID) : !remoteVersions.containsKey(MOD_ID) || remoteVersions.get(MOD_ID).equals(MOD_VERSION);
 	}
 }

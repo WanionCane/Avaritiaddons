@@ -11,8 +11,8 @@ package wanion.avaritiaddons.client;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
-import wanion.avaritiaddons.client.animation.ComplexHalfAnimation;
 import wanion.avaritiaddons.common.Reference;
+import wanion.lib.client.animation.ComplexHalfAnimation;
 
 @SideOnly(Side.CLIENT)
 public final class ClientConstants

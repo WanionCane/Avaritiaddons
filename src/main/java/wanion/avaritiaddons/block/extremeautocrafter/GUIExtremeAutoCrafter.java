@@ -49,13 +49,5 @@ public class GuiExtremeAutoCrafter extends GuiContainer
 	{
 		fontRendererObj.drawString(I18n.format("container.ExtremeAutoCrafter"), 7, 7, 0x404040);
 		fontRendererObj.drawString(I18n.format("container.inventory"), 7, 183, 0x404040);
-		final ItemStack outputStack = inventorySlots.getSlot(162).getStack();
-		if (outputStack != null && outputStack.stackSize == 0){
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			zLevel = 200.0F;
-			fontRendererObj.drawStringWithShadow("0", guiLeft + 267, guiTop + 197, 0xFF0000);
-			zLevel = 0.0F;
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-		}
 	}
 }

@@ -25,6 +25,7 @@ import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.ItemRendererInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
+import wanion.lib.WanionLib;
 
 @SideOnly(Side.CLIENT)
 public final class ClientProxy extends CommonProxy
@@ -37,8 +38,7 @@ public final class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockCompressedChest.instance), new ItemRendererCompressedChest());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfinityChest.class, RendererAvaritiaddonsChest.instance);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockInfinityChest.instance), new ItemRendererInfinityChest());
-		FMLCommonHandler.instance().bus().register(ClientTickHandler.instance);
-		ClientTickHandler.instance.registerAnimation(ClientConstants.INFINITY_CHEST_ANIMATION);
+		WanionLib.getClientTickHandler().registerAnimation(ClientConstants.INFINITY_CHEST_ANIMATION);
 	}
 
 	@Override
