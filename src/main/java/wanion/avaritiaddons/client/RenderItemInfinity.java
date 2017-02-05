@@ -73,21 +73,16 @@ public final class RenderItemInfinity extends RenderItem
 		p_77017_1_.draw();
 	}
 
-	private String humanReadableValue(int value)
+	private static String humanReadableValue(final int value)
 	{
-		if (value > 0 && value <= 99)
+		if (value > 0 && value < 1000)
 			return Integer.toString(value);
-		else if (value >= 100 && value < 1000)
-			return Integer.toString(value);
-		else if (value >= 1000 && value < 1000000) {
-			value /= 1000;
-			return Integer.toString(value) + "K";
-		} else if (value >= 1000000 && value <= 1000000000) {
-			value /= 1000000;
-			return Integer.toString(value) + "M";
-		} else if (value >= 1000000000) {
-			value /= 1000000000;
-			return Integer.toString(value) + "B";
-		} else return null;
+		else if (value >= 1000 && value < 1000000)
+			return Integer.toString(value / 1000) + "K";
+		else if (value >= 1000000 && value <= 1000000000)
+			return Integer.toString(value / 1000000) + "M";
+		else if (value >= 1000000000)
+			return Integer.toString(value / 1000000000) + "B";
+		else return null;
 	}
 }

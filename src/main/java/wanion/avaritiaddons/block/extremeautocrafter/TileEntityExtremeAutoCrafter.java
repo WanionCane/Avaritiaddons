@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedInventory
 {
 	private final ItemStack[] itemStacks = new ItemStack[163];
+	private int outputStackSize = 0;
 	private final InventoryCrafting craftingMatrix = new ExtremeCraftingMatrix();
 	private static final int[] slotsForAllSides = new int[82];
 	private boolean recipeChanged = true;
@@ -64,6 +65,7 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 				patternMap = null;
 				markDirty();
 			} else if (output != null) {
+				outputStackSize = output.stackSize;
 				output.stackSize = 0;
 				itemStacks[162] = output;
 				patternMap = MetaItem.getKeySizeMap(81, 162, itemStacks);
@@ -76,16 +78,17 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 				patternMap = null;
 				return;
 			}
+			outputStackSize = output.stackSize;
 			output.stackSize = 0;
 			itemStacks[162] = output;
 		}
 		if (patternMap == null)
 			return;
 		final ItemStack outputStack = itemStacks[162];
-		if (outputStack == null || outputStack.stackSize == outputStack.getMaxStackSize() || !matches(MetaItem.getSmartKeySizeMap(0, 81, itemStacks), patternMap))
+		if (outputStack == null || outputStack.stackSize + outputStackSize > outputStack.getMaxStackSize() || !matches(MetaItem.getSmartKeySizeMap(0, 81, itemStacks), patternMap))
 			return;
 		cleanInput();
-		outputStack.stackSize++;
+		outputStack.stackSize += outputStackSize;
 		markDirty();
 	}
 

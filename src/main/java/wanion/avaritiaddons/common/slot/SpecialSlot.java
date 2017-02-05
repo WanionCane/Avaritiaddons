@@ -36,6 +36,7 @@ public class SpecialSlot extends Slot
 	public boolean canTakeStack(final EntityPlayer entityPlayer)
 	{
 		final ItemStack slotStack = getStack();
-		return slotStack != null && slotStack.stackSize > 0 && (entityPlayer.inventory.getItemStack() == null || ItemStack.areItemStacksEqual(slotStack, entityPlayer.inventory.getItemStack()));
+		final ItemStack playerStack = entityPlayer.inventory.getItemStack();
+		return slotStack != null && slotStack.stackSize > 0 && (playerStack == null || (slotStack.getItem() == playerStack.getItem() && (!playerStack.getHasSubtypes() || playerStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(playerStack, slotStack)));
 	}
 }

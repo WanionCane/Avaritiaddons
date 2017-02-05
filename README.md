@@ -1,2 +1,2 @@
 # Avaritiaddons
-A Mod that tries to expand the Infinity!
+A Mod that tries to expand the meaning of Infinity!

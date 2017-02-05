@@ -34,6 +34,9 @@ public final class ItemRendererInfinityChest implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		RendererAvaritiaddonsChest.instance.renderTileEntityAt(tileEntityInfinityChest, 0, 0, 0, 0);
+		if (type == ItemRenderType.ENTITY)
+			RendererAvaritiaddonsChest.instance.renderTileEntityAt(tileEntityInfinityChest, -0.5F, -0.5F, -0.5F, 0);
+		else
+			RendererAvaritiaddonsChest.instance.renderTileEntityAt(tileEntityInfinityChest, 0, 0, 0, 0);
 	}
 }

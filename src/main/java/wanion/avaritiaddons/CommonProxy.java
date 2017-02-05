@@ -11,7 +11,6 @@ package wanion.avaritiaddons;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import fox.spiteful.avaritia.blocks.LudicrousBlocks;
@@ -45,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static wanion.avaritiaddons.Avaritiaddons.networkWrapper;
+import static fox.spiteful.avaritia.Config.craftingOnly;
 
 public class CommonProxy
 {
@@ -81,16 +81,19 @@ public class CommonProxy
 			ExtremeCraftingManager.getInstance().addExtremeShapedOreRecipe(new ItemStack(BlockCompressedChest.instance), "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", 'C', Blocks.chest);
 		else
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockCompressedChest.instance), "CCC", "CCC", "CCC", 'C', Blocks.chest));
+		if (craftingOnly)
+			return;
 		if (Config.hardInfinityChestRecipe)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockInfinityChest.instance), "INI", "BCB", "IBI", 'I', "ingotInfinity", 'N', "blockCosmicNeutronium", 'B', "blockInfinity", 'C', BlockCompressedChest.instance));
 		else
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockInfinityChest.instance), "TNT", "ICI", "TIT", 'T', new ItemStack(LudicrousItems.resource, 1, 5), 'N', "blockCosmicNeutronium", 'I', "ingotInfinity", 'C', BlockCompressedChest.instance));
-		//if (Config.hardExtremeAutoCrafterRecipe)
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockExtremeAutoCrafter.instance), " S ", "NCN", " N ", 'S', new ItemStack(LudicrousItems.singularity, 1, 3), 'N', "blockCosmicNeutronium", 'C', new ItemStack(LudicrousBlocks.dire_crafting)));
 	}
 
 	public final void postInit()
 	{
+		if (craftingOnly)
+			return;
 		populateRemovalSets();
 		for (final Iterator<Object> catalystRecipeIterator = Grinder.catalyst.getInput().iterator(); catalystRecipeIterator.hasNext(); )
 		{
