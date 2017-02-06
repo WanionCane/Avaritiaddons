@@ -109,10 +109,11 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 		for (int i = 0; i < 81 && !patternMap.isEmpty(); i++) {
 			final ItemStack itemStack = itemStacks[i];
 			final int key = MetaItem.get(itemStack);
-			if (patternMap.containsKey(key)){
+			if (patternMap.containsKey(key)) {
 				final int total = patternMap.get(key);
 				final int dif = MathHelper.clamp_int(total, 1, itemStack.stackSize);
-				itemStack.stackSize -= dif;
+				if (!itemStack.getItem().hasContainerItem(itemStack))
+					itemStack.stackSize -= dif;
 				if (dif - total == 0)
 					patternMap.remove(key);
 				else
