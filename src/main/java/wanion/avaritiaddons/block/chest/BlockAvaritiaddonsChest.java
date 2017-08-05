@@ -60,9 +60,9 @@ public abstract class BlockAvaritiaddonsChest extends BlockContainer
 			final ItemStack droppedStack = new ItemStack(block, 1, 0);
 			droppedStack.setTagCompound(tileEntityAvaritiaddonsChest.writeCustomNBT(new NBTTagCompound()));
 			world.spawnEntityInWorld(new EntityItem(world, x + rand.nextFloat() * 0.8F + 0.1F, y + rand.nextFloat() * 0.8F + 0.1F, z + rand.nextFloat() * 0.8F + 0.1F, droppedStack));
-			world.func_147453_f(x, y, z, block);
 		}
-		world.removeTileEntity(x, y, z);
+		super.breakBlock(world, x, y, z, block, metadata);
+		world.func_147453_f(x, y, z, block);
 	}
 
 	@Override

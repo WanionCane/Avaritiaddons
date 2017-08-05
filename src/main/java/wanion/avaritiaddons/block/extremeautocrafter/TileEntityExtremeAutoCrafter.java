@@ -139,14 +139,17 @@ public class TileEntityExtremeAutoCrafter extends TileEntity implements ISidedIn
 	@Override
 	public ItemStack decrStackSize(final int slot, final int howMuch)
 	{
-		if (itemStacks[slot] == null)
+		final ItemStack slotStack = itemStacks[slot];
+		if (slotStack != null) {
+			final int quantity = MathHelper.clamp_int(MathHelper.clamp_int(howMuch, 1, slotStack.getMaxStackSize()), 1, slotStack.stackSize);
+			final ItemStack newStack = slotStack.copy();
+			newStack.stackSize = quantity;
+			if ((slotStack.stackSize -= quantity) == 0)
+				itemStacks[slot] = null;
+			markDirty();
+			return newStack;
+		} else
 			return null;
-		final ItemStack itemStack = itemStacks[slot].copy();
-		if ((itemStacks[slot].stackSize -= howMuch) == 0)
-			itemStacks[slot] = null;
-		itemStack.stackSize = howMuch;
-		markDirty();
-		return itemStack;
 	}
 
 	@Override
