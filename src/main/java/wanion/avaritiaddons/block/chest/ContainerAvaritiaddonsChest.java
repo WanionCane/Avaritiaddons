@@ -36,7 +36,7 @@ public abstract class ContainerAvaritiaddonsChest extends Container
 	@Override
 	public final boolean canInteractWith(final EntityPlayer entityPlayer)
 	{
-		return true;
+		return tileEntityAvaritiaddonsChest.isUseableByPlayer(entityPlayer);
 	}
 
 	@Override
