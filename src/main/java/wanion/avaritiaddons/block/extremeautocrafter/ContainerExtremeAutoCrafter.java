@@ -20,8 +20,10 @@ import javax.annotation.Nonnull;
 
 public class ContainerExtremeAutoCrafter extends Container
 {
+	private final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter;
 	public ContainerExtremeAutoCrafter(@Nonnull final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter, final InventoryPlayer inventoryPlayer)
 	{
+		this.tileEntityExtremeAutoCrafter = tileEntityExtremeAutoCrafter;
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
 				addSlotToContainer(new Slot(tileEntityExtremeAutoCrafter, y * 9 + x, 8 + (18 * x), 18 + (18 * y)));
@@ -90,6 +92,6 @@ public class ContainerExtremeAutoCrafter extends Container
 	@Override
 	public boolean canInteractWith(final EntityPlayer entityPlayer)
 	{
-		return true;
+		return tileEntityExtremeAutoCrafter.isUseableByPlayer(entityPlayer);
 	}
 }
