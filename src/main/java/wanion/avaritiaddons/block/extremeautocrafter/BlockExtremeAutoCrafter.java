@@ -8,93 +8,106 @@ package wanion.avaritiaddons.block.extremeautocrafter;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import wanion.avaritiaddons.Avaritiaddons;
+import wanion.avaritiaddons.Reference;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockExtremeAutoCrafter extends BlockContainer
+public final class BlockExtremeAutoCrafter extends BlockContainer
 {
-	private final static Random rand = new Random();
-
-	public static final BlockExtremeAutoCrafter instance = new BlockExtremeAutoCrafter();
-	private static IIcon top;
-	private static IIcon sides;
-	private static IIcon bottom;
+	public static final BlockExtremeAutoCrafter INSTANCE = new BlockExtremeAutoCrafter();
 
 	private BlockExtremeAutoCrafter()
 	{
-		super(Material.iron);
-		setBlockName("ExtremeAutoCrafter").setStepSound(Block.soundTypeGlass).setHardness(50.0F).setResistance(2000.0F).setCreativeTab(Avaritiaddons.creativeTabs).setHarvestLevel("pickaxe", 3);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(final IIconRegister iconRegister)
-	{
-		top = iconRegister.registerIcon("avaritiaddons:extremeAutoCrafterTop");
-		sides = iconRegister.registerIcon("avaritiaddons:extremeAutoCrafterSide");
-		bottom = iconRegister.registerIcon("avaritiaddons:extremeAutoCrafterBottom");
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(final int side, final int metadata)
-	{
-		return side == 0 ? bottom : side == 1 ? top : sides;
-	}
-
-	public boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer entityPlayer, final int side, final float hitX, final float hitY, final float hitZ)
-	{
-		if (!world.isRemote)
-			FMLNetworkHandler.openGui(entityPlayer, Avaritiaddons.instance, Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER, world, x, y, z);
-		return true;
+		super(Material.WOOD);
+		setHardness(2.5F).setCreativeTab(Avaritiaddons.creativeTabs);
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "extreme_auto_crafter"));
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(final World world, final int metadata)
+	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata)
 	{
 		return new TileEntityExtremeAutoCrafter();
 	}
 
+	@Nonnull
 	@Override
-	public final void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metadata)
+	public Item getItemDropped(final IBlockState blockState, final Random random, final int fortune)
 	{
-		final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter = (TileEntityExtremeAutoCrafter) world.getTileEntity(x, y, z);
-		if (tileEntityExtremeAutoCrafter != null) {
-			final ItemStack droppedStack = new ItemStack(block, 1, 0);
-			droppedStack.setTagCompound(tileEntityExtremeAutoCrafter.writeCustomNBT(new NBTTagCompound()));
-			world.spawnEntityInWorld(new EntityItem(world, x + rand.nextFloat() * 0.8F + 0.1F, y + rand.nextFloat() * 0.8F + 0.1F, z + rand.nextFloat() * 0.8F + 0.1F, droppedStack));
+		return Items.AIR;
+	}
+
+	@Override
+	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState state, final EntityPlayer entityPlayer, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+	{
+		if (world != null) {
+			final TileEntity tileEntity = world.getTileEntity(blockPos);
+			if (tileEntity instanceof TileEntityExtremeAutoCrafter)
+				FMLNetworkHandler.openGui(entityPlayer, Avaritiaddons.instance, Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			else
+				return false;
 		}
-		super.breakBlock(world, x, y, z, block, metadata);
-		world.func_147453_f(x, y, z, block);
+		return true;
 	}
 
 	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
+	public void onBlockPlacedBy(final World world, final BlockPos blockPos, final IBlockState blockState, final EntityLivingBase entityLivingBase, final ItemStack itemStack)
 	{
-		return null;
+		if (world == null)
+			return;
+		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		if (tileEntity instanceof TileEntityExtremeAutoCrafter && itemStack.hasTagCompound()) {
+			((TileEntityExtremeAutoCrafter) tileEntity).readCustomNBT(itemStack.getTagCompound());
+			((TileEntityExtremeAutoCrafter) tileEntity).recipeShapeChanged();
+		}
+	}
+
+	@Nonnull
+	@Override
+	public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity)
+	{
+		return SoundType.WOOD;
+	}
+
+	@Nonnull
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state)
+	{
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public final void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase entity, final ItemStack itemStack)
+	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState)
 	{
-		final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter = (TileEntityExtremeAutoCrafter) world.getTileEntity(x, y, z);
-		if (tileEntityExtremeAutoCrafter != null)
-			if (itemStack.stackTagCompound != null)
-				tileEntityExtremeAutoCrafter.readCustomNBT(itemStack.stackTagCompound);
+		if (world == null)
+			return;
+		final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter = (TileEntityExtremeAutoCrafter) world.getTileEntity(blockPos);
+		if (tileEntityExtremeAutoCrafter != null) {
+			final ItemStack droppedStack = new ItemStack(this, 1, getMetaFromState(blockState));
+			final NBTTagCompound nbtTagCompound = tileEntityExtremeAutoCrafter.writeCustomNBT(new NBTTagCompound());
+			if (nbtTagCompound.getTagList("Contents", 10).tagCount() > 0)
+				droppedStack.setTagCompound(nbtTagCompound);
+			world.spawnEntity(new EntityItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
+		}
+		super.breakBlock(world, blockPos, blockState);
 	}
 }

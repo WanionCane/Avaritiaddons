@@ -8,34 +8,32 @@ package wanion.avaritiaddons;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import joptsimple.internal.Strings;
 import net.minecraftforge.common.config.Configuration;
-import wanion.avaritiaddons.common.Reference;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
+
+import static java.io.File.separatorChar;
 
 public final class Config
 {
-	public static final boolean hardCompressedChestRecipe;
-	public static final boolean hardInfinityChestRecipe;
-	//public static final boolean hardExtremeAutoCrafterRecipe;
+	public static final Config INSTANCE = new Config();
 
-	public static final List<String> thingsToRemoveFromInfinityCatalystRecipe;
+	public final boolean createAutoExtremeTableRecipe;
+	public final int powerMultiplier;
+	public final int capacityMultiplier;
 
-	static {
-		final Configuration config = new Configuration(new File("." + Reference.SLASH + "config" + Reference.SLASH + Reference.MOD_NAME + ".cfg"));
-		hardCompressedChestRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardCompressedChestRecipe", false).getBoolean();
-		hardInfinityChestRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardInfinityChestRecipe", false).getBoolean();
-		//hardExtremeAutoCrafterRecipe = config.get(Configuration.CATEGORY_GENERAL, "hardExtremeAutoCrafterRecipe", false).getBoolean();
+	private Config()
+	{
+		final Configuration config = new Configuration(new File("." + separatorChar + "config" + separatorChar + Reference.MOD_ID.replace(" ", Strings.EMPTY) + ".cfg"), Reference.MOD_VERSION);
 
-		final String infinityCatalyst = "infinityCatalystRecipeTweaks";
-		thingsToRemoveFromInfinityCatalystRecipe = Arrays.asList(config.get(infinityCatalyst, "thingsToRemove", new String[]{}).getStringList());
-		config.setCategoryComment(infinityCatalyst, "Can be used the item name, or the OreDictionary name.\nFormat:\n\nItems : minecraft:wood#1 = Spruce Wood\nOreDictionary : stoneBlock");
+		createAutoExtremeTableRecipe = config.getBoolean("createAutoExtremeTableRecipe", Configuration.CATEGORY_GENERAL, true, "should create a recipe for the Auto Extreme Crafting Table?");
+		powerMultiplier = config.getInt("powerMultiplier", Configuration.CATEGORY_GENERAL, 10, 1, Short.MAX_VALUE, "Formula: powerConsumption = craftingSlotAmount * powerMultiplier");
+		capacityMultiplier = config.getInt("capacityMultiplier", Configuration.CATEGORY_GENERAL, 100, 1, Short.MAX_VALUE, "Formula: capacity = powerConsumption * capacityMultiplier");
+		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, Arrays.asList("createAutoExtremeTableRecipe", "powerMultiplier", "capacityMultiplier"));
 
 		if (config.hasChanged())
 			config.save();
 	}
-
-	private Config() {}
 }

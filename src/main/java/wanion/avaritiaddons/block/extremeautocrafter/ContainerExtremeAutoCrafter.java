@@ -8,90 +8,198 @@ package wanion.avaritiaddons.block.extremeautocrafter;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import morph.avaritia.recipe.AvaritiaRecipeManager;
+import morph.avaritia.recipe.extreme.ExtremeShapedRecipe;
+import morph.avaritia.recipe.extreme.IExtremeRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import wanion.avaritiaddons.common.slot.FakeSlot;
-import wanion.avaritiaddons.common.slot.SpecialSlot;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
+import wanion.lib.common.IGhostAcceptorContainer;
+import wanion.lib.common.IResourceShapedContainer;
+import wanion.lib.common.control.ControlContainer;
+import wanion.lib.common.control.redstone.IRedstoneControlProvider;
+import wanion.lib.common.control.redstone.RedstoneControl;
+import wanion.lib.inventory.slot.DeadSlot;
+import wanion.lib.inventory.slot.ShapeSlot;
+import wanion.lib.inventory.slot.SpecialSlot;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ContainerExtremeAutoCrafter extends Container
+public final class ContainerExtremeAutoCrafter extends ControlContainer implements IRedstoneControlProvider, IResourceShapedContainer, IGhostAcceptorContainer
 {
 	private final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter;
+	private final int playerInventoryEnds, playerInventoryStarts, inventoryFull, shapeEnds, result;
+
 	public ContainerExtremeAutoCrafter(@Nonnull final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter, final InventoryPlayer inventoryPlayer)
 	{
+		super(tileEntityExtremeAutoCrafter);
 		this.tileEntityExtremeAutoCrafter = tileEntityExtremeAutoCrafter;
+		final List<Slot> slotList = new ArrayList<>();
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
-				addSlotToContainer(new Slot(tileEntityExtremeAutoCrafter, y * 9 + x, 8 + (18 * x), 18 + (18 * y)));
+				slotList.add((new Slot(tileEntityExtremeAutoCrafter, y * 9 + x, 8 + (18 * x), 18 + (18 * y))));
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
-				addSlotToContainer(new FakeSlot(tileEntityExtremeAutoCrafter, 81 + y * 9 + x, 184 + (18 * x), 18 + (18 * y)));
-		addSlotToContainer(new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 256, 188));
+				slotList.add((new ShapeSlot(tileEntityExtremeAutoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
+		slotList.add((new DeadSlot(tileEntityExtremeAutoCrafter, 163, 346, 90)));
+		slotList.add((new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 346, 118)));
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 9; x++)
-				addSlotToContainer(new Slot(inventoryPlayer, 9 + y * 9 + x, 8 + (18 * x), 194 + (18 * y)));
+				slotList.add((new Slot(inventoryPlayer, 9 + y * 9 + x, 107 + (18 * x), 194 + (18 * y))));
 		for (int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8 + (18 * i), 252));
+			slotList.add((new Slot(inventoryPlayer, i, 107 + (18 * i), 252)));
+		slotList.forEach(this::addSlotToContainer);
+		final int inventorySize = inventorySlots.size();
+		playerInventoryEnds = inventorySize;
+		playerInventoryStarts = inventorySize - 36;
+		inventoryFull = (playerInventoryStarts - 2) / 2;
+		shapeEnds = inventoryFull * 2;
+		result = shapeEnds + 1;
 	}
 
+	@Nonnull
 	@Override
 	public final ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot)
 	{
 		ItemStack itemstack = null;
-		final Slot actualSlot = (Slot) this.inventorySlots.get(slot);
+		final Slot actualSlot = this.inventorySlots.get(slot);
 		if (actualSlot != null && actualSlot.getHasStack()) {
 			ItemStack itemstack1 = actualSlot.getStack();
 			itemstack = itemstack1.copy();
-			if (slot > 162) {
-				if (!mergeItemStack(itemstack1, 0, 81, false))
-					return null;
-			} else if (slot < 81) {
-				if (!mergeItemStack(itemstack1, 163, 199, true))
-					return null;
-			} else if (slot == 162)
-				if (!mergeItemStack(itemstack1, 163, 199, true))
-					return null;
-			if (itemstack1.stackSize == 0)
-				actualSlot.putStack(null);
+			if (slot >= playerInventoryStarts) {
+				if (!mergeItemStack(itemstack1, 0, inventoryFull, false))
+					return ItemStack.EMPTY;
+			} else if (slot <= inventoryFull || slot == result) {
+				if (!mergeItemStack(itemstack1, playerInventoryStarts, playerInventoryEnds, true))
+					return ItemStack.EMPTY;
+			}
+			if (itemstack1.getCount() == 0)
+				actualSlot.putStack(ItemStack.EMPTY);
 			actualSlot.onSlotChanged();
 		}
-		return itemstack;
+		return itemstack != null ? itemstack : ItemStack.EMPTY;
 	}
 
-	public boolean canDragIntoSlot(final Slot slot)
-	{
-		return slot.slotNumber < 81 || slot.slotNumber > 162;
-	}
-
+	@Nonnull
 	@Override
-	public ItemStack slotClick(final int slot, final int mouseButton, final int modifier, final EntityPlayer entityPlayer)
+	public final ItemStack slotClick(final int slot, final int mouseButton, final ClickType clickType, final EntityPlayer entityPlayer)
 	{
-		if (slot > 80 && slot < 162) {
-			if (modifier == 2)
-				return null;
-			final Slot actualSlot = (Slot) inventorySlots.get(slot);
-			final boolean slotHasStack = actualSlot.getHasStack();
-			final ItemStack playerStack = entityPlayer.inventory.getItemStack();
-			if (slotHasStack && playerStack == null) {
-				actualSlot.putStack(null);
-				return null;
-			} else if (playerStack != null) {
-				final ItemStack slotStack = playerStack.copy();
-				slotStack.stackSize = 0;
-				actualSlot.putStack(slotStack);
-				return slotStack;
+		if (slot >= inventoryFull && slot < shapeEnds) {
+			final Slot actualSlot = inventorySlots.get(slot);
+			if (clickType == ClickType.QUICK_MOVE) {
+				actualSlot.putStack(ItemStack.EMPTY);
+			} else if (clickType == ClickType.PICKUP) {
+				final ItemStack playerStack = entityPlayer.inventory.getItemStack();
+				final boolean slotHasStack = actualSlot.getHasStack();
+				if (!playerStack.isEmpty() && !slotHasStack) {
+					final ItemStack newSlotStack = playerStack.copy();
+					newSlotStack.setCount(1);
+					actualSlot.putStack(newSlotStack);
+				} else if (playerStack.isEmpty() && slotHasStack || !playerStack.isEmpty() && playerStack.isItemEqual(actualSlot.getStack()))
+					actualSlot.putStack(ItemStack.EMPTY);
 			}
-			return null;
-		} else return super.slotClick(slot, mouseButton, modifier, entityPlayer);
+			tileEntityExtremeAutoCrafter.recipeShapeChanged();
+			return ItemStack.EMPTY;
+		} else if (slot == shapeEnds) {
+			if (inventorySlots.get(slot).getHasStack()) {
+				clearShape(tileEntityExtremeAutoCrafter.half, tileEntityExtremeAutoCrafter.full);
+				tileEntityExtremeAutoCrafter.recipeShapeChanged();
+			}
+			return ItemStack.EMPTY;
+		} else return super.slotClick(slot, mouseButton, clickType, entityPlayer);
 	}
 
 	@Override
-	public boolean canInteractWith(final EntityPlayer entityPlayer)
+	public boolean canInteractWith(@Nonnull final EntityPlayer entityPlayer)
 	{
-		return tileEntityExtremeAutoCrafter.isUseableByPlayer(entityPlayer);
+		return tileEntityExtremeAutoCrafter.isUsableByPlayer(entityPlayer);
+	}
+
+	@Override
+	public final void defineShape(@Nonnull final ResourceLocation resourceLocation)
+	{
+		IExtremeRecipe extremeRecipe = AvaritiaRecipeManager.EXTREME_RECIPES.get(resourceLocation);
+		if (extremeRecipe == null)
+			return;
+		final int slotCount = inventorySlots.size();
+		final int startsIn = ((slotCount - 36) / 2) - 1, endsIn = slotCount - 38;
+		final int root = (int) Math.sqrt(endsIn - startsIn + 1);
+		clearShape(startsIn, endsIn);
+		final List<Ingredient> inputs = extremeRecipe.getIngredients();
+		if (extremeRecipe.isShapedRecipe()) {
+			int i = 0;
+			for (int y = 0; y < root; y++) {
+				for (int x = 0; x < root; x++) {
+					if (i >= inputs.size() || x >= extremeRecipe.getWidth() || y >= extremeRecipe.getHeight())
+						continue;
+					final Slot slot = inventorySlots.get(startsIn + (x + (root * y)));
+					final ItemStack stackInput = getStackFromIngredient(inputs.get(i++));
+					if (stackInput != null)
+						slot.putStack(stackInput);
+				}
+			}
+		} else {
+			for (int i = 0; i < inputs.size() && i < root * root; i++) {
+				final Slot slot = inventorySlots.get(startsIn + i);
+				final ItemStack stackInput = getStackFromIngredient(inputs.get(i));
+				if (stackInput != null)
+					slot.putStack(stackInput);
+			}
+		}
+		tileEntityExtremeAutoCrafter.recipeShapeChanged();
+		detectAndSendChanges();
+	}
+
+	@Override
+	public void clearShape()
+	{
+		final int slotCount = inventorySlots.size();
+		final int startsIn = ((slotCount - 36) / 2) - 1, endsIn = slotCount - 38;
+		clearShape(startsIn, endsIn);
+	}
+
+	private void clearShape(final int startsIn, final int endsIn)
+	{
+		for (int i = startsIn; i < endsIn; i++)
+			inventorySlots.get(i).putStack(ItemStack.EMPTY);
+	}
+
+	@Nonnull
+	public final TileEntityExtremeAutoCrafter getTile()
+	{
+		return tileEntityExtremeAutoCrafter;
+	}
+
+	@Nonnull
+	@Override
+	public RedstoneControl getRedstoneControl()
+	{
+		return tileEntityExtremeAutoCrafter.redstoneControl;
+	}
+
+	@Override
+	public void acceptGhostStack(final int slot, @Nonnull ItemStack itemStack)
+	{
+		if (slot >= inventoryFull && slot < shapeEnds) {
+			final Slot actualSlot = inventorySlots.get(slot);
+			if (itemStack.isItemEqual(actualSlot.getStack()))
+				actualSlot.putStack(ItemStack.EMPTY);
+			else
+				actualSlot.putStack(itemStack);
+			tileEntityExtremeAutoCrafter.recipeShapeChanged();
+			detectAndSendChanges();
+		}
+	}
+
+	private static ItemStack getStackFromIngredient(final Ingredient ingredient)
+	{
+		final ItemStack[] stacks = ingredient.getMatchingStacks();
+		return stacks.length > 0 ? stacks[0] : ItemStack.EMPTY;
 	}
 }

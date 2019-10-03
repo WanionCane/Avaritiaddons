@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "top": "avaritiaddons:blocks/extreme_auto_crafter_top",
+      "side": "avaritiaddons:blocks/extreme_auto_crafter_side",
+      "bottom": "avaritiaddons:blocks/extreme_auto_crafter_bottom"
+    },
+    "model": "avaritiaddons:block_extreme_auto_crafter",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

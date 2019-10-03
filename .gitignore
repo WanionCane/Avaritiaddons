@@ -2,9 +2,17 @@
 build/
 out/
 run/
-server/
 eclipse/
 src/META-INF/
 /*.iws
 /*.ipr
 /*.iml
+
+# Eclipse IDE files
+.classpath
+.project
+.settings
+bin/
+
+# Minecraft files
+*.launch

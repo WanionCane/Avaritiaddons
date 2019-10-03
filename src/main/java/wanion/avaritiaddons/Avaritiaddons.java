@@ -8,48 +8,48 @@ package wanion.avaritiaddons;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import wanion.avaritiaddons.block.chest.infinity.BlockInfinityChest;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import wanion.avaritiaddons.block.extremeautocrafter.BlockExtremeAutoCrafter;
+import wanion.avaritiaddons.proxy.CommonProxy;
 
 import java.util.Map;
 
-import static wanion.avaritiaddons.common.Reference.*;
+import static wanion.avaritiaddons.Reference.*;
 
+@SuppressWarnings("unused")
 @Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = DEPENDENCIES)
-public final class Avaritiaddons
+public class Avaritiaddons
 {
-	@Mod.Instance
-	public static Avaritiaddons instance;
-
-	public static SimpleNetworkWrapper networkWrapper;
-
-	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
-	public static CommonProxy proxy;
-
-	public static final int GUI_ID_COMPRESSED_CHEST = 0,
-			GUI_ID_INFINITY_CHEST = 1,
-			GUI_ID_EXTREME_AUTO_CRAFTER = 2;
+	public static final int
+			GUI_ID_EXTREME_AUTO_CRAFTER = 0,
+			GUI_ID_COMPRESSED_CHEST = 1,
+			GUI_ID_INFINITY_CHEST = 2;
 
 	public static final CreativeTabs creativeTabs = new CreativeTabs(MOD_ID)
 	{
-		@SideOnly(Side.CLIENT)
 		@Override
-		public Item getTabIconItem()
+		@SideOnly(Side.CLIENT)
+		public ItemStack getTabIconItem()
 		{
-			return Item.getItemFromBlock(BlockInfinityChest.instance);
+			return new ItemStack(BlockExtremeAutoCrafter.INSTANCE);
 		}
 	};
+
+	@Mod.Instance
+	public static Avaritiaddons instance;
+	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
+	public static CommonProxy proxy;
+	public static SimpleNetworkWrapper networkWrapper;
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event)
@@ -62,12 +62,6 @@ public final class Avaritiaddons
 	public void init(final FMLInitializationEvent event)
 	{
 		proxy.init();
-	}
-
-	@Mod.EventHandler
-	public void postInit(final FMLPostInitializationEvent event)
-	{
-		proxy.postInit();
 	}
 
 	@NetworkCheckHandler
