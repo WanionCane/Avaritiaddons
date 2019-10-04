@@ -24,7 +24,7 @@ public final class AvaritiaddonsJEIPlugin implements IModPlugin
 	{
 		// Extreme Auto Crafter
 		modRegistry.addRecipeCatalyst(new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1, 0), AvaritiaJEIPlugin.EXTREME_CRAFTING);
-		modRegistry.addRecipeClickArea(GuiExtremeAutoCrafter.class, 339, 95, 3, 6, AvaritiaJEIPlugin.EXTREME_CRAFTING);
+		modRegistry.addRecipeClickArea(GuiExtremeAutoCrafter.class, 251, 184, 7, 3, AvaritiaJEIPlugin.EXTREME_CRAFTING);
 		modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AutoExtremeCrafterTransferHandler(), AvaritiaJEIPlugin.EXTREME_CRAFTING);
 		modRegistry.addGhostIngredientHandler(GuiExtremeAutoCrafter.class, new AutoExtremeCrafterGhostHandler());
 	}

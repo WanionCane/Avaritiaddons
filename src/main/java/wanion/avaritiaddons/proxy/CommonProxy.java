@@ -12,6 +12,7 @@ import morph.avaritia.init.ModBlocks;
 import morph.avaritia.init.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -51,8 +52,9 @@ public class CommonProxy implements IGuiHandler
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterJeiTransferMessage.Handler.class, ExtremeAutoCrafterJeiTransferMessage.class, d++, Side.CLIENT);
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterGhostTransferMessage.Handler.class, ExtremeAutoCrafterGhostTransferMessage.class, d++, Side.SERVER);
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterGhostTransferMessage.Handler.class, ExtremeAutoCrafterGhostTransferMessage.class, d, Side.CLIENT);
-		if (Config.INSTANCE.createAutoExtremeTableRecipe)
-			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"), null, new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1), " S ", "NCN", " N ", 'S', Ingredient.fromStacks(ModItems.redstoneSingularity), 'N', "blockCosmicNeutronium", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.extremeCraftingTable)));
+		final Config config = Config.INSTANCE;
+		if (config.createAutoExtremeTableRecipe)
+			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"), null, new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1), " S ", "NCN", " N ", 'S', config.shouldUseRedstoneSingularity ? Ingredient.fromStacks(ModItems.redstoneSingularity) : "blockRedstone", 'N', config.shouldUseNeutroniumIngot ? "blockCosmicNeutronium" : "nuggetCosmicNeutronium", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.extremeCraftingTable)));
 	}
 
 	public void init() {}

@@ -47,13 +47,13 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
 				slotList.add((new ShapeSlot(tileEntityExtremeAutoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
-		slotList.add((new DeadSlot(tileEntityExtremeAutoCrafter, 163, 346, 90)));
-		slotList.add((new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 346, 118)));
+		slotList.add((new DeadSlot(tileEntityExtremeAutoCrafter, 163, 247, 194)));
+		slotList.add((new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 247, 222)));
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 9; x++)
-				slotList.add((new Slot(inventoryPlayer, 9 + y * 9 + x, 107 + (18 * x), 194 + (18 * y))));
+				slotList.add((new Slot(inventoryPlayer, 9 + y * 9 + x, 43 + (18 * x), 194 + (18 * y))));
 		for (int i = 0; i < 9; i++)
-			slotList.add((new Slot(inventoryPlayer, i, 107 + (18 * i), 252)));
+			slotList.add((new Slot(inventoryPlayer, i, 43 + (18 * i), 252)));
 		slotList.forEach(this::addSlotToContainer);
 		final int inventorySize = inventorySlots.size();
 		playerInventoryEnds = inventorySize;

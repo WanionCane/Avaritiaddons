@@ -48,7 +48,7 @@ public final class GuiExtremeAutoCrafter extends GuiContainer
 		final Slot slot = inventorySlots.getSlot(tileEntityExtremeAutoCrafter.full);
 		x = slot.xPos;
 		y = slot.yPos;
-		xSize = 374;
+		xSize = 343;
 		ySize = 276;
 	}
 

@@ -38,8 +38,12 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 
 	private BlockExtremeAutoCrafter()
 	{
-		super(Material.WOOD);
-		setHardness(2.5F).setCreativeTab(Avaritiaddons.creativeTabs);
+		super(Material.IRON);
+		setHardness(50F);
+		setResistance(2000F);
+		setHarvestLevel("pickaxe", 3);
+		setSoundType(SoundType.GLASS);
+		setCreativeTab(Avaritiaddons.creativeTabs);
 		setRegistryName(new ResourceLocation(Reference.MOD_ID, "extreme_auto_crafter"));
 	}
 
@@ -79,13 +83,6 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 			((TileEntityExtremeAutoCrafter) tileEntity).readCustomNBT(itemStack.getTagCompound());
 			((TileEntityExtremeAutoCrafter) tileEntity).recipeShapeChanged();
 		}
-	}
-
-	@Nonnull
-	@Override
-	public SoundType getSoundType(IBlockState state, World world, BlockPos pos, @Nullable Entity entity)
-	{
-		return SoundType.WOOD;
 	}
 
 	@Nonnull
