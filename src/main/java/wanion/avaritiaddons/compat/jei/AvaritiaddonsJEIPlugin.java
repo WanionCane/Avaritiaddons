@@ -19,13 +19,13 @@ import wanion.avaritiaddons.block.extremeautocrafter.ItemBlockExtremeAutoCrafter
 @JEIPlugin
 public final class AvaritiaddonsJEIPlugin implements IModPlugin
 {
-	@Override
-	public void register(final IModRegistry modRegistry)
-	{
-		// Extreme Auto Crafter
-		modRegistry.addRecipeCatalyst(new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1, 0), AvaritiaJEIPlugin.EXTREME_CRAFTING);
-		modRegistry.addRecipeClickArea(GuiExtremeAutoCrafter.class, 251, 184, 7, 3, AvaritiaJEIPlugin.EXTREME_CRAFTING);
-		modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AutoExtremeCrafterTransferHandler(), AvaritiaJEIPlugin.EXTREME_CRAFTING);
-		modRegistry.addGhostIngredientHandler(GuiExtremeAutoCrafter.class, new AutoExtremeCrafterGhostHandler());
-	}
+    @Override
+    public void register(final IModRegistry modRegistry)
+    {
+        // Extreme Auto Crafter
+        modRegistry.addRecipeCatalyst(new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1, 0), AvaritiaJEIPlugin.EXTREME_CRAFTING);
+        modRegistry.addRecipeClickArea(GuiExtremeAutoCrafter.class, 251, 184, 7, 3, AvaritiaJEIPlugin.EXTREME_CRAFTING);
+        modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new AutoExtremeCrafterTransferHandler(), AvaritiaJEIPlugin.EXTREME_CRAFTING);
+        modRegistry.addGhostIngredientHandler(GuiExtremeAutoCrafter.class, new AutoExtremeCrafterGhostHandler());
+    }
 }

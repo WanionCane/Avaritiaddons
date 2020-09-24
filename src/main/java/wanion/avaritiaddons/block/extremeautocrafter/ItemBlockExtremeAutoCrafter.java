@@ -28,7 +28,7 @@ public class ItemBlockExtremeAutoCrafter extends ItemBlock
 
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(final ItemStack itemStack)
+	public String getUnlocalizedName(@Nonnull final ItemStack itemStack)
 	{
 		return "container.extreme_auto_crafter";
 	}

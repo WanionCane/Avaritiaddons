@@ -19,8 +19,8 @@ import morph.avaritia.recipe.extreme.IExtremeRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import wanion.avaritiaddons.Avaritiaddons;
-import wanion.avaritiaddons.block.extremeautocrafter.ContainerExtremeAutoCrafter;
 import wanion.avaritiaddons.network.ExtremeAutoCrafterJeiTransferMessage;
+import wanion.avaritiaddons.block.extremeautocrafter.ContainerExtremeAutoCrafter;
 import wanion.lib.common.Util;
 
 import javax.annotation.Nonnull;

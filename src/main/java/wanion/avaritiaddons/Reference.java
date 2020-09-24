@@ -14,8 +14,8 @@ public class Reference
 {
 	public static final String MOD_ID = "avaritiaddons";
 	public static final String MOD_NAME = "Avaritiaddons";
-	public static final String MOD_VERSION = "1.12.2-1.1";
-	public static final String DEPENDENCIES = "required-after:avaritia;required-after:wanionlib@[1.12.2-2.3,)";
+	public static final String MOD_VERSION = "1.12.2-1.2";
+	public static final String DEPENDENCIES = "required-after:avaritia;required-after:wanionlib@[1.12.2-2.5,)";
 	public static final String CLIENT_PROXY = "wanion.avaritiaddons.proxy.ClientProxy";
 	public static final String SERVER_PROXY = "wanion.avaritiaddons.proxy.CommonProxy";
 	public static final Random RANDOM = new Random();

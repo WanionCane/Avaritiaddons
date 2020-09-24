@@ -9,7 +9,6 @@ package wanion.avaritiaddons.block.extremeautocrafter;
  */
 
 import morph.avaritia.recipe.AvaritiaRecipeManager;
-import morph.avaritia.recipe.extreme.ExtremeShapedRecipe;
 import morph.avaritia.recipe.extreme.IExtremeRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -20,9 +19,8 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import wanion.lib.common.IGhostAcceptorContainer;
 import wanion.lib.common.IResourceShapedContainer;
-import wanion.lib.common.control.ControlContainer;
-import wanion.lib.common.control.redstone.IRedstoneControlProvider;
-import wanion.lib.common.control.redstone.RedstoneControl;
+import wanion.lib.common.Util;
+import wanion.lib.common.WContainer;
 import wanion.lib.inventory.slot.DeadSlot;
 import wanion.lib.inventory.slot.ShapeSlot;
 import wanion.lib.inventory.slot.SpecialSlot;
@@ -31,7 +29,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ContainerExtremeAutoCrafter extends ControlContainer implements IRedstoneControlProvider, IResourceShapedContainer, IGhostAcceptorContainer
+public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtremeAutoCrafter> implements IResourceShapedContainer, IGhostAcceptorContainer
 {
 	private final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter;
 	private final int playerInventoryEnds, playerInventoryStarts, inventoryFull, shapeEnds, result;
@@ -65,7 +63,7 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 
 	@Nonnull
 	@Override
-	public final ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot)
+	public final ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
 	{
 		ItemStack itemstack = null;
 		final Slot actualSlot = this.inventorySlots.get(slot);
@@ -88,7 +86,7 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 
 	@Nonnull
 	@Override
-	public final ItemStack slotClick(final int slot, final int mouseButton, final ClickType clickType, final EntityPlayer entityPlayer)
+	public final ItemStack slotClick(final int slot, final int mouseButton, @Nonnull final ClickType clickType, @Nonnull final EntityPlayer entityPlayer)
 	{
 		if (slot >= inventoryFull && slot < shapeEnds) {
 			final Slot actualSlot = inventorySlots.get(slot);
@@ -116,12 +114,6 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull final EntityPlayer entityPlayer)
-	{
-		return tileEntityExtremeAutoCrafter.isUsableByPlayer(entityPlayer);
-	}
-
-	@Override
 	public final void defineShape(@Nonnull final ResourceLocation resourceLocation)
 	{
 		IExtremeRecipe extremeRecipe = AvaritiaRecipeManager.EXTREME_RECIPES.get(resourceLocation);
@@ -139,7 +131,7 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 					if (i >= inputs.size() || x >= extremeRecipe.getWidth() || y >= extremeRecipe.getHeight())
 						continue;
 					final Slot slot = inventorySlots.get(startsIn + (x + (root * y)));
-					final ItemStack stackInput = getStackFromIngredient(inputs.get(i++));
+					final ItemStack stackInput = Util.getStackFromIngredient(inputs.get(i++));
 					if (stackInput != null)
 						slot.putStack(stackInput);
 				}
@@ -147,7 +139,7 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 		} else {
 			for (int i = 0; i < inputs.size() && i < root * root; i++) {
 				final Slot slot = inventorySlots.get(startsIn + i);
-				final ItemStack stackInput = getStackFromIngredient(inputs.get(i));
+				final ItemStack stackInput = Util.getStackFromIngredient(inputs.get(i));
 				if (stackInput != null)
 					slot.putStack(stackInput);
 			}
@@ -170,19 +162,6 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 			inventorySlots.get(i).putStack(ItemStack.EMPTY);
 	}
 
-	@Nonnull
-	public final TileEntityExtremeAutoCrafter getTile()
-	{
-		return tileEntityExtremeAutoCrafter;
-	}
-
-	@Nonnull
-	@Override
-	public RedstoneControl getRedstoneControl()
-	{
-		return tileEntityExtremeAutoCrafter.redstoneControl;
-	}
-
 	@Override
 	public void acceptGhostStack(final int slot, @Nonnull ItemStack itemStack)
 	{
@@ -195,11 +174,5 @@ public final class ContainerExtremeAutoCrafter extends ControlContainer implemen
 			tileEntityExtremeAutoCrafter.recipeShapeChanged();
 			detectAndSendChanges();
 		}
-	}
-
-	private static ItemStack getStackFromIngredient(final Ingredient ingredient)
-	{
-		final ItemStack[] stacks = ingredient.getMatchingStacks();
-		return stacks.length > 0 ? stacks[0] : ItemStack.EMPTY;
 	}
 }
