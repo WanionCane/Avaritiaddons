@@ -16,7 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import wanion.lib.client.gui.EnergyElement;
 import wanion.lib.client.gui.WGuiContainer;
+import wanion.lib.common.control.energy.EnergyControl;
 import wanion.lib.common.control.redstone.RedstoneControl;
 import wanion.lib.common.control.redstone.RedstoneControlWButton;
 
@@ -40,6 +42,7 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 		xSize = 343;
 		ySize = 276;
 		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 25));
+		addElement(new EnergyElement(getControl(EnergyControl.class),this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 83));
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 		final FontRenderer font = stack.getItem().getFontRenderer(stack);
 		GuiUtils.preItemToolTip(stack);
 		final List<String> toolTip = this.getItemToolTip(stack);
-		toolTip.addAll(Arrays.asList("", TextFormatting.GOLD + I18n.format("wanionlib.recipe.clear")));
+		toolTip.addAll(Arrays.asList("", TextFormatting.GOLD + I18n.format("avaritiaddons.clear.shape")));
 		drawHoveringText(toolTip, x, y, (font == null ? fontRenderer : font));
 		GuiUtils.postItemToolTip();
 	}
