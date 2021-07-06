@@ -12,6 +12,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import wanion.avaritiaddons.block.chest.RendererAvaritiaddonsChest;
 
 @SideOnly(Side.CLIENT)
@@ -38,5 +40,6 @@ public final class ItemRendererCompressedChest implements IItemRenderer
 			RendererAvaritiaddonsChest.instance.renderTileEntityAt(tileEntityCompressedChest, -0.5F, -0.5F, -0.5F, 0);
 		else
 			RendererAvaritiaddonsChest.instance.renderTileEntityAt(tileEntityCompressedChest, 0, 0, 0, 0);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	}
 }
