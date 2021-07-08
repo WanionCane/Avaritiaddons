@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
@@ -11,13 +11,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2.1'
     }
 }
 
 apply plugin: 'forge'
 
-version = "1.4b"
+version = "1.4b.1-GTNH"
 group= "wanion.avaritiaddons" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Avaritiaddons"
 
