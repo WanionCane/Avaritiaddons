@@ -58,8 +58,10 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	{
 		for (int i = 0; i < 243; i++) {
 			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[i];
-			if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack))
-				return i;
+			if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
+				if ((long) slotStack.stackSize + (long) itemStack.stackSize <= (long) Integer.MAX_VALUE)
+					return i;
+			}
 		}
 		return -1;
 	}
