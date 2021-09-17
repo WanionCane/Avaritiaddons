@@ -50,9 +50,11 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 					itemStack.stackSize = 0;
 					changed = true;
 				} else if (slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
-					slotStack.stackSize += itemStack.stackSize;
-					itemStack.stackSize = 0;
-					changed = true;
+					if ((long) slotStack.stackSize + (long) itemStack.stackSize <= (long) Integer.MAX_VALUE) {
+						slotStack.stackSize += itemStack.stackSize;
+						itemStack.stackSize = 0;
+						changed = true;
+					}
 				}
 				++currentSlot;
 			} else {
@@ -107,8 +109,10 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest
 					else
 						actualSlot.onSlotChanged();
 				} else if (slotStack != null && slotStack.getItem() == playerStack.getItem() && (!playerStack.getHasSubtypes() || playerStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(playerStack, slotStack)) {
-					slotStack.stackSize += playerStack.stackSize;
-					entityPlayer.inventory.setItemStack(null);
+					if ((long) slotStack.stackSize + (long) playerStack.stackSize <= (long) Integer.MAX_VALUE) {
+						slotStack.stackSize += playerStack.stackSize;
+						entityPlayer.inventory.setItemStack(null);
+					}
 				}
 			} else if (mouseButton == 1 && playerStack != null) {
 				if (slotStack == null) {
