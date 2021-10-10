@@ -35,8 +35,18 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 			return;
 		}
 		final int perfectSlot = findSlotFor(itemStack);
-		if (slot == 243 && perfectSlot == -1)
+		if ((slot >= 243 && perfectSlot == -1) || itemStack.stackSize < 0)
 			return;
+		if (slot < 243) {
+			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
+			if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
+				itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+				slotStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+				itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+				markDirty();
+				return;
+			}
+		}
 		if (perfectSlot != -1 && perfectSlot != slot) {
 			slot = perfectSlot;
 			if (inventoryAvaritiaddonsChest.contents[slot] != null) {
@@ -44,13 +54,15 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 				itemStack.stackSize = 0;
 			} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
 		} else if (perfectSlot != -1) {
-			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[(slot = perfectSlot)];
-			final int dif = slotStack.stackSize - itemStack.stackSize;
-			slotStack.stackSize -= dif;
-			itemStack.stackSize += dif;
+			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
+			itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+			slotStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+			itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
 			if (slotStack.stackSize <= 0)
 				inventoryAvaritiaddonsChest.contents[slot] = null;
-		} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
+		} else {
+			inventoryAvaritiaddonsChest.contents[slot] = itemStack;
+		}
 		markDirty();
 	}
 
@@ -121,7 +133,16 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	@Override
 	public boolean isItemValidForSlot(final int slot, final ItemStack itemStack)
 	{
-		return slot != 243 || findSlotFor(itemStack) != -1;
+		return slot != 243 || checkSlot(itemStack, slot);
+	}
+
+	private boolean checkSlot(@Nonnull final ItemStack itemStack, int slot)
+	{
+		final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
+		if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
+			return (long) slotStack.stackSize + (long) itemStack.stackSize <= (long) Integer.MAX_VALUE;
+		}
+		return false;
 	}
 
 	@Override
