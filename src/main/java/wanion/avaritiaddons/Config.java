@@ -20,7 +20,7 @@ public final class Config
 {
 	public static final Config INSTANCE = new Config();
 
-	public final boolean createAutoExtremeTableRecipe, shouldUseRedstoneSingularity, shouldUseNeutroniumIngot;
+	public final boolean createAutoExtremeTableRecipe, createCompressedChestRecipe, createInfinityChestRecipe, shouldUseRedstoneSingularity, shouldUseNeutroniumIngot;
 	public final int powerMultiplier;
 	public final int capacityMultiplier;
 
@@ -28,12 +28,14 @@ public final class Config
 	{
 		final Configuration config = new Configuration(new File("." + separatorChar + "config" + separatorChar + Reference.MOD_ID.replace(" ", Strings.EMPTY) + ".cfg"), Reference.MOD_VERSION);
 
-		createAutoExtremeTableRecipe = config.getBoolean("createAutoExtremeTableRecipe", Configuration.CATEGORY_GENERAL, true, "should create a recipe for the Auto Extreme Crafting Table?");
+		createAutoExtremeTableRecipe = config.getBoolean("createAutoExtremeTableRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Auto Extreme Crafting Table?");
+		createCompressedChestRecipe = config.getBoolean("createCompressedChestRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Compressed Chest?");
+		createInfinityChestRecipe = config.getBoolean("createInfinityChestRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Infinity Chest?");
 		shouldUseRedstoneSingularity = config.getBoolean("shouldUseRedstoneSingularity", Configuration.CATEGORY_GENERAL, false, "should the recipe use Redstone Singularity instead of Redstone Block?");
 		shouldUseNeutroniumIngot = config.getBoolean("shouldUseNeutroniumIngot", Configuration.CATEGORY_GENERAL, false, "should the recipe use Neutronium Ingot instead of Neutronium Nugget?");
 		powerMultiplier = config.getInt("powerMultiplier", Configuration.CATEGORY_GENERAL, 10, 1, Short.MAX_VALUE, "Formula: powerConsumption = craftingSlotAmount * powerMultiplier");
 		capacityMultiplier = config.getInt("capacityMultiplier", Configuration.CATEGORY_GENERAL, 100, 1, Short.MAX_VALUE, "Formula: capacity = powerConsumption * capacityMultiplier");
-		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, Arrays.asList("createAutoExtremeTableRecipe", "shouldUseRedstoneSingularity", "shouldUseNeutroniumIngot", "powerMultiplier", "capacityMultiplier"));
+		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, Arrays.asList("createAutoExtremeTableRecipe", "createCompressedChestRecipe", "createInfinityChestRecipe", "shouldUseRedstoneSingularity", "shouldUseNeutroniumIngot", "powerMultiplier", "capacityMultiplier"));
 
 		if (config.hasChanged())
 			config.save();

@@ -63,7 +63,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 
 	@Nonnull
 	@Override
-	public final ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
+	public ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
 	{
 		ItemStack itemstack = null;
 		final Slot actualSlot = this.inventorySlots.get(slot);
@@ -86,7 +86,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 
 	@Nonnull
 	@Override
-	public final ItemStack slotClick(final int slot, final int mouseButton, @Nonnull final ClickType clickType, @Nonnull final EntityPlayer entityPlayer)
+	public  ItemStack slotClick(final int slot, final int mouseButton, @Nonnull final ClickType clickType, @Nonnull final EntityPlayer entityPlayer)
 	{
 		if (slot >= inventoryFull && slot < shapeEnds) {
 			final Slot actualSlot = inventorySlots.get(slot);
@@ -114,7 +114,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 	}
 
 	@Override
-	public final void defineShape(@Nonnull final ResourceLocation resourceLocation)
+	public void defineShape(@Nonnull final ResourceLocation resourceLocation)
 	{
 		IExtremeRecipe extremeRecipe = AvaritiaRecipeManager.EXTREME_RECIPES.get(resourceLocation);
 		if (extremeRecipe == null)

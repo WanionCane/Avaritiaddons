@@ -55,13 +55,13 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 
 	@Nonnull
 	@Override
-	public Item getItemDropped(final IBlockState blockState, final Random random, final int fortune)
+	public Item getItemDropped(@Nonnull final IBlockState blockState, @Nonnull final Random random, final int fortune)
 	{
 		return Items.AIR;
 	}
 
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState state, final EntityPlayer entityPlayer, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer entityPlayer, @Nonnull  final EnumHand hand, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
 	{
 		if (world != null) {
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
@@ -74,7 +74,7 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 	}
 
 	@Override
-	public void onBlockPlacedBy(final World world, final BlockPos blockPos, final IBlockState blockState, final EntityLivingBase entityLivingBase, final ItemStack itemStack)
+	public void onBlockPlacedBy(@Nonnull final World world, @Nonnull  final BlockPos blockPos, @Nonnull final IBlockState blockState, @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final ItemStack itemStack)
 	{
 		if (world == null)
 			return;
@@ -87,13 +87,13 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 
 	@Nonnull
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
+	public EnumBlockRenderType getRenderType(@Nonnull IBlockState state)
 	{
 		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState)
+	public void breakBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState)
 	{
 		if (world == null)
 			return;

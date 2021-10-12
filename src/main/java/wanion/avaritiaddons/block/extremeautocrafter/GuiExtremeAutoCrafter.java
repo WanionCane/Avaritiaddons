@@ -46,7 +46,7 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 	}
 
 	@Override
-	protected final void renderToolTip(@Nonnull final ItemStack stack, final int x, final int y)
+	protected void renderToolTip(@Nonnull final ItemStack stack, final int x, final int y)
 	{
 		if (super.isPointInRegion(this.x, this.y, 16, 16, x, y))
 			drawClearRecipeToolTip(stack, x, y);

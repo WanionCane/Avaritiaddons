@@ -8,8 +8,15 @@ package wanion.avaritiaddons;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import net.minecraft.block.BlockChest;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.particle.ParticleDigging;
+import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.tileentity.TileEntityChestRenderer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,9 +26,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wanion.avaritiaddons.block.extremeautocrafter.BlockExtremeAutoCrafter;
+import org.apache.logging.log4j.Logger;
+import wanion.avaritiaddons.block.chest.ItemBlockAvaritiaddonsChest;
 import wanion.avaritiaddons.proxy.CommonProxy;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 import static wanion.avaritiaddons.Reference.*;
@@ -38,10 +47,11 @@ public class Avaritiaddons
 	public static final CreativeTabs creativeTabs = new CreativeTabs(MOD_ID)
 	{
 		@Override
+		@Nonnull
 		@SideOnly(Side.CLIENT)
 		public ItemStack getTabIconItem()
 		{
-			return new ItemStack(BlockExtremeAutoCrafter.INSTANCE);
+			return new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 1);
 		}
 	};
 
@@ -50,10 +60,17 @@ public class Avaritiaddons
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
 	public static CommonProxy proxy;
 	public static SimpleNetworkWrapper networkWrapper;
+	private static Logger logger;
+
+	public static Logger getLogger()
+	{
+		return logger;
+	}
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event)
 	{
+		logger = event.getModLog();
 		networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 		proxy.preInit();
 	}

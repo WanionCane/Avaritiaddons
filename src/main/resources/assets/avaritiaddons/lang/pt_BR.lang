@@ -1,2 +1,8 @@
 container.extreme_auto_crafter.name=Mesa de Trabalho Extrema Automática
+
+container.compressed_chest.name=Baú Comprimido
+container.infinity_chest.name=Baú do Infinito
+
+tooltip.filling_range=%1$s de %2$s
+
 avaritiaddons.clear.shape=Clique para Limpar a Receita

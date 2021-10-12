@@ -1,3 +1,5 @@
-itemGroup.avaritiaddons=无尽收容
-
 container.extreme_auto_crafter.name=梦魇工作台
+container.compressed_chest.name=压缩箱子
+container.infinity_chest.name=无尽箱子
+
+tooltip.filling_range=这是属于%1$s的%2$s。

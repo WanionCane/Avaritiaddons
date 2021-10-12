@@ -11,7 +11,10 @@ package wanion.avaritiaddons.proxy;
 import morph.avaritia.init.ModBlocks;
 import morph.avaritia.init.ModItems;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -33,6 +36,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.Config;
 import wanion.avaritiaddons.Reference;
+import wanion.avaritiaddons.block.chest.BlockAvaritiaddonsChest;
+import wanion.avaritiaddons.block.chest.ItemBlockAvaritiaddonsChest;
+import wanion.avaritiaddons.block.chest.compressed.ContainerCompressedChest;
+import wanion.avaritiaddons.block.chest.compressed.GuiCompressedChest;
+import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
+import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
 import wanion.avaritiaddons.block.extremeautocrafter.*;
 import wanion.avaritiaddons.network.ExtremeAutoCrafterGhostTransferMessage;
 import wanion.avaritiaddons.network.ExtremeAutoCrafterJeiTransferMessage;
@@ -46,6 +55,8 @@ public class CommonProxy implements IGuiHandler
 		MinecraftForge.EVENT_BUS.register(this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(Avaritiaddons.instance, this);
 		GameRegistry.registerTileEntity(TileEntityExtremeAutoCrafter.class, new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"));
+		GameRegistry.registerTileEntity(TileEntityCompressedChest.class, new ResourceLocation(Reference.MOD_ID, "compressed_chest"));
+		GameRegistry.registerTileEntity(TileEntityInfinityChest.class, new ResourceLocation(Reference.MOD_ID, "infinity_chest"));
 		int d = 0;
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterJeiTransferMessage.Handler.class, ExtremeAutoCrafterJeiTransferMessage.class, d++, Side.SERVER);
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterJeiTransferMessage.Handler.class, ExtremeAutoCrafterJeiTransferMessage.class, d++, Side.CLIENT);
@@ -54,6 +65,12 @@ public class CommonProxy implements IGuiHandler
 		final Config config = Config.INSTANCE;
 		if (config.createAutoExtremeTableRecipe)
 			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"), null, new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1), " S ", "NCN", " N ", 'S', config.shouldUseRedstoneSingularity ? Ingredient.fromStacks(ModItems.redstoneSingularity) : "blockRedstone", 'N', config.shouldUseNeutroniumIngot ? "blockCosmicNeutronium" : "nuggetCosmicNeutronium", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.extremeCraftingTable)));
+		if (config.createCompressedChestRecipe)
+			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "compressed_chest"), null, new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), "CCC", "CCC", "CCC", 'C', Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST)));
+		/*
+		if (config.createInfinityChestRecipe)
+			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_chest"), null, new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), "CCC", "CCC", "CCC", 'C', Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST)));
+		 */
 	}
 
 	public void init() {}
@@ -63,13 +80,14 @@ public class CommonProxy implements IGuiHandler
 	@SubscribeEvent
 	public void registerItems(final RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().registerAll(ItemBlockExtremeAutoCrafter.INSTANCE);
+		//BlockChest
+		event.getRegistry().registerAll(ItemBlockExtremeAutoCrafter.INSTANCE, ItemBlockAvaritiaddonsChest.INSTANCE);
 	}
 
 	@SubscribeEvent
 	public void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().registerAll(BlockExtremeAutoCrafter.INSTANCE);
+		event.getRegistry().registerAll(BlockExtremeAutoCrafter.INSTANCE, BlockAvaritiaddonsChest.INSTANCE);
 	}
 
 	@SubscribeEvent
@@ -90,6 +108,9 @@ public class CommonProxy implements IGuiHandler
 			case Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER:
 				if (tileEntity instanceof TileEntityExtremeAutoCrafter)
 					return new ContainerExtremeAutoCrafter((TileEntityExtremeAutoCrafter) tileEntity, player.inventory);
+			case Avaritiaddons.GUI_ID_COMPRESSED_CHEST:
+				if (tileEntity instanceof TileEntityCompressedChest)
+					return new ContainerCompressedChest((TileEntityCompressedChest) tileEntity, player.inventory);
 			default:
 				return null;
 		}
@@ -105,6 +126,9 @@ public class CommonProxy implements IGuiHandler
 			case Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER:
 				if (tileEntity instanceof TileEntityExtremeAutoCrafter)
 					return new GuiExtremeAutoCrafter((TileEntityExtremeAutoCrafter) tileEntity, player.inventory);
+			case Avaritiaddons.GUI_ID_COMPRESSED_CHEST:
+				if (tileEntity instanceof TileEntityCompressedChest)
+					return new GuiCompressedChest(new ContainerCompressedChest((TileEntityCompressedChest) tileEntity, player.inventory));
 			default:
 				return null;
 		}

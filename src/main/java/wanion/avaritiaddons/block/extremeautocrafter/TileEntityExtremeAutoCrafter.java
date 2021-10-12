@@ -42,6 +42,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 	public final EnergyControl energyControl;
 	private final ExtremeCraftingMatrix extremeCraftingMatrix = new ExtremeCraftingMatrix((int) Math.sqrt(half));
 	private final ControlController controlController = getController(ControlController.class);
+	private final Collection<IControl<?>> allControls = controlController.getInstances();
 	private IExtremeRecipe cachedRecipe = null;
 	private TIntIntMap patternMap = null;
 
@@ -51,7 +52,6 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 		controlController.add((this.energyControl = new EnergyControl(powerConsumption * Config.INSTANCE.capacityMultiplier, powerConsumption)));
 		addCapability(CapabilityEnergy.ENERGY, energyControl);
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerExtremeAutoCrafter(this));
-
 	}
 
 	@Nonnull
@@ -61,11 +61,10 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 	}
 
 	@Override
-	public final void update()
+	public void update()
 	{
 		if (world == null || world.isRemote)
 			return;
-		final Collection<IControl<?>> allControls = controlController.getInstances();
 		if (!allControls.stream().allMatch(IControl::canOperate))
 			return;
 		if (cachedRecipe == null) {
@@ -139,7 +138,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 		return 164;
 	}
 
-	final void recipeShapeChanged()
+	void recipeShapeChanged()
 	{
 		IExtremeRecipe matchedRecipe = null;
 		for (final IExtremeRecipe extremeRecipe : AvaritiaRecipeManager.EXTREME_RECIPES.values()) {
