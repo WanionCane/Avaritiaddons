@@ -40,9 +40,9 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		if (slot < 243) {
 			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
 			if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
-				itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
-				slotStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
-				itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+				int tmp = itemStack.stackSize;
+				itemStack.stackSize = slotStack.stackSize;
+				slotStack.stackSize = tmp;
 				markDirty();
 				return;
 			}
@@ -55,9 +55,9 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 			} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
 		} else if (perfectSlot != -1) {
 			final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
-			itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
-			slotStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
-			itemStack.stackSize = itemStack.stackSize ^ slotStack.stackSize;
+			int tmp = itemStack.stackSize;
+			itemStack.stackSize = slotStack.stackSize;
+			slotStack.stackSize = tmp;
 			if (slotStack.stackSize <= 0)
 				inventoryAvaritiaddonsChest.contents[slot] = null;
 		} else {
@@ -138,6 +138,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 
 	private boolean checkSlot(@Nonnull final ItemStack itemStack, int slot)
 	{
+		if (slot >= 243) return false;
 		final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
 		if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
 			return (long) slotStack.stackSize + (long) itemStack.stackSize <= (long) Integer.MAX_VALUE;
