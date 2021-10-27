@@ -133,17 +133,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	@Override
 	public boolean isItemValidForSlot(final int slot, final ItemStack itemStack)
 	{
-		return slot != 243 || checkSlot(itemStack, slot);
-	}
-
-	private boolean checkSlot(@Nonnull final ItemStack itemStack, int slot)
-	{
-		if (slot >= 243) return false;
-		final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[slot];
-		if (slotStack != null && slotStack.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
-			return (long) slotStack.stackSize + (long) itemStack.stackSize <= (long) Integer.MAX_VALUE;
-		}
-		return false;
+		return slot != 243;
 	}
 
 	@Override
