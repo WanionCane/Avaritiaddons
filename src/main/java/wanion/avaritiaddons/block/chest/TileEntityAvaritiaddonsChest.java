@@ -143,6 +143,12 @@ public abstract class TileEntityAvaritiaddonsChest extends TileEntity implements
 		++ticksSinceSync;
 		float f;
 
+		for (int i = 0; i < 243; i ++) {
+			if (inventoryAvaritiaddonsChest.contents[i] != null && inventoryAvaritiaddonsChest.contents[i].stackSize <= 0) {
+				inventoryAvaritiaddonsChest.contents[i] = null;
+			}
+		}
+
 		if (!worldObj.isRemote && numPlayersUsing != 0 && (ticksSinceSync + xCoord + yCoord + zCoord) % 200 == 0) {
 			numPlayersUsing = 0;
 			f = 5.0F;
