@@ -139,7 +139,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	@Override
 	public final int getSizeInventory()
 	{
-		return 244;
+		return 243;
 	}
 
 	@Override
