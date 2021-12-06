@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.block.chest.compressed;
+package wanion.avaritiaddons.block.chest.infinity;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -13,9 +13,9 @@ import wanion.lib.common.WContainer;
 
 import javax.annotation.Nonnull;
 
-public final class GuiCompressedChest extends GuiAvaritiaddonsChest<TileEntityCompressedChest>
+public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfinityChest>
 {
-	public GuiCompressedChest(@Nonnull final WContainer<TileEntityCompressedChest> wContainer)
+	public GuiInfinityChest(@Nonnull final WContainer<TileEntityInfinityChest> wContainer)
 	{
 		super(wContainer);
 	}

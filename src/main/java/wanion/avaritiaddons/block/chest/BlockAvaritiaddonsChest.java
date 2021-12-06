@@ -8,6 +8,7 @@ package wanion.avaritiaddons.block.chest;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import morph.avaritia.entity.EntityImmortalItem;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -17,8 +18,6 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -31,7 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
@@ -41,26 +40,28 @@ import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.Reference;
 import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
+import wanion.lib.common.WrenchHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockAvaritiaddonsChest extends BlockContainer
+public final class BlockAvaritiaddonsChest extends BlockContainer
 {
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	public static final PropertyInteger CHEST_TYPE = PropertyInteger.create("type", 0, 1);
-	protected static final AxisAlignedBB NOT_CONNECTED_AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
+	private static final AxisAlignedBB NOT_CONNECTED_AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
 
 	public static final BlockAvaritiaddonsChest INSTANCE = new BlockAvaritiaddonsChest();
 
-	protected BlockAvaritiaddonsChest()
+	private BlockAvaritiaddonsChest()
 	{
 		super(Material.IRON);
 		setCreativeTab(Avaritiaddons.creativeTabs);
 		setRegistryName(new ResourceLocation(Reference.MOD_ID, "avaritiaddons_chest"));
 		setUnlocalizedName("avaritiaddons_chest");
 		setLightOpacity(0);
+		setResistance(2000F);
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(CHEST_TYPE, 0));
 	}
 
@@ -128,46 +129,28 @@ public class BlockAvaritiaddonsChest extends BlockContainer
 	@Override
 	public IBlockState getStateForPlacement(@Nonnull final World worldIn, @Nonnull final BlockPos pos, @Nonnull final EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
-		EnumFacing enumfacing = placer.getHorizontalFacing().rotateY();
-
-		try
-		{
-			return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(FACING, enumfacing).withProperty(CHEST_TYPE, meta >> 2);
-		}
-		catch (IllegalArgumentException var11)
-		{
-			if (!worldIn.isRemote)
-			{
-				Avaritiaddons.getLogger().warn(String.format("Invalid damage property for Paper anvil at %s. Found %d, must be in [0, 1, 2]", pos, meta >> 2));
-
-				if (placer instanceof EntityPlayer)
-				{
-					placer.sendMessage(new TextComponentTranslation("Invalid damage property. Please pick in [0, 1, 2]"));
-				}
-			}
-
-			return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, 0, placer).withProperty(FACING, enumfacing).withProperty(CHEST_TYPE, 0);
-		}
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 3)).withProperty(CHEST_TYPE, meta >> 2);
 	}
 
 	@Override
-	public void getSubBlocks(@Nonnull final CreativeTabs itemIn, @Nonnull final NonNullList<ItemStack> items)
+	public void onBlockPlacedBy(@Nonnull final World world, @Nonnull final BlockPos pos, @Nonnull final IBlockState state, @Nonnull final EntityLivingBase placer, @Nonnull final ItemStack itemStack)
 	{
-		items.add(new ItemStack(this, 1, 0));
-		items.add(new ItemStack(this, 1, 1));
-	}
-
-	@Override
-	public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager)
-	{
-		return super.addDestroyEffects(world, pos, manager);
+		if (world == null)
+			return;
+		world.setBlockState(pos, state.withProperty(FACING, EnumFacing.getHorizontal(MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite()), 3);
+		final TileEntity tileEntity = world.getTileEntity(pos);
+		if (tileEntity instanceof TileEntityAvaritiaddonsChest) {
+			final NBTTagCompound stackNBT = itemStack.getTagCompound();
+			if (stackNBT != null)
+				((TileEntityAvaritiaddonsChest) tileEntity).readCustomNBT(itemStack.getTagCompound());
+		}
 	}
 
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 3)).withProperty(CHEST_TYPE, (meta & 15) >> 2);
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 3)).withProperty(CHEST_TYPE, meta >> 2);
 	}
 
 	@Override
@@ -233,29 +216,19 @@ public class BlockAvaritiaddonsChest extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer entityPlayer, @Nonnull  final EnumHand hand, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand hand, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
 	{
-		if (world != null) {
+		if (!world.isRemote && !entityPlayer.isSneaking() && !WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand))) {
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity instanceof TileEntityAvaritiaddonsChest)
 				FMLNetworkHandler.openGui(entityPlayer, Avaritiaddons.instance, tileEntity instanceof TileEntityCompressedChest ? Avaritiaddons.GUI_ID_COMPRESSED_CHEST : Avaritiaddons.GUI_ID_INFINITY_CHEST, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			else
 				return false;
+		} else if (!world.isRemote && entityPlayer.isSneaking() && WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand)) && world.getTileEntity(blockPos) instanceof TileEntityAvaritiaddonsChest) {
+			breakBlock(world, blockPos, state);
+			world.setBlockToAir(blockPos);
 		}
 		return true;
-	}
-
-	@Override
-	public void onBlockPlacedBy(@Nonnull final World world, @Nonnull  final BlockPos blockPos, @Nonnull final IBlockState blockState, @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final ItemStack itemStack)
-	{
-		if (world == null)
-			return;
-		final TileEntity tileEntity = world.getTileEntity(blockPos);
-		if (tileEntity instanceof TileEntityAvaritiaddonsChest) {
-			final NBTTagCompound stackNBT = itemStack.getTagCompound();
-			if (stackNBT != null)
-				((TileEntityAvaritiaddonsChest) tileEntity).readCustomNBT(itemStack.getTagCompound());
-		}
 	}
 
 	@Override
@@ -271,11 +244,14 @@ public class BlockAvaritiaddonsChest extends BlockContainer
 			return;
 		final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest = (TileEntityAvaritiaddonsChest) world.getTileEntity(blockPos);
 		if (tileEntityAvaritiaddonsChest != null) {
-			final ItemStack droppedStack = new ItemStack(this, 1, getMetaFromState(blockState) >> 2);;
+			final ItemStack droppedStack = new ItemStack(this, 1, getMetaFromState(blockState) >> 2);
 			final NBTTagCompound nbtTagCompound = tileEntityAvaritiaddonsChest.writeCustomNBT(new NBTTagCompound());
 			if (nbtTagCompound.getTagList("Contents", 10).tagCount() > 0)
 				droppedStack.setTagCompound(nbtTagCompound);
-			world.spawnEntity(new EntityItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
+			if (tileEntityAvaritiaddonsChest instanceof TileEntityCompressedChest)
+				world.spawnEntity(new EntityItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
+			else
+				world.spawnEntity(new EntityImmortalItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
 		}
 		super.breakBlock(world, blockPos, blockState);
 	}

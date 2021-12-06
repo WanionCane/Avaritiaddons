@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "side": "avaritia:blocks/resource/infinity",
+      "front": "avaritiaddons:blocks/infinity_compressor/front_infinity_compressor_00"
+    },
+    "model": "avaritiaddons:infinity_compressor",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "south": { "y": 180 },
+      "west": { "y": 270 },
+      "north": { "y": 0 },
+      "east": { "y": 90 }
+    }
+  }
+}

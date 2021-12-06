@@ -32,7 +32,7 @@ import java.util.List;
 public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtremeAutoCrafter> implements IResourceShapedContainer, IGhostAcceptorContainer
 {
 	private final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter;
-	private final int playerInventoryEnds, playerInventoryStarts, inventoryFull, shapeEnds, result;
+	private final int playerInventoryEnds, playerInventoryStarts, inventoryFull, result;
 
 	public ContainerExtremeAutoCrafter(@Nonnull final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter, final InventoryPlayer inventoryPlayer)
 	{
@@ -45,7 +45,6 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 		for (int y = 0; y < 9; y++)
 			for (int x = 0; x < 9; x++)
 				slotList.add((new ShapeSlot(tileEntityExtremeAutoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
-		slotList.add((new DeadSlot(tileEntityExtremeAutoCrafter, 163, 247, 194)));
 		slotList.add((new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 247, 222)));
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 9; x++)
@@ -56,9 +55,8 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 		final int inventorySize = inventorySlots.size();
 		playerInventoryEnds = inventorySize;
 		playerInventoryStarts = inventorySize - 36;
-		inventoryFull = (playerInventoryStarts - 2) / 2;
-		shapeEnds = inventoryFull * 2;
-		result = shapeEnds + 1;
+		inventoryFull = (playerInventoryStarts - 1) / 2;
+		result = inventoryFull * 2;
 	}
 
 	@Nonnull
@@ -88,7 +86,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 	@Override
 	public  ItemStack slotClick(final int slot, final int mouseButton, @Nonnull final ClickType clickType, @Nonnull final EntityPlayer entityPlayer)
 	{
-		if (slot >= inventoryFull && slot < shapeEnds) {
+		if (slot >= inventoryFull && slot < result) {
 			final Slot actualSlot = inventorySlots.get(slot);
 			if (clickType == ClickType.QUICK_MOVE) {
 				actualSlot.putStack(ItemStack.EMPTY);
@@ -104,24 +102,17 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 			}
 			tileEntityExtremeAutoCrafter.recipeShapeChanged();
 			return ItemStack.EMPTY;
-		} else if (slot == shapeEnds) {
-			if (inventorySlots.get(slot).getHasStack()) {
-				clearShape(tileEntityExtremeAutoCrafter.half, tileEntityExtremeAutoCrafter.full);
-				tileEntityExtremeAutoCrafter.recipeShapeChanged();
-			}
-			return ItemStack.EMPTY;
 		} else return super.slotClick(slot, mouseButton, clickType, entityPlayer);
 	}
 
 	@Override
 	public void defineShape(@Nonnull final ResourceLocation resourceLocation)
 	{
-		IExtremeRecipe extremeRecipe = AvaritiaRecipeManager.EXTREME_RECIPES.get(resourceLocation);
+		final IExtremeRecipe extremeRecipe = AvaritiaRecipeManager.EXTREME_RECIPES.get(resourceLocation);
 		if (extremeRecipe == null)
 			return;
-		final int slotCount = inventorySlots.size();
-		final int startsIn = ((slotCount - 36) / 2) - 1, endsIn = slotCount - 38;
-		final int root = (int) Math.sqrt(endsIn - startsIn + 1);
+		final int startsIn = inventoryFull, endsIn = result;
+		final int root = (int) Math.sqrt(endsIn - startsIn);
 		clearShape(startsIn, endsIn);
 		final List<Ingredient> inputs = extremeRecipe.getIngredients();
 		if (extremeRecipe.isShapedRecipe()) {
@@ -152,8 +143,9 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 	public void clearShape()
 	{
 		final int slotCount = inventorySlots.size();
-		final int startsIn = ((slotCount - 36) / 2) - 1, endsIn = slotCount - 38;
+		final int startsIn = ((slotCount - 36) / 2) - 1, endsIn = slotCount - 37;
 		clearShape(startsIn, endsIn);
+		tileEntityExtremeAutoCrafter.recipeShapeChanged();
 	}
 
 	private void clearShape(final int startsIn, final int endsIn)
@@ -165,7 +157,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 	@Override
 	public void acceptGhostStack(final int slot, @Nonnull ItemStack itemStack)
 	{
-		if (slot >= inventoryFull && slot < shapeEnds) {
+		if (slot >= inventoryFull && slot < result) {
 			final Slot actualSlot = inventorySlots.get(slot);
 			if (itemStack.isItemEqual(actualSlot.getStack()))
 				actualSlot.putStack(ItemStack.EMPTY);

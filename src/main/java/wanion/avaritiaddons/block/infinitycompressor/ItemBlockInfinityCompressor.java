@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.block.chest;
+package wanion.avaritiaddons.block.infinitycompressor;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -10,16 +10,16 @@ package wanion.avaritiaddons.block.chest;
 
 import morph.avaritia.entity.EntityImmortalItem;
 import morph.avaritia.init.ModItems;
+import morph.avaritia.recipe.AvaritiaRecipeManager;
+import morph.avaritia.recipe.compressor.ICompressorRecipe;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -31,43 +31,27 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemBlockAvaritiaddonsChest extends ItemBlock
+public class ItemBlockInfinityCompressor extends ItemBlock
 {
-	public static final ItemBlockAvaritiaddonsChest INSTANCE = new ItemBlockAvaritiaddonsChest();
+	public static final ItemBlockInfinityCompressor INSTANCE = new ItemBlockInfinityCompressor();
 
-	public ItemBlockAvaritiaddonsChest()
+	public ItemBlockInfinityCompressor()
 	{
-		super(BlockAvaritiaddonsChest.INSTANCE);
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, "avaritiaddons_chest"));
-		setHasSubtypes(true);
-	}
-
-	@Override
-	public int getMetadata(int damage)
-	{
-		return damage << 2;
-	}
-
-	@Override
-	public void getSubItems(@Nonnull final CreativeTabs tab, @Nonnull final NonNullList<ItemStack> items)
-	{
-		if (!this.isInCreativeTab(tab))
-			return;
-		items.add(new ItemStack(this, 1, 0));
-		items.add(new ItemStack(this, 1, 1));
+		super(BlockInfinityCompressor.INSTANCE);
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "infinity_compressor"));
 	}
 
 	@Override
 	@Nonnull
 	public String getUnlocalizedName(@Nonnull final ItemStack stack)
 	{
-		return "container." + (stack.getItemDamage() == 0 ? "compressed_chest" : "infinity_chest");
+		return "container.infinity_compressor";
 	}
 
 	@Override
 	public boolean hasCustomEntity(@Nonnull final ItemStack stack)
 	{
-		return !stack.isEmpty() && stack.getItemDamage() == 1;
+		return true;
 	}
 
 	@Override
@@ -79,22 +63,33 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack stack, @Nullable final World worldIn, @Nonnull final List<String> tooltip, @Nonnull final ITooltipFlag flagIn)
 	{
-		if (!stack.isEmpty() && stack.getItemDamage() == 0) {
-			final NBTTagCompound tag = stack.getTagCompound();
-			final NBTTagList list = tag != null ? tag.getTagList("Contents", 10) : null;
-			if (list == null || list.hasNoTags())
-				tooltip.add(I18n.format("tooltip.empty"));
-			else tooltip.add(I18n.format("tooltip.filling_range", list.tagCount(), 243));
+		final NBTTagCompound stackCompound = stack.hasTagCompound() ? stack.getTagCompound() : null;
+		if (stackCompound != null) {
+			final NBTTagList fieldList = stackCompound.getTagList("field", 10);
+			for (int i = 0; i < fieldList.tagCount(); i++) {
+				final NBTTagCompound fieldNBT = fieldList.getCompoundTagAt(i);
+				if (fieldNBT.getString("fieldName").equals("compressor.recipe.field")) {
+					final String resourceString = fieldNBT.getString("compressor.recipe");
+					final ResourceLocation resourceLocation = !resourceString.isEmpty() ? new ResourceLocation(resourceString) : null;
+					final ICompressorRecipe compressorRecipe = resourceLocation != null ? AvaritiaRecipeManager.COMPRESSOR_RECIPES.get(resourceLocation) : null;
+					final int progress = fieldNBT.getInteger("compressor.recipe.progress");
+					if (compressorRecipe != null) {
+						final ItemStack outputStack = compressorRecipe.getResult();
+						tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.infinity.compressor.desc"));
+						tooltip.add(outputStack.getRarity().rarityColor + compressorRecipe.getResult().getDisplayName());
+						tooltip.add(progress + " / " + compressorRecipe.getCost());
+					}
+					break;
+				}
+			}
 		}
-		else if (!stack.isEmpty() && stack.getItemDamage() == 1)
-			tooltip.add(TextFormatting.RED + "WIP");
 	}
 
 	@Override
 	@Nonnull
 	public EnumRarity getRarity(@Nonnull final ItemStack stack)
 	{
-		return !stack.isEmpty() && stack.getItemDamage() == 1 ? ModItems.COSMIC_RARITY : EnumRarity.COMMON;
+		return ModItems.COSMIC_RARITY;
 	}
 
 	@Override

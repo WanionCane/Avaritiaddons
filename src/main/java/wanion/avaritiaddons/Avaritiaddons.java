@@ -8,15 +8,8 @@ package wanion.avaritiaddons;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import net.minecraft.block.BlockChest;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleBreaking;
-import net.minecraft.client.particle.ParticleDigging;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.tileentity.TileEntityChestRenderer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -42,7 +35,8 @@ public class Avaritiaddons
 	public static final int
 			GUI_ID_EXTREME_AUTO_CRAFTER = 0,
 			GUI_ID_COMPRESSED_CHEST = 1,
-			GUI_ID_INFINITY_CHEST = 2;
+			GUI_ID_INFINITY_CHEST = 2,
+			GUI_ID_INFINITY_COMPRESSOR = 3;
 
 	public static final CreativeTabs creativeTabs = new CreativeTabs(MOD_ID)
 	{

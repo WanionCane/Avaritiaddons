@@ -31,27 +31,34 @@ import wanion.lib.common.control.ControlController;
 import wanion.lib.common.control.IControl;
 import wanion.lib.common.control.energy.EnergyControl;
 import wanion.lib.common.control.redstone.RedstoneControl;
+import wanion.lib.common.field.FieldController;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public final class TileEntityExtremeAutoCrafter extends WTileEntity implements ITickable
 {
-	public final int full = getSizeInventory() - 2, half = full / 2, powerConsumption = half * Config.INSTANCE.powerMultiplier;
+	public final int full = getSizeInventory() - 1, half = full / 2, powerConsumption = half * Config.INSTANCE.powerMultiplier;
 	public final RedstoneControl redstoneControl;
 	public final EnergyControl energyControl;
 	private final ExtremeCraftingMatrix extremeCraftingMatrix = new ExtremeCraftingMatrix((int) Math.sqrt(half));
 	private final ControlController controlController = getController(ControlController.class);
 	private final Collection<IControl<?>> allControls = controlController.getInstances();
-	private IExtremeRecipe cachedRecipe = null;
+	private final ExtremeRecipeField cachedRecipe = new ExtremeRecipeField();
 	private TIntIntMap patternMap = null;
 
 	public TileEntityExtremeAutoCrafter()
 	{
 		controlController.add((this.redstoneControl = new RedstoneControl(this)));
 		controlController.add((this.energyControl = new EnergyControl(powerConsumption * Config.INSTANCE.capacityMultiplier, powerConsumption)));
+		getController(FieldController.class).add(cachedRecipe);
 		addCapability(CapabilityEnergy.ENERGY, energyControl);
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerExtremeAutoCrafter(this));
+	}
+
+	public ExtremeRecipeField getCachedRecipe()
+	{
+		return cachedRecipe;
 	}
 
 	@Nonnull
@@ -67,13 +74,13 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 			return;
 		if (!allControls.stream().allMatch(IControl::canOperate))
 			return;
-		if (cachedRecipe == null) {
+		if (cachedRecipe.isNull()) {
 			if (patternMap != null)
 				patternMap = null;
 			return;
 		}
-		final ItemStack recipeStack = itemStacks.get(getSizeInventory() - 1);
-		final ItemStack outputStack = itemStacks.get(getSizeInventory() - 2);
+		final ItemStack recipeStack = cachedRecipe.getExtremeRecipeOutput();
+		final ItemStack outputStack = itemStacks.get(getSizeInventory() - 1);
 		if (recipeStack.isEmpty() || (!outputStack.isEmpty() && outputStack.getCount() == outputStack.getMaxStackSize()))
 			return;
 		if (patternMap == null)
@@ -85,7 +92,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 		allControls.forEach(IControl::operate);
 		cleanInput();
 		if (outputStack.isEmpty())
-			itemStacks.set(getSizeInventory() - 2, recipeStack.copy());
+			itemStacks.set(getSizeInventory() - 1, recipeStack.copy());
 		else
 			outputStack.setCount(outputStack.getCount() + recipeStack.getCount());
 		markDirty();
@@ -135,7 +142,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 	@Override
 	public int getSizeInventory()
 	{
-		return 164;
+		return 163;
 	}
 
 	void recipeShapeChanged()
@@ -147,7 +154,8 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 				break;
 			}
 		}
-		itemStacks.set(getSizeInventory() - 1, (cachedRecipe = matchedRecipe) != null ? cachedRecipe.getRecipeOutput().copy() : ItemStack.EMPTY);
+		cachedRecipe.setExtremeRecipe(matchedRecipe);
+		//itemStacks.set(getSizeInventory() - 1, cachedRecipe.getExtremeRecipeOutput());
 		patternMap = null;
 	}
 

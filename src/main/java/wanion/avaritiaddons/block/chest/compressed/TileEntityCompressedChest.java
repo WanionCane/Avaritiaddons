@@ -18,11 +18,17 @@ import wanion.avaritiaddons.proxy.ClientProxy;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityCompressedChest extends TileEntityAvaritiaddonsChest
+public final class TileEntityCompressedChest extends TileEntityAvaritiaddonsChest
 {
 	public TileEntityCompressedChest()
 	{
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new InvWrapper(this));
+	}
+
+	@Override
+	public int getSizeInventory()
+	{
+		return 243;
 	}
 
 	@Nonnull

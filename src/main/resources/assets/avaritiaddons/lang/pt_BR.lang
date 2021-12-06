@@ -2,7 +2,15 @@ container.extreme_auto_crafter.name=Mesa de Trabalho Extrema Automática
 
 container.compressed_chest.name=Baú Comprimido
 container.infinity_chest.name=Baú do Infinito
+container.infinity_compressor.name=Compressor do Infinito
 
+tooltip.empty=Vazia
 tooltip.filling_range=%1$s de %2$s
 
-avaritiaddons.clear.shape=Clique para Limpar a Receita
+avaritiaddons.clear.recipe=Shift-Clique para Limpar a Receita
+avaritiaddons.clear.warning=Todo o progresso será perdido.
+avaritiaddons.no.recipe.set=Nenhuma receita foi setada.
+avaritiaddons.to.set=Para setar uma Receita:
+avaritiaddons.to.set.desc.1=Clique neste "?" com um Item que seja...
+avaritiaddons.to.set.desc.2=um ingrediente de alguma Singularidade.
+avaritiaddons.infinity.compressor.desc=Fazendo:

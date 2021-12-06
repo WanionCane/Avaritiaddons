@@ -27,6 +27,8 @@ import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
 import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
 import wanion.avaritiaddons.block.extremeautocrafter.BlockExtremeAutoCrafter;
+import wanion.avaritiaddons.block.infinitycompressor.BlockInfinityCompressor;
+import wanion.avaritiaddons.block.infinitycompressor.ItemBlockInfinityCompressor;
 import wanion.lib.WanionLib;
 import wanion.lib.client.animation.ComplexHalfAnimation;
 import wanion.lib.common.Util;
@@ -70,6 +72,9 @@ public class ClientProxy extends CommonProxy
 
 		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 0, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
 		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 1, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
+
+		// Infinity Compressor
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(BlockInfinityCompressor.INSTANCE), 0, new ModelResourceLocation(Reference.MOD_ID + ":infinity_compressor"));
 	}
 
 	@Override

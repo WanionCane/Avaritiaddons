@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.compat.jei;
+package wanion.avaritiaddons.compat.jei.extreme;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -25,7 +25,7 @@ public final class AutoExtremeCrafterGhostHandler implements IGhostIngredientHan
 	public <I> List<Target<I>> getTargets(@Nonnull final GuiExtremeAutoCrafter gui, @Nonnull final I ingredient, final boolean doStart)
 	{
 		List<Target<I>> targets = new ArrayList<>();
-		final int endsIn = gui.inventorySlots.inventorySlots.size() - 38;
+		final int endsIn = gui.inventorySlots.inventorySlots.size() - 37;
 		final int startsIn = endsIn / 2;
 		if (ingredient instanceof ItemStack) {
 			for (int i = startsIn; i < endsIn; i++) {
@@ -37,5 +37,5 @@ public final class AutoExtremeCrafterGhostHandler implements IGhostIngredientHan
 	}
 
 	@Override
-	public final void onComplete() {}
+	public void onComplete() {}
 }

@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.compat.jei;
+package wanion.avaritiaddons.compat.jei.extreme;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -18,10 +18,9 @@ import morph.avaritia.recipe.AvaritiaRecipeManager;
 import morph.avaritia.recipe.extreme.IExtremeRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import wanion.avaritiaddons.Avaritiaddons;
-import wanion.avaritiaddons.network.ExtremeAutoCrafterJeiTransferMessage;
 import wanion.avaritiaddons.block.extremeautocrafter.ContainerExtremeAutoCrafter;
 import wanion.lib.common.Util;
+import wanion.lib.network.DefineShapeMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public class AutoExtremeCrafterTransferHandler implements IRecipeTransferHandler
 		final IExtremeRecipe extremeRecipe = Util.getField(ExtremeRecipeWrapper.class, "recipe", recipeWrapper, IExtremeRecipe.class);
 		for (Map.Entry<ResourceLocation, IExtremeRecipe> extremeEntry : AvaritiaRecipeManager.EXTREME_RECIPES.entrySet()) {
 			if (extremeEntry.getValue() == extremeRecipe) {
-				Avaritiaddons.networkWrapper.sendToServer(new ExtremeAutoCrafterJeiTransferMessage(container.windowId, extremeEntry.getKey()));
+				DefineShapeMessage.sendToServer(container, extremeEntry.getKey());
 				break;
 			}
 		}

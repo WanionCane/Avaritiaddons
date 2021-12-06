@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.compat.jei;
+package wanion.avaritiaddons.compat.jei.extreme;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).

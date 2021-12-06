@@ -4,7 +4,17 @@ container.extreme_auto_crafter.name=Auto Extreme Crafting Table
 
 container.compressed_chest.name=Compressed Chest
 container.infinity_chest.name=Infinity Chest
+container.infinity_compressor.name=Infinity Compressor
 
+tooltip.empty=Empty
 tooltip.filling_range=%1$s of %2$s
 
-avaritiaddons.clear.shape=Click to Clear Recipe
+avaritiaddons.clear.recipe=Shift Click to Clear Recipe
+avaritiaddons.clear.note=Note:
+avaritiaddons.clear.warning=All progress will be lost.
+avaritiaddons.to.set=To set a Recipe:
+avaritiaddons.to.set.desc.1=Click this "?" with an Item that is...
+avaritiaddons.to.set.desc.2=an Ingredient for some Singularity.
+avaritiaddons.infinity.compressor.desc=Making:
+
+avaritiaddons.no.recipe.set=No recipe Set.

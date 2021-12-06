@@ -16,7 +16,7 @@ import wanion.lib.common.WContainer;
 
 import javax.annotation.Nonnull;
 
-public class ContainerAvaritiaddonsChest <C extends TileEntityAvaritiaddonsChest> extends WContainer<C>
+public abstract class ContainerAvaritiaddonsChest <C extends TileEntityAvaritiaddonsChest> extends WContainer<C>
 {
 	protected int playerInventoryEnds, playerInventoryStarts;
 
@@ -34,30 +34,6 @@ public class ContainerAvaritiaddonsChest <C extends TileEntityAvaritiaddonsChest
 			addSlotToContainer(new Slot(inventoryPlayer, i, 170 + (18 * i), 252));
 		playerInventoryEnds = inventorySlots.size();
 		playerInventoryStarts = playerInventoryEnds - 36;
-	}
-
-	@Nonnull
-	@Override
-	public final ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
-	{
-		ItemStack itemstack = null;
-		final Slot actualSlot = inventorySlots.get(slot);
-		if (actualSlot != null && actualSlot.getHasStack()) {
-			ItemStack itemstack1 = actualSlot.getStack();
-			itemstack = itemstack1.copy();
-			if (slot >= playerInventoryStarts) {
-				if (!mergeItemStack(itemstack1, 0, playerInventoryStarts, false))
-					return ItemStack.EMPTY;
-			} else if (!mergeItemStack(itemstack1, playerInventoryStarts, playerInventoryEnds, true))
-				return ItemStack.EMPTY;
-			if (itemstack1.getCount() == 0)
-				actualSlot.putStack(ItemStack.EMPTY);
-			else
-				actualSlot.onSlotChanged();
-			if (itemstack1.getCount() != itemstack.getCount())
-				actualSlot.onTake(entityPlayer, itemstack1);
-		}
-		return itemstack != null ? itemstack : ItemStack.EMPTY;
 	}
 
 	public void onContainerClosed(@Nonnull final EntityPlayer playerIn)

@@ -6,7 +6,7 @@
       "side": "avaritiaddons:blocks/extreme_auto_crafter_side",
       "bottom": "avaritiaddons:blocks/extreme_auto_crafter_bottom"
     },
-    "model": "avaritiaddons:block_extreme_auto_crafter",
+    "model": "avaritiaddons:extreme_auto_crafter",
     "uvlock": true
   },
   "variants": {

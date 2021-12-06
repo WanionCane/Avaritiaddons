@@ -1,4 +1,4 @@
-package wanion.avaritiaddons.block.chest.compressed;
+package wanion.avaritiaddons.block.chest.infinity;
 
 /*
  * Created by WanionCane(https://github.com/WanionCane).
@@ -8,7 +8,6 @@ package wanion.avaritiaddons.block.chest.compressed;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -17,14 +16,12 @@ import wanion.avaritiaddons.block.chest.ContainerAvaritiaddonsChest;
 
 import javax.annotation.Nonnull;
 
-@ChestContainer(rowSize = 27)
-public final class ContainerCompressedChest extends ContainerAvaritiaddonsChest<TileEntityCompressedChest>
+public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest<TileEntityInfinityChest>
 {
-	public ContainerCompressedChest(@Nonnull TileEntityCompressedChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
+	public ContainerInfinityChest(@Nonnull final TileEntityInfinityChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
 	{
 		super(wTileEntity, inventoryPlayer);
 	}
-	@Override
 
 	@Nonnull
 	public ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
@@ -48,5 +45,4 @@ public final class ContainerCompressedChest extends ContainerAvaritiaddonsChest<
 		}
 		return itemstack != null ? itemstack : ItemStack.EMPTY;
 	}
-
 }

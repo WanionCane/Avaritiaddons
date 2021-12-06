@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "#side",
+    "top": "#side",
+    "front": "#front",
+    "side": "#side"
+  }
+}

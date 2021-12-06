@@ -19,7 +19,7 @@ public final class RendererAvaritiaddonsChest extends TileEntitySpecialRenderer<
         GlStateManager.enableDepth();
         GlStateManager.depthFunc(515);
         GlStateManager.depthMask(true);
-        int i = 3;
+        int i = 0;
 
         if (tileEntityAvaritiaddonsChest.hasWorld())
             i = tileEntityAvaritiaddonsChest.getBlockMetadata() & 3;
@@ -45,13 +45,15 @@ public final class RendererAvaritiaddonsChest extends TileEntitySpecialRenderer<
         GlStateManager.translate((float) x, (float) y + 1.0F, (float) z + 1.0F);
         GlStateManager.scale(1.0F, -1.0F, -1.0F);
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
-        int j = 0;
+        int j;
 
         if (i == 0)
-            j = 90;
+            j = 0;
         else if (i == 1)
-            j = 180;
+            j = 90;
         else if (i == 2)
+            j = 180;
+        else
             j = 270;
 
         GlStateManager.rotate((float) j, 0.0F, 1.0F, 0.0F);
