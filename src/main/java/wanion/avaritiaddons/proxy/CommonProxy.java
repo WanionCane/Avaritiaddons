@@ -71,10 +71,15 @@ public class CommonProxy implements IGuiHandler
 			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"), null, new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1), " S ", "NCN", " N ", 'S', config.shouldUseRedstoneSingularity ? Ingredient.fromStacks(ModItems.redstoneSingularity) : "blockRedstone", 'N', config.shouldUseNeutroniumIngot ? "blockCosmicNeutronium" : "nuggetCosmicNeutronium", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.extremeCraftingTable)));
 		if (config.createCompressedChestRecipe) {
 			if (config.hardCompressedChestRecipe) {
-				if (config.hardCompressedChestRecipeUsesNeutroniumCompressor)
-					AvaritiaRecipeManager.COMPRESSOR_RECIPES.put(new ResourceLocation(Reference.MOD_ID, "compressed_chest"), new CompressorRecipe(new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), config.howManyChestsShouldTheCompressorTake, true, NonNullList.withSize(1, Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST)))));
-				else
-					AvaritiaRecipeManager.EXTREME_RECIPES.put(new ResourceLocation(Reference.MOD_ID, "compressed_chest"), new ExtremeShapelessRecipe(NonNullList.withSize(81, new OreIngredient("chest")), new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0)));
+				if (config.hardCompressedChestRecipeUsesNeutroniumCompressor) {
+					final CompressorRecipe compressedChestRecipe = new CompressorRecipe(new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), config.howManyChestsShouldTheCompressorTake, true, NonNullList.withSize(1, Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST))));
+					compressedChestRecipe.setRegistryName(new ResourceLocation(Reference.MOD_ID, "compressed_chest"));
+					AvaritiaRecipeManager.COMPRESSOR_RECIPES.put(compressedChestRecipe.getRegistryName(), compressedChestRecipe);
+				} else {
+					final ExtremeShapelessRecipe compressedChestRecipe = new ExtremeShapelessRecipe(NonNullList.withSize(81, new OreIngredient("chest")), new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0));
+					compressedChestRecipe.setRegistryName(new ResourceLocation(Reference.MOD_ID, "compressed_chest"));
+					AvaritiaRecipeManager.EXTREME_RECIPES.put(compressedChestRecipe.getRegistryName(), compressedChestRecipe);
+				}
 			} else
 				GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "compressed_chest"), null, new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), "CCC", "CCC", "CCC", 'C', Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST)));
 		}

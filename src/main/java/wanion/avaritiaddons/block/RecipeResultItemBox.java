@@ -11,7 +11,6 @@ package wanion.avaritiaddons.block;
 import net.minecraft.item.ItemStack;
 import wanion.lib.client.gui.ItemBoxElement;
 import wanion.lib.client.gui.WGuiContainer;
-import wanion.lib.client.gui.interaction.WInteraction;
 import wanion.lib.client.gui.interaction.WMouseInteraction;
 import wanion.lib.network.ClearShapeMessage;
 
@@ -28,21 +27,11 @@ public class RecipeResultItemBox extends ItemBoxElement
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull final WInteraction wInteraction)
-	{
-		return wInteraction.isHovering(this);
-	}
-
-	public void draw(@Nonnull WInteraction wInteraction)
-	{
-		if (stackSupplier.get().isEmpty())
-			getFontRenderer().drawString("?", getUsableX() + 4, getY() + 4, 0x4040404);
-	}
-
-	@Override
 	public void interaction(@Nonnull final WMouseInteraction wMouseInteraction)
 	{
-		if (isShiftKeyDown())
-			ClearShapeMessage.sendToServer(wGuiContainer.getContainer());
+		if (!isShiftKeyDown())
+			return;
+		ClearShapeMessage.sendToServer(wGuiContainer.getContainer());
+		playPressSound();
 	}
 }

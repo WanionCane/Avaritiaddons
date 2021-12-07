@@ -15,9 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import wanion.avaritiaddons.block.RecipeResultItemBox;
-import wanion.avaritiaddons.block.infinitycompressor.GuiInfinityCompressor;
 import wanion.lib.client.gui.EnergyElement;
 import wanion.lib.client.gui.ITooltipSupplier;
+import wanion.lib.client.gui.ItemElement;
 import wanion.lib.client.gui.WGuiContainer;
 import wanion.lib.client.gui.interaction.WInteraction;
 import wanion.lib.common.control.energy.EnergyControl;
@@ -25,7 +25,6 @@ import wanion.lib.common.control.redstone.RedstoneControl;
 import wanion.lib.common.control.redstone.RedstoneControlWButton;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -42,7 +41,7 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 		final Slot slot = inventorySlots.getSlot(tileEntityExtremeAutoCrafter.full);
 		xSize = 343;
 		ySize = 276;
-		addElement(new RecipeResultItemBox(() -> getTile().getCachedRecipe().getExtremeRecipeOutput(), this, slot.xPos - 1, slot.yPos - 29));
+		addElement(new RecipeResultItemBox(() -> getTile().getExtremeRecipeField().getExtremeRecipeOutput(), this, slot.xPos - 1, slot.yPos - 29).setTooltipSupplier(extremeTooltipSupplier));
 		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 25));
 		addElement(new EnergyElement(getControl(EnergyControl.class),this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 83));
 	}
@@ -52,7 +51,7 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 		@Override
 		public List<String> getTooltip(@Nonnull final WInteraction wInteraction, @Nonnull final Supplier<ItemStack> supplier)
 		{
-			final List<String> tooltip = ITooltipSupplier.DEFAULT_TOOLTIP_SUPPLIER.getTooltip(wInteraction, supplier);
+			final List<String> tooltip = ItemElement.DEFAULT_ITEMSTACK_TOOLTIP_SUPPLIER.getTooltip(wInteraction, supplier);
 			tooltip.add("");
 			tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.clear.recipe"));
 			return tooltip;

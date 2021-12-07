@@ -56,7 +56,7 @@ public class CompressorRecipeField implements IField<CompressorRecipeField>
 
 	public String getProgress()
 	{
-		return compressorRecipe != null ? progress + " / " + compressorRecipe.getCost() : I18n.format("avaritiaddons.no.recipe.set");
+		return compressorRecipe != null ? progress + " / " + compressorRecipe.getCost() : I18n.format("avaritiaddons.compressor.no.recipe.set");
 	}
 
 	public boolean isNull()

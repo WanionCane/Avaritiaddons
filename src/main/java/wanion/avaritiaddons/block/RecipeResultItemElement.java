@@ -15,6 +15,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import wanion.lib.client.gui.ITooltipSupplier;
 import wanion.lib.client.gui.ItemElement;
 import wanion.lib.client.gui.WGuiContainer;
 import wanion.lib.client.gui.interaction.WInteraction;
@@ -31,22 +32,23 @@ import static net.minecraft.client.gui.GuiScreen.isShiftKeyDown;
 
 public class RecipeResultItemElement extends ItemElement
 {
-	private final List<String> helpTooltip = new ArrayList<>();
+	private final ITooltipSupplier helpTooltipSupplier;
 	private final FontRenderer fontRenderer;
 
 	public RecipeResultItemElement(@Nonnull final Supplier<ItemStack> stackSupplier, @Nonnull final WGuiContainer<?> wGuiContainer, final int x, final int y)
 	{
 		super(stackSupplier, wGuiContainer, x, y);
-		helpTooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.to.set"));
-		helpTooltip.add(I18n.format("avaritiaddons.to.set.desc.1"));
-		helpTooltip.add(I18n.format("avaritiaddons.to.set.desc.2"));
 		this.fontRenderer = getFontRenderer();
-	}
-
-	@Override
-	public boolean canInteractWith(@Nonnull final WInteraction wInteraction)
-	{
-		return wInteraction.isHovering(this);
+		final List<String> helpTooltip = new ArrayList<>();
+		helpTooltip.add(TextFormatting.GOLD + I18n.format("wanionlib.how-to-use"));
+		helpTooltip.add(I18n.format("avaritiaddons.compressor.usage.1"));
+		helpTooltip.add(I18n.format("avaritiaddons.compressor.usage.2"));
+		helpTooltip.add("");
+		helpTooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.compressor.to.set"));
+		helpTooltip.add(I18n.format("avaritiaddons.compressor.to.set.desc.1"));
+		helpTooltip.add(I18n.format("avaritiaddons.compressor.to.set.desc.2"));
+		helpTooltipSupplier = (interaction, stackSupplier2) -> helpTooltip;
+		setForegroundCheck((interaction -> interaction.isHovering(this)));
 	}
 
 	public void draw(@Nonnull final WInteraction wInteraction)
@@ -58,16 +60,10 @@ public class RecipeResultItemElement extends ItemElement
 	}
 
 	@Override
-	public void drawForeground(@Nonnull final WInteraction interaction) {
-		if (interaction.isHovering(this) && stackSupplier.get().isEmpty()) {
-			this.wGuiContainer.drawHoveringText(this.getTooltip(interaction), this.getTooltipX(interaction), this.getTooltipY(interaction));
-		} else super.drawForeground(interaction);
-	}
 
-	@Override
 	public List<String> getTooltip(@Nonnull final WInteraction interaction)
 	{
-		return stackSupplier.get().isEmpty() ? helpTooltip : super.getTooltip(interaction);
+		return stackSupplier.get().isEmpty() ? helpTooltipSupplier.getTooltip(interaction) : super.getTooltip(interaction);
 	}
 
 	@Override
@@ -79,7 +75,9 @@ public class RecipeResultItemElement extends ItemElement
 			final ResourceLocation recipeRegistryName = compressorRecipe != null ? compressorRecipe.getRegistryName() : null;
 			if (recipeRegistryName != null)
 				DefineShapeMessage.sendToServer(wMouseInteraction.getContainer().getContainer(), recipeRegistryName);
-		} else if (isShiftKeyDown())
+		} else if (isShiftKeyDown()) {
 			ClearShapeMessage.sendToServer(wGuiContainer.getContainer());
+			playPressSound();
+		}
 	}
 }

@@ -34,7 +34,7 @@ public final class AvaritiaddonsJEIPlugin implements IModPlugin
         modRegistry.addGhostIngredientHandler(GuiExtremeAutoCrafter.class, new AutoExtremeCrafterGhostHandler());
         // Infinity Compressor
         modRegistry.addRecipeCatalyst(new ItemStack(ItemBlockInfinityCompressor.INSTANCE, 1, 0), AvaritiaJEIPlugin.NEUTRONIUM_COMPRESSOR);
-        modRegistry.addRecipeClickArea(GuiInfinityCompressor.class, 151, 7, 18, 18, AvaritiaJEIPlugin.NEUTRONIUM_COMPRESSOR);
+        modRegistry.addRecipeClickArea(GuiInfinityCompressor.class, 151, 7, 17, 17, AvaritiaJEIPlugin.NEUTRONIUM_COMPRESSOR);
         modRegistry.getRecipeTransferRegistry().addRecipeTransferHandler(new InfinityCompressorTransferHandler(), AvaritiaJEIPlugin.NEUTRONIUM_COMPRESSOR);
 
     }

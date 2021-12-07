@@ -8,24 +8,20 @@ package wanion.avaritiaddons.block.infinitycompressor;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
-import wanion.avaritiaddons.block.RecipeResultItemBox;
 import wanion.avaritiaddons.block.RecipeResultItemElement;
-import wanion.avaritiaddons.block.extremeautocrafter.GuiExtremeAutoCrafter;
 import wanion.lib.client.gui.*;
-import wanion.lib.client.gui.field.TextFieldWElement;
+import wanion.lib.client.gui.field.CheckBoxWElement;
 import wanion.lib.client.gui.interaction.WInteraction;
 import wanion.lib.common.WContainer;
-import wanion.lib.common.control.energy.EnergyControl;
 import wanion.lib.common.control.redstone.RedstoneControl;
 import wanion.lib.common.control.redstone.RedstoneControlWButton;
-import wanion.lib.common.field.text.TextField;
+import wanion.lib.common.field.CheckBox;
 
 import javax.annotation.Nonnull;
 
@@ -45,10 +41,13 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
 		super(wContainer, guiTexture);
 		xSize = 176;
 		ySize = 166;
-		//addElement(new TextElement(() -> getTile().cachedRecipe.getProgress(), this, getGuiLeft() + (getXSize() / 2), getGuiTop() + 60, TextElement.TextAnchor.MIDDLE));
-		addElement(new RecipeResultItemElement(() -> getTile().cachedRecipe.getCompressorRecipeOutput(), this, getGuiLeft() + (getXSize() / 2) - 8, getGuiTop() + 33).setTooltipSupplier(new SingularityTooltipSupplier()));
+		addElement(new RecipeResultItemElement(() -> getTile().compressorRecipeField.getCompressorRecipeOutput(), this, getGuiLeft() + (getXSize() / 2) - 8, getGuiTop() + 33).setTooltipSupplier(new SingularityTooltipSupplier()));
+		final LetterElement showRecipesElement = new LetterElement('R', this, getGuiLeft() + getXSize() - 25, getGuiTop() + 7);
+		if (!JEI_PRESENT)
+			showRecipesElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) -> Lists.newArrayList(I18n.format("avaritiaddons.no.jei")));
+		addElement(showRecipesElement);
 		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + 29));
-		addElement(new LetterElement('S', this, getGuiLeft() + getXSize() - 25, getGuiTop() + 7));
+		addElement(new CheckBoxWElement((CheckBox) getField("avaritiaddons.compressor.trashcan"), this, guiLeft + getGuiLeft() + getXSize() - 25, getGuiTop() + 51));
 	}
 
 	private final class SingularityTooltipSupplier implements ITooltipSupplier
@@ -56,12 +55,18 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
 		@Override
 		public List<String> getTooltip(@Nonnull final WInteraction wInteraction, @Nonnull final Supplier<ItemStack> supplier)
 		{
-			final List<String> tooltip = ITooltipSupplier.DEFAULT_TOOLTIP_SUPPLIER.getTooltip(wInteraction, supplier);
-			tooltip.add("");
-			tooltip.add(getTile().cachedRecipe.getProgress());
+			final TileEntityInfinityCompressor tile = getTile();
+			final CompressorRecipeField compressorRecipeField = tile.compressorRecipeField;
+			final ItemStack outputStack = compressorRecipeField.getCompressorRecipeOutput();
+			final List<String> tooltip = new ArrayList<>();
+			if (compressorRecipeField.isNull() || outputStack.isEmpty())
+				return tooltip;
+			tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.compressor.making"));
+			tooltip.add(outputStack.getRarity().rarityColor + outputStack.getDisplayName());
+			tooltip.add(compressorRecipeField.getProgress());
 			tooltip.add("");
 			tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.clear.recipe"));
-			tooltip.add(TextFormatting.RED + I18n.format("avaritiaddons.clear.note") + " " + TextFormatting.WHITE + I18n.format("avaritiaddons.clear.warning"));
+			tooltip.add(TextFormatting.RED + I18n.format("avaritiaddons.compressor.clear.note") + " " + TextFormatting.WHITE + I18n.format("avaritiaddons.compressor.clear.warning"));
 			return tooltip;
 		}
 	}

@@ -44,21 +44,21 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 	private final ExtremeCraftingMatrix extremeCraftingMatrix = new ExtremeCraftingMatrix((int) Math.sqrt(half));
 	private final ControlController controlController = getController(ControlController.class);
 	private final Collection<IControl<?>> allControls = controlController.getInstances();
-	private final ExtremeRecipeField cachedRecipe = new ExtremeRecipeField();
+	private final ExtremeRecipeField extremeRecipeField = new ExtremeRecipeField();
 	private TIntIntMap patternMap = null;
 
 	public TileEntityExtremeAutoCrafter()
 	{
 		controlController.add((this.redstoneControl = new RedstoneControl(this)));
 		controlController.add((this.energyControl = new EnergyControl(powerConsumption * Config.INSTANCE.capacityMultiplier, powerConsumption)));
-		getController(FieldController.class).add(cachedRecipe);
+		getController(FieldController.class).add(extremeRecipeField);
 		addCapability(CapabilityEnergy.ENERGY, energyControl);
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerExtremeAutoCrafter(this));
 	}
 
-	public ExtremeRecipeField getCachedRecipe()
+	public ExtremeRecipeField getExtremeRecipeField()
 	{
-		return cachedRecipe;
+		return extremeRecipeField;
 	}
 
 	@Nonnull
@@ -74,12 +74,12 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 			return;
 		if (!allControls.stream().allMatch(IControl::canOperate))
 			return;
-		if (cachedRecipe.isNull()) {
+		if (extremeRecipeField.isNull()) {
 			if (patternMap != null)
 				patternMap = null;
 			return;
 		}
-		final ItemStack recipeStack = cachedRecipe.getExtremeRecipeOutput();
+		final ItemStack recipeStack = extremeRecipeField.getExtremeRecipeOutput();
 		final ItemStack outputStack = itemStacks.get(getSizeInventory() - 1);
 		if (recipeStack.isEmpty() || (!outputStack.isEmpty() && outputStack.getCount() == outputStack.getMaxStackSize()))
 			return;
@@ -154,7 +154,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements I
 				break;
 			}
 		}
-		cachedRecipe.setExtremeRecipe(matchedRecipe);
+		extremeRecipeField.setExtremeRecipe(matchedRecipe);
 		//itemStacks.set(getSizeInventory() - 1, cachedRecipe.getExtremeRecipeOutput());
 		patternMap = null;
 	}

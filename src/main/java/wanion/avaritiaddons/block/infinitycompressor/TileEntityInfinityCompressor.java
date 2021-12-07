@@ -9,11 +9,9 @@ package wanion.avaritiaddons.block.infinitycompressor;
  */
 
 import morph.avaritia.recipe.AvaritiaRecipeManager;
-import morph.avaritia.recipe.compressor.ICompressorRecipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,6 +20,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import wanion.lib.common.WTileEntity;
 import wanion.lib.common.control.ControlController;
 import wanion.lib.common.control.redstone.RedstoneControl;
+import wanion.lib.common.field.CheckBox;
 import wanion.lib.common.field.FieldController;
 
 import javax.annotation.Nonnull;
@@ -30,22 +29,27 @@ public class TileEntityInfinityCompressor extends WTileEntity
 {
 	private static final int[] slotsForFace = new int[27];
 
-	public final CompressorRecipeField cachedRecipe = new CompressorRecipeField(this);
+	public final CompressorRecipeField compressorRecipeField = new CompressorRecipeField(this);
 	public final RedstoneControl redstoneControl;
+	public final CheckBox trashBox = new CheckBox("avaritiaddons.compressor.trashcan", true);
 
 	public TileEntityInfinityCompressor()
 	{
 		getController(ControlController.class).add((this.redstoneControl = new RedstoneControl(this)));
-		getController(FieldController.class).add(cachedRecipe);
+		final FieldController fieldController = getController(FieldController.class);
+		fieldController.add(compressorRecipeField);
+		fieldController.add(trashBox);
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new InvWrapper(this));
 	}
 
 	private boolean metConditions(@Nonnull final ItemStack stack)
 	{
 		ItemStack output;
-		if (cachedRecipe.isNull())
-			cachedRecipe.setCompressorRecipe(AvaritiaRecipeManager.getCompressorRecipeFromInput(stack));
-		return redstoneControl.canOperate() && !cachedRecipe.isNull() && ((output = itemStacks.get(0)).isEmpty() || output.getCount() + cachedRecipe.getCompressorRecipeOutput().getCount() <= output.getMaxStackSize());
+		if (compressorRecipeField.isNull())
+			compressorRecipeField.setCompressorRecipe(AvaritiaRecipeManager.getCompressorRecipeFromInput(stack));
+		else if (!trashBox.isChecked() && !compressorRecipeField.matches(stack))
+			return false;
+		return redstoneControl.canOperate() && !compressorRecipeField.isNull() && ((output = itemStacks.get(0)).isEmpty() || output.getCount() + compressorRecipeField.getCompressorRecipeOutput().getCount() <= output.getMaxStackSize());
 	}
 
 	@Override
@@ -100,8 +104,8 @@ public class TileEntityInfinityCompressor extends WTileEntity
 	{
 		if (index == 0)
 			super.setInventorySlotContents(index, stack);
-		else if (cachedRecipe.matches(stack))
-			cachedRecipe.addProgress(stack.getCount());
+		else if (compressorRecipeField.matches(stack))
+			compressorRecipeField.addProgress(stack.getCount());
 	}
 
 	@Override
@@ -120,7 +124,7 @@ public class TileEntityInfinityCompressor extends WTileEntity
 	@Override
 	public int getSizeInventory()
 	{
-		return 27;
+		return 243;
 	}
 
 	static {

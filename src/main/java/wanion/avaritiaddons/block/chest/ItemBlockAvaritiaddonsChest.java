@@ -83,8 +83,8 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 			final NBTTagCompound tag = stack.getTagCompound();
 			final NBTTagList list = tag != null ? tag.getTagList("Contents", 10) : null;
 			if (list == null || list.hasNoTags())
-				tooltip.add(I18n.format("tooltip.empty"));
-			else tooltip.add(I18n.format("tooltip.filling_range", list.tagCount(), 243));
+				tooltip.add(I18n.format("avaritiaddons.tooltip.empty"));
+			else tooltip.add(I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
 		}
 		else if (!stack.isEmpty() && stack.getItemDamage() == 1)
 			tooltip.add(TextFormatting.RED + "WIP");
@@ -94,7 +94,7 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	@Nonnull
 	public EnumRarity getRarity(@Nonnull final ItemStack stack)
 	{
-		return !stack.isEmpty() && stack.getItemDamage() == 1 ? ModItems.COSMIC_RARITY : EnumRarity.COMMON;
+		return !stack.isEmpty() && stack.getItemDamage() == 1 ? ModItems.COSMIC_RARITY : EnumRarity.UNCOMMON;
 	}
 
 	@Override

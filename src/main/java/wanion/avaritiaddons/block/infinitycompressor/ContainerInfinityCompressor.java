@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import wanion.lib.common.IResourceShapedContainer;
 import wanion.lib.common.WContainer;
-import wanion.lib.inventory.slot.SpecialSlot;
 
 import javax.annotation.Nonnull;
 
@@ -41,11 +40,11 @@ public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCo
 		if (actualSlot != null && actualSlot.getHasStack()) {
 			ItemStack itemstack1 = actualSlot.getStack();
 			itemstack = itemstack1.copy();
-			if (slot < 9) {
-				if (!mergeItemStack(itemstack1, 9, 36, true))
+			if (slot < 27) {
+				if (!mergeItemStack(itemstack1, 27, 36, false))
 					return ItemStack.EMPTY;
 			} else {
-				if (!mergeItemStack(itemstack1, 0, 9, false))
+				if (!mergeItemStack(itemstack1, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
 			if (itemstack1.getCount() == 0)
@@ -58,12 +57,12 @@ public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCo
 	@Override
 	public void defineShape(@Nonnull final ResourceLocation resourceLocation)
 	{
-		getTile().cachedRecipe.setCompressorRecipe(AvaritiaRecipeManager.COMPRESSOR_RECIPES.get(resourceLocation));
+		getTile().compressorRecipeField.setCompressorRecipe(AvaritiaRecipeManager.COMPRESSOR_RECIPES.get(resourceLocation));
 	}
 
 	@Override
 	public void clearShape()
 	{
-		getTile().cachedRecipe.setCompressorRecipe(null);
+		getTile().compressorRecipeField.setCompressorRecipe(null);
 	}
 }
