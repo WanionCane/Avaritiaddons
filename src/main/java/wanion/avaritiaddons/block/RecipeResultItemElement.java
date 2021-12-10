@@ -48,7 +48,7 @@ public class RecipeResultItemElement extends ItemElement
 		helpTooltip.add(I18n.format("avaritiaddons.compressor.to.set.desc.1"));
 		helpTooltip.add(I18n.format("avaritiaddons.compressor.to.set.desc.2"));
 		helpTooltipSupplier = (interaction, stackSupplier2) -> helpTooltip;
-		setForegroundCheck((interaction -> interaction.isHovering(this)));
+		setDefaultForegroundCheck();
 	}
 
 	public void draw(@Nonnull final WInteraction wInteraction)
@@ -60,10 +60,9 @@ public class RecipeResultItemElement extends ItemElement
 	}
 
 	@Override
-
-	public List<String> getTooltip(@Nonnull final WInteraction interaction)
+	public ITooltipSupplier getTooltipSupplier()
 	{
-		return stackSupplier.get().isEmpty() ? helpTooltipSupplier.getTooltip(interaction) : super.getTooltip(interaction);
+		return stackSupplier.get().isEmpty() ? helpTooltipSupplier : super.getTooltipSupplier();
 	}
 
 	@Override
@@ -73,10 +72,12 @@ public class RecipeResultItemElement extends ItemElement
 			final ItemStack playerStack = wMouseInteraction.getEntityPlayer().inventory.getItemStack();
 			final ICompressorRecipe compressorRecipe = AvaritiaRecipeManager.getCompressorRecipeFromInput(playerStack);
 			final ResourceLocation recipeRegistryName = compressorRecipe != null ? compressorRecipe.getRegistryName() : null;
-			if (recipeRegistryName != null)
-				DefineShapeMessage.sendToServer(wMouseInteraction.getContainer().getContainer(), recipeRegistryName);
+			if (recipeRegistryName != null) {
+				DefineShapeMessage.sendToServer(wMouseInteraction.getWContainer(), recipeRegistryName);
+				playPressSound();
+			}
 		} else if (isShiftKeyDown()) {
-			ClearShapeMessage.sendToServer(wGuiContainer.getContainer());
+			ClearShapeMessage.sendToServer(getWContainer());
 			playPressSound();
 		}
 	}

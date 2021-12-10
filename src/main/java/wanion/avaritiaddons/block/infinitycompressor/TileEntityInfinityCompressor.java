@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 
 public class TileEntityInfinityCompressor extends WTileEntity
 {
-	private static final int[] slotsForFace = new int[27];
+	private static final int[] slotsForFace = new int[243];
 
 	public final CompressorRecipeField compressorRecipeField = new CompressorRecipeField(this);
 	public final RedstoneControl redstoneControl;

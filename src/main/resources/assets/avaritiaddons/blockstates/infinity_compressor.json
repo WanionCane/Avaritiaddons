@@ -1,20 +1,31 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": {
-      "side": "avaritia:blocks/resource/infinity",
-      "front": "avaritiaddons:blocks/infinity_compressor/front_infinity_compressor_00"
+    "model": "forge:multi-layer",
+    "custom" : {
+      "base" : "avaritiaddons:infinity_compressor#base",
+      "Solid": "avaritiaddons:infinity_compressor#base",
+      "Translucent": "avaritiaddons:infinity_compressor#front"
     },
-    "model": "avaritiaddons:infinity_compressor",
-    "uvlock": true
+    "transform": "forge:default-block"
   },
   "variants": {
     "normal": [{}],
+    "inventory": [{}],
     "facing": {
+      "north": {},
       "south": { "y": 180 },
-      "west": { "y": 270 },
-      "north": { "y": 0 },
-      "east": { "y": 90 }
-    }
+      "east": { "y": 90 },
+      "west": { "y": 270 }
+    },
+    "base": [{
+      "custom": { "flip-v": true },
+      "model": "avaritiaddons:infinity_compressor",
+      "textures": { "side" : "avaritia:blocks/resource/infinity" }
+    }],
+    "front": [{
+      "model": "avaritiaddons:infinity_compressor_front",
+      "textures": { "front": "avaritiaddons:blocks/infinity_compressor/infinity_compressor_front" }
+    }]
   }
 }

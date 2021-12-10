@@ -75,7 +75,7 @@ public class ItemBlockInfinityCompressor extends ItemBlock
 					final int progress = fieldNBT.getInteger("compressor.recipe.progress");
 					if (compressorRecipe != null) {
 						final ItemStack outputStack = compressorRecipe.getResult();
-						tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.infinity.compressor.desc"));
+						tooltip.add(TextFormatting.GOLD + I18n.format("avaritiaddons.compressor.making"));
 						tooltip.add(outputStack.getRarity().rarityColor + compressorRecipe.getResult().getDisplayName());
 						tooltip.add(progress + " / " + compressorRecipe.getCost());
 					}

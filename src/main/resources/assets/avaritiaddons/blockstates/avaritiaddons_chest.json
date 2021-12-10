@@ -3,16 +3,10 @@
   "defaults": {
     "model": "avaritiaddons:avaritiaddons_chest"
   },
-  "variants": { "type": { "0": {}, "1": {}},
+  "variants": {
+    "type": { "0": {}, "1": {}},
     "facing": {
-      "south": { "y": 0   },
-      "west":  { "y": 90  },
-      "north": { "y": 180 },
-      "east":  { "y": 270 }
+      "north": {}, "south": {}, "east": {}, "west": {}
     }
-  },
-  "normal": [],
-  "inventory": [
-    {}
-  ]
+  }
 }

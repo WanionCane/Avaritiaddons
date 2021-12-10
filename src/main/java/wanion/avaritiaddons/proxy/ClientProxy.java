@@ -67,14 +67,14 @@ public class ClientProxy extends CommonProxy
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(BlockExtremeAutoCrafter.INSTANCE), 0, new ModelResourceLocation(Reference.MOD_ID + ":extreme_auto_crafter"));
 
 		// Chests
+		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 0, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 1, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAvaritiaddonsChest.class, RendererAvaritiaddonsChest.INSTANCE);
 		ItemBlockAvaritiaddonsChest.INSTANCE.setTileEntityItemStackRenderer(ItemStackRendererAvaritiaddonsChest.INSTANCE);
 
-		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 0, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
-		ModelLoader.setCustomModelResourceLocation(ItemBlockAvaritiaddonsChest.INSTANCE, 1, new ModelResourceLocation(Reference.MOD_ID + ":avaritiaddons_chest"));
 
 		// Infinity Compressor
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(BlockInfinityCompressor.INSTANCE), 0, new ModelResourceLocation(Reference.MOD_ID + ":infinity_compressor"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(BlockInfinityCompressor.INSTANCE), 0, new ModelResourceLocation(Reference.MOD_ID + ":infinity_compressor", "inventory"));
 	}
 
 	@Override

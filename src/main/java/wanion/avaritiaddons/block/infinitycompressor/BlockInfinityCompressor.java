@@ -66,23 +66,17 @@ public class BlockInfinityCompressor extends BlockContainer
 		return new TileEntityInfinityCompressor();
 	}
 
-	@Override
-	public boolean isToolEffective(@Nonnull final String type, @Nonnull final IBlockState state)
-	{
-		return type.equals("pickaxe");
-	}
-
-	@Override
-	public int getHarvestLevel(@Nonnull final IBlockState state)
-	{
-		return 3;
-	}
-
 	@Nonnull
 	@Override
-	public EnumBlockRenderType getRenderType(@Nonnull IBlockState state)
+	public EnumBlockRenderType getRenderType(@Nonnull final IBlockState state)
 	{
 		return EnumBlockRenderType.MODEL;
+	}
+
+	@Override
+	public boolean canRenderInLayer(@Nonnull final IBlockState state, @Nonnull final BlockRenderLayer layer)
+	{
+		return layer == BlockRenderLayer.SOLID || layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
 	@Override

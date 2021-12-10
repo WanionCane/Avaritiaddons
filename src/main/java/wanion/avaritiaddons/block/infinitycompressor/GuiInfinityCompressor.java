@@ -46,7 +46,7 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
 		if (!JEI_PRESENT)
 			showRecipesElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) -> Lists.newArrayList(I18n.format("avaritiaddons.no.jei")));
 		addElement(showRecipesElement);
-		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + 29));
+		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + 29, true));
 		addElement(new CheckBoxWElement((CheckBox) getField("avaritiaddons.compressor.trashcan"), this, guiLeft + getGuiLeft() + getXSize() - 25, getGuiTop() + 51));
 	}
 

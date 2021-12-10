@@ -24,14 +24,13 @@ public class RecipeResultItemBox extends ItemBoxElement
 	public RecipeResultItemBox(@Nonnull final Supplier<ItemStack> stackSupplier, @Nonnull final WGuiContainer<?> wGuiContainer, final int x, final int y)
 	{
 		super(stackSupplier, wGuiContainer, x, y);
+		setInteractionCheck(interaction -> interaction.isHovering(this) && isShiftKeyDown());
 	}
 
 	@Override
 	public void interaction(@Nonnull final WMouseInteraction wMouseInteraction)
 	{
-		if (!isShiftKeyDown())
-			return;
-		ClearShapeMessage.sendToServer(wGuiContainer.getContainer());
+		ClearShapeMessage.sendToServer(getWContainer());
 		playPressSound();
 	}
 }
