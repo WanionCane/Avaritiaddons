@@ -48,6 +48,8 @@ import wanion.avaritiaddons.block.chest.infinity.ContainerInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.GuiInfinityChest;
 import wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest;
 import wanion.avaritiaddons.block.extremeautocrafter.*;
+import wanion.avaritiaddons.block.glass.BlockInfinityGlass;
+import wanion.avaritiaddons.block.glass.ItemBlockInfinityGlass;
 import wanion.avaritiaddons.block.infinitycompressor.*;
 import wanion.avaritiaddons.network.ExtremeAutoCrafterGhostTransferMessage;
 
@@ -104,13 +106,13 @@ public class CommonProxy implements IGuiHandler
 	@SubscribeEvent
 	public void registerItems(final RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().registerAll(ItemBlockExtremeAutoCrafter.INSTANCE, ItemBlockAvaritiaddonsChest.INSTANCE, ItemBlockInfinityCompressor.INSTANCE);
+		event.getRegistry().registerAll(ItemBlockExtremeAutoCrafter.INSTANCE, ItemBlockAvaritiaddonsChest.INSTANCE, ItemBlockInfinityCompressor.INSTANCE, ItemBlockInfinityGlass.INSTANCE);
 	}
 
 	@SubscribeEvent
 	public void registerBlocks(final RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().registerAll(BlockExtremeAutoCrafter.INSTANCE, BlockAvaritiaddonsChest.INSTANCE, BlockInfinityCompressor.INSTANCE);
+		event.getRegistry().registerAll(BlockExtremeAutoCrafter.INSTANCE, BlockAvaritiaddonsChest.INSTANCE, BlockInfinityCompressor.INSTANCE, BlockInfinityGlass.INSTANCE);
 	}
 
 	@SubscribeEvent

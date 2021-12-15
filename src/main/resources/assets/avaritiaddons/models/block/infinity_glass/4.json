@@ -1,0 +1,21 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "avaritiaddons:blocks/infinity_glass",
+    "all": "avaritiaddons:blocks/infinity_glass"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#all", "cullface": "down", "uv": [ 16, 0, 0, 16 ] },
+        "up":    { "texture": "#all", "cullface": "up", "rotation" :  180 },
+        "north": { "texture": "#all", "cullface": "north" },
+        "south": { "texture": "#all", "cullface": "south", "uv": [ 16, 0, 0, 16 ]  },
+        "west":  { "texture": "#all", "cullface": "west", "uv": [ 16, 0, 0, 16 ] },
+        "east":  { "texture": "#all", "cullface": "east" }
+      }
+    }
+  ]
+}

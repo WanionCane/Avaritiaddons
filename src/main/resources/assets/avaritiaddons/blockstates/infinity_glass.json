@@ -1,0 +1,39 @@
+{
+  "variants": {
+    "inventory": [{ "model" : "avaritiaddons:infinity_glass/0" }]
+  },
+  "multipart": [
+    {
+      "when": { "xeven": "true", "yeven": "true", "zeven": "true" },
+      "apply": { "model": "avaritiaddons:infinity_glass/0" }
+    },
+    {
+      "when": { "xeven": "false", "yeven": "true", "zeven": "true" },
+      "apply": { "model": "avaritiaddons:infinity_glass/1" }
+    },
+    {
+      "when": { "xeven": "true", "yeven": "false", "zeven": "true" },
+      "apply": { "model": "avaritiaddons:infinity_glass/2" }
+    },
+    {
+      "when": { "xeven": "false", "yeven": "false", "zeven": "true" },
+      "apply": { "model": "avaritiaddons:infinity_glass/3" }
+    },
+    {
+      "when": { "xeven": "true", "yeven": "true", "zeven": "false" },
+      "apply": { "model": "avaritiaddons:infinity_glass/4" }
+    },
+    {
+      "when": { "xeven": "false", "yeven": "true", "zeven": "false" },
+      "apply": { "model": "avaritiaddons:infinity_glass/5" }
+    },
+    {
+      "when": { "xeven": "true", "yeven": "false", "zeven": "false" },
+      "apply": { "model": "avaritiaddons:infinity_glass/6" }
+    },
+    {
+      "when": { "xeven": "false", "yeven": "false", "zeven": "false" },
+      "apply": { "model": "avaritiaddons:infinity_glass/7" }
+    }
+  ]
+}

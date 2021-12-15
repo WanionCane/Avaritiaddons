@@ -19,7 +19,6 @@
       "west": { "y": 270 }
     },
     "base": [{
-      "custom": { "flip-v": true },
       "model": "avaritiaddons:infinity_compressor",
       "textures": { "side" : "avaritia:blocks/resource/infinity" }
     }],
