@@ -225,7 +225,7 @@ public final class BlockAvaritiaddonsChest extends BlockContainer
 			else
 				return false;
 		} else if (!world.isRemote && entityPlayer.isSneaking() && WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand)) && world.getTileEntity(blockPos) instanceof TileEntityAvaritiaddonsChest) {
-			breakBlock(world, blockPos, state);
+			//breakBlock(world, blockPos, state);
 			world.setBlockToAir(blockPos);
 		}
 		return true;
@@ -242,16 +242,16 @@ public final class BlockAvaritiaddonsChest extends BlockContainer
 	{
 		if (world == null)
 			return;
-		final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest = (TileEntityAvaritiaddonsChest) world.getTileEntity(blockPos);
-		if (tileEntityAvaritiaddonsChest != null) {
+		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		if (tileEntity instanceof TileEntityAvaritiaddonsChest) {
+			final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest = (TileEntityAvaritiaddonsChest) tileEntity;
 			final ItemStack droppedStack = new ItemStack(this, 1, getMetaFromState(blockState) >> 2);
 			final NBTTagCompound nbtTagCompound = tileEntityAvaritiaddonsChest.writeCustomNBT(new NBTTagCompound());
-			if (nbtTagCompound.getTagList("Contents", 10).tagCount() > 0)
+			if (tileEntityAvaritiaddonsChest instanceof TileEntityCompressedChest && nbtTagCompound.getTagList("Contents", 10).tagCount() > 0)
 				droppedStack.setTagCompound(nbtTagCompound);
-			if (tileEntityAvaritiaddonsChest instanceof TileEntityCompressedChest)
-				world.spawnEntity(new EntityItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
 			else
-				world.spawnEntity(new EntityImmortalItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
+				droppedStack.setTagCompound(nbtTagCompound);
+			world.spawnEntity(new EntityImmortalItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
 		}
 		super.breakBlock(world, blockPos, blockState);
 	}

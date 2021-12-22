@@ -37,10 +37,8 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
 
 	public GuiExtremeAutoCrafter(@Nonnull final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter, @Nonnull final InventoryPlayer inventoryPlayer)
 	{
-		super(new ContainerExtremeAutoCrafter(tileEntityExtremeAutoCrafter, inventoryPlayer), guiTexture);
+		super(new ContainerExtremeAutoCrafter(tileEntityExtremeAutoCrafter, inventoryPlayer), guiTexture, 343, 276);
 		final Slot slot = inventorySlots.getSlot(tileEntityExtremeAutoCrafter.full);
-		xSize = 343;
-		ySize = 276;
 		addElement(new RecipeResultItemBox(() -> getTile().getExtremeRecipeField().getExtremeRecipeOutput(), this, slot.xPos - 1, slot.yPos - 29).setTooltipSupplier(extremeTooltipSupplier));
 		addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 25));
 		addElement(new EnergyElement(getControl(EnergyControl.class),this, getGuiLeft() + getXSize() - 25, getGuiTop() + getYSize() - 83));

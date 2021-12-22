@@ -11,37 +11,95 @@ package wanion.avaritiaddons.block.chest.infinity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.LocaleUtils;
 import wanion.lib.common.matching.AbstractMatching;
-import wanion.lib.common.matching.matcher.AbstractMatcher;
-import wanion.lib.common.matching.matcher.ItemStackMatcher;
+import wanion.lib.common.matching.Matching;
+import wanion.lib.common.matching.matcher.NbtMatcher;
 
 import javax.annotation.Nonnull;
 import java.text.NumberFormat;
-import java.util.List;
+import java.util.Locale;
 
 public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 {
-	private final static long LAST_BIT = 1L << 31;
-	// basically the max "stack" size will be 2^31-1 =D
+	private final static int LAST_BIT = 1 << 31;
+	private final TileEntityInfinityChest tileEntityInfinityChest;
+	private ItemStack stack = ItemStack.EMPTY;
 	private int count;
 
-	public InfinityMatching(@Nonnull final List<ItemStack> itemStacks, final int number)
+	public InfinityMatching(@Nonnull final TileEntityInfinityChest tileEntityInfinityChest, final int number)
 	{
-		super(itemStacks, number, null);
+		this(tileEntityInfinityChest, number, null);
 	}
 
-	public InfinityMatching(@Nonnull final List<ItemStack> itemStacks, final int number, final NBTTagCompound tagToRead)
+	public InfinityMatching(@Nonnull final TileEntityInfinityChest tileEntityInfinityChest, final int number, final NBTTagCompound tagToRead)
 	{
-		super(itemStacks, number, tagToRead);
+		super(null, number, tagToRead);
+		this.tileEntityInfinityChest = tileEntityInfinityChest;
+		setMatcher(new NbtMatcher(this));
 	}
 
-	public void setStack(@Nonnull final ItemStack itemStack)
+	public void insert(@Nonnull final ItemStack stack)
 	{
-		itemStacks.set(number, itemStack);
+		if (matches(stack)) {
+			if ((count + stack.getCount() & LAST_BIT) == LAST_BIT)
+				count = Integer.MAX_VALUE;
+			else count += stack.getCount();
+		} else if (isEmpty()) {
+			this.count = stack.getCount();
+			this.stack = stack.copy();
+			this.stack.setCount(1);
+		}
+		setMatcher(new NbtMatcher(this));
+		markTileDirty();
+	}
+
+	@Nonnull
+	public ItemStack extract(int amount, final boolean simulate)
+	{
+		if (isEmpty())
+			return ItemStack.EMPTY;
+		final ItemStack newStack = stack.copy();
+		amount = MathHelper.clamp(amount, 1, newStack.getMaxStackSize());
+		final int remaining = count - amount;
+		if (remaining < 0)
+			amount += remaining;
+		newStack.setCount(amount);
+		if (!simulate) {
+			count -= amount;
+			if (count == 0)
+				setEmpty();
+		}
+		markTileDirty();
+		return newStack;
+	}
+
+	@Override
+	public ItemStack getStack()
+	{
+		final ItemStack newStack = stack.copy();
+		newStack.setCount(count);
+		return newStack;
+	}
+
+	public ItemStack getActualStack()
+	{
+		return stack;
+	}
+
+	private void setEmpty()
+	{
+		setStack(ItemStack.EMPTY, 0);
 		validate();
+	}
+
+	private void setStack(@Nonnull final ItemStack stack, final int count)
+	{
+		this.stack = stack;
+		this.count = count;
+		setMatcher(new NbtMatcher(this));
 	}
 
 	public int getCount()
@@ -49,22 +107,14 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 		return count;
 	}
 
-	public void setCount(int count)
+	public void setCount(final int count)
 	{
 		this.count = count;
 	}
 
-	@Override
-	@Nonnull
-	public AbstractMatcher<?> getDefaultMatcher()
+	private void markTileDirty()
 	{
-		return new ItemStackMatcher(this).validate();
-	}
-
-	@Override
-	public void nextMatcher()
-	{
-		this.matcher = matcher.next().validate();
+		tileEntityInfinityChest.markDirty();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -72,7 +122,7 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 	public String getSimplifiedCount()
 	{
 		if (count > 0 && count < 1_000)
-			return Long.toString(count);
+			return Integer.toString(count);
 		else if (count >= 1_000 && count < 1_000_000)
 			return count / 1_000 + "K";
 		else if (count >= 1_000_000L && count < 1_000_000_000)
@@ -86,25 +136,40 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 	@Nonnull
 	public String getFormattedCount()
 	{
-		return NumberFormat.getInstance(LocaleUtils.toLocale(Minecraft.getMinecraft().gameSettings.language)).format(count);
+		final String lang = Minecraft.getMinecraft().gameSettings.language;
+		return NumberFormat.getInstance(new Locale(lang.substring(0, 1), lang.substring(3, 4))).format(count);
 	}
 
 	@Override
 	public void customWriteNBT(@Nonnull final NBTTagCompound nbtToWrite)
 	{
+		stack.writeToNBT(nbtToWrite);
 		nbtToWrite.setInteger("count", count);
 	}
 
 	@Override
 	public void customReadNBT(@Nonnull final NBTTagCompound nbtToRead)
 	{
-		this.count = nbtToRead.getInteger("count");
+		setStack(new ItemStack(nbtToRead), nbtToRead.getInteger("count"));
 	}
 
 	@Override
 	@Nonnull
 	public InfinityMatching copy()
 	{
-		return new InfinityMatching(this.itemStacks, this.number, this.writeNBT());
+		return new InfinityMatching(this.tileEntityInfinityChest, this.number, this.writeNBT());
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (obj == this)
+			return true;
+		else if (obj instanceof InfinityMatching) {
+			final InfinityMatching infinityMatching = (InfinityMatching) obj;
+			if (infinityMatching.number == this.number)
+				return this.matcher.equals(infinityMatching.matcher) && matches(infinityMatching.stack) && this.count == infinityMatching.count;
+			else return false;
+		} else return false;
 	}
 }

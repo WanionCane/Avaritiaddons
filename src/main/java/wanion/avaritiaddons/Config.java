@@ -21,6 +21,11 @@ public final class Config
 	public static final Config INSTANCE = new Config();
 
 	public final boolean createAutoExtremeTableRecipe, createCompressedChestRecipe, createInfinityChestRecipe, hardCompressedChestRecipe, hardInfinityChestRecipe, hardCompressedChestRecipeUsesNeutroniumCompressor, shouldUseRedstoneSingularity, shouldUseNeutroniumIngot, createInfinityCompressorRecipe, hardInfinityCompressorRecipe;
+
+	// Infinity Glass
+	public final boolean createInfinityGlassRecipe;
+	public final int infinityGlassLightValue;
+
 	public final int howManyChestsShouldTheCompressorTake;
 	public final int powerMultiplier;
 	public final int capacityMultiplier;
@@ -36,7 +41,6 @@ public final class Config
 		hardCompressedChestRecipe = config.getBoolean("hardCompressedChestRecipe", Configuration.CATEGORY_GENERAL, false, "should be created an harder recipe for the Compressed Chest?");
 		hardInfinityChestRecipe = config.getBoolean("hardInfinityChestRecipe", Configuration.CATEGORY_GENERAL, false, "should be created an harder recipe for the Infinity Chest?");
 
-
 		hardCompressedChestRecipeUsesNeutroniumCompressor = config.getBoolean("hardCompressedChestRecipeUsesNeutroniumCompressor", Configuration.CATEGORY_GENERAL, true, "the hard recipe should be made in a Neutronium Compressor?");
 		howManyChestsShouldTheCompressorTake = config.getInt("howManyChestsShouldTheCompressorTake", Configuration.CATEGORY_GENERAL, 729, 9, Integer.MAX_VALUE, "how many chests it needs to create the Compressed Chest using the Neutronium Compressor?");
 
@@ -48,7 +52,10 @@ public final class Config
 
 		powerMultiplier = config.getInt("powerMultiplier", Configuration.CATEGORY_GENERAL, 10, 1, Short.MAX_VALUE, "Formula: powerConsumption = craftingSlotAmount * powerMultiplier");
 		capacityMultiplier = config.getInt("capacityMultiplier", Configuration.CATEGORY_GENERAL, 100, 1, Short.MAX_VALUE, "Formula: capacity = powerConsumption * capacityMultiplier");
-		config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, Arrays.asList("createAutoExtremeTableRecipe", "createCompressedChestRecipe", "createInfinityChestRecipe", "createInfinityCompressorRecipe", "hardCompressedChestRecipe", "hardInfinityChestRecipe", "hardInfinityCompressorRecipe", "hardCompressedChestRecipeUsesNeutroniumCompressor", "howManyChestsShouldTheCompressorTake", "shouldUseRedstoneSingularity", "shouldUseNeutroniumIngot", "powerMultiplier", "capacityMultiplier"));
+
+		// Infinity Glass
+		createInfinityGlassRecipe = config.getBoolean("createInfinityGlassRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Infinity Glass?");
+		infinityGlassLightValue = config.getInt("infinityGlassLightValue", Configuration.CATEGORY_GENERAL, 15, 0, 15, "Light value for Infinity Glass.\nbe aware that it will only glow in the Overworld!");
 
 		if (config.hasChanged())
 			config.save();

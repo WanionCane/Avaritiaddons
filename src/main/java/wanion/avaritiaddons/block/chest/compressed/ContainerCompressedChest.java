@@ -16,16 +16,25 @@ import net.minecraft.item.ItemStack;
 import wanion.avaritiaddons.block.chest.ContainerAvaritiaddonsChest;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 @ChestContainer(rowSize = 27)
 public final class ContainerCompressedChest extends ContainerAvaritiaddonsChest<TileEntityCompressedChest>
 {
 	public ContainerCompressedChest(@Nonnull TileEntityCompressedChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
 	{
-		super(wTileEntity, inventoryPlayer);
+		super(() -> {
+					final List<Slot> slotList = new ArrayList<>();
+					for (int y = 0; y < 9; y++)
+						for (int x = 0; x < 27; x++)
+							slotList.add(new Slot(wTileEntity, y * 27 + x, 8 + (18 * x), 18 + (18 * y)));
+					return slotList;
+				},
+				wTileEntity, inventoryPlayer);
 	}
-	@Override
 
+	@Override
 	@Nonnull
 	public ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
 	{

@@ -38,11 +38,9 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
 
 	public GuiInfinityCompressor(@Nonnull final WContainer<TileEntityInfinityCompressor> wContainer)
 	{
-		super(wContainer, guiTexture);
-		xSize = 176;
-		ySize = 166;
+		super(wContainer, guiTexture, 176, 166);
 		addElement(new RecipeResultItemElement(() -> getTile().compressorRecipeField.getCompressorRecipeOutput(), this, getGuiLeft() + (getXSize() / 2) - 8, getGuiTop() + 33).setTooltipSupplier(new SingularityTooltipSupplier()));
-		final LetterElement showRecipesElement = new LetterElement('R', this, getGuiLeft() + getXSize() - 25, getGuiTop() + 7);
+		final LetterBoxElement showRecipesElement = new LetterBoxElement('R', this, getGuiLeft() + getXSize() - 25, getGuiTop() + 7);
 		if (!JEI_PRESENT)
 			showRecipesElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) -> Lists.newArrayList(I18n.format("avaritiaddons.no.jei")));
 		addElement(showRecipesElement);

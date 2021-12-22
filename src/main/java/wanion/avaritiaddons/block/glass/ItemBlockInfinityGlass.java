@@ -8,11 +8,14 @@ package wanion.avaritiaddons.block.glass;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import morph.avaritia.entity.EntityImmortalItem;
 import morph.avaritia.init.ModItems;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import wanion.avaritiaddons.Reference;
 
 import javax.annotation.Nonnull;
@@ -35,4 +38,15 @@ public class ItemBlockInfinityGlass extends ItemBlock
 		return ModItems.COSMIC_RARITY;
 	}
 
+	@Override
+	public boolean hasCustomEntity(@Nonnull final ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public Entity createEntity(@Nonnull final World world, @Nonnull final Entity entity, @Nonnull final ItemStack itemStack)
+	{
+		return new EntityImmortalItem(world, entity, itemStack);
+	}
 }

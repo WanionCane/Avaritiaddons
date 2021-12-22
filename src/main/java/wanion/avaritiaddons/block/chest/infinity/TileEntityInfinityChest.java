@@ -8,6 +8,8 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -21,36 +23,46 @@ import wanion.avaritiaddons.proxy.ClientProxy;
 import wanion.lib.common.matching.MatchingController;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 {
+	private static final NonNullList<ItemStack> EMPTY_NON_NULL_LIST = NonNullList.withSize(0, ItemStack.EMPTY);
+	private final List<InfinityMatching> infinityMatchingList = new ArrayList<>();
 	private final InfinityChestInvWrapper infinityChestInvWrapper;
-	private final InfinityMatching[] infinityMatchings = new InfinityMatching[243];
 
 	public TileEntityInfinityChest()
 	{
 		final MatchingController matchingController = getController(MatchingController.class);
 		for (int i = 0; i < 243; i++)
-			matchingController.add((infinityMatchings[i] = new InfinityMatching(itemStacks, i)));
+			addInfinityMatching(matchingController, i);
 		infinityChestInvWrapper = this.new InfinityChestInvWrapper();
 		addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, infinityChestInvWrapper);
+	}
+
+	public InfinityMatching getInfinityMatching(final int num)
+	{
+		return infinityMatchingList.get(num);
+	}
+
+	private void addInfinityMatching(@Nonnull final MatchingController matchingController, final int number)
+	{
+		final InfinityMatching infinityMatching = new InfinityMatching(this, number);
+		infinityMatchingList.add(infinityMatching);
+		matchingController.add(infinityMatching);
 	}
 
 	@Override
 	protected NonNullList<ItemStack> getItemStacks()
 	{
-		return NonNullList.withSize(243, ItemStack.EMPTY);
+		return EMPTY_NON_NULL_LIST;
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
 		return 244;
-	}
-
-	public InfinityMatching getInfinityMatching(final int num)
-	{
-		return infinityMatchings[num];
 	}
 
 	@Override
@@ -100,7 +112,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 	@Override
 	public boolean canExtractItem(final int index, @Nonnull final ItemStack stack, @Nonnull final EnumFacing direction)
 	{
-		return false;
+		return index != 243;
 	}
 
 	@Nonnull
@@ -123,43 +135,26 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 
 		private int findSlotFor(@Nonnull final ItemStack itemStack)
 		{
-			for (final InfinityMatching infinityMatching : infinityMatchings)
-				if (infinityMatching.matches(itemStack))
+			for (final InfinityMatching infinityMatching : infinityMatchingList)
+				if (infinityMatching.accepts(itemStack) && infinityMatching.matches(itemStack))
+					return infinityMatching.getNumber();
+			for (final InfinityMatching infinityMatching : infinityMatchingList)
+				if (infinityMatching.isEmpty())
 					return infinityMatching.getNumber();
 			return -1;
 		}
 
-		@Override
-		public void setStackInSlot(int slot, @Nonnull final ItemStack itemStack)
+		private int findSlotFor(final int slot, @Nonnull final ItemStack itemStack)
 		{
-			/*
-			if (slot == 243)
+			return getInfinityMatching(slot).matches(itemStack) ? slot : findSlotFor(itemStack);
+		}
+
+		@Override
+		public void setStackInSlot(final int slot, @Nonnull final ItemStack itemStack)
+		{
+			if (slot == -1 || slot == 243)
 				return;
-			else if (itemStack.isEmpty()) {
-				getInfinityMatching(slot).setStack(itemStack);
-				markDirty();
-				return;
-			}
-			final int perfectSlot = findSlotFor(itemStack);
-			if (perfectSlot == -1)
-				return;
-			final InfinityMatching infinityMatching = getInfinityMatching(perfectSlot);
-			if (perfectSlot != slot) {
-				slot = perfectSlot;
-				if (inventoryAvaritiaddonsChest.contents[slot] != null) {
-					inventoryAvaritiaddonsChest.contents[slot].stackSize += itemStack.stackSize;
-					itemStack.stackSize = 0;
-				} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
-			} else if (perfectSlot != -1) {
-				final ItemStack slotStack = inventoryAvaritiaddonsChest.contents[(slot = perfectSlot)];
-				final int dif = slotStack.stackSize - itemStack.stackSize;
-				slotStack.stackSize -= dif;
-				itemStack.stackSize += dif;
-				if (slotStack.stackSize <= 0)
-					inventoryAvaritiaddonsChest.contents[slot] = null;
-			} else inventoryAvaritiaddonsChest.contents[slot] = itemStack;
-			markDirty();
-			 */
+			getInfinityMatching(findSlotFor(slot, itemStack)).insert(itemStack);
 		}
 
 		@Override
@@ -172,28 +167,33 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		@Override
 		public ItemStack getStackInSlot(final int slot)
 		{
-			if (slot == 243 || slot == -1)
+			if (slot == -1 || slot == 243)
 				return ItemStack.EMPTY;
-			final ItemStack newStack = itemStacks.get(slot).copy();
-			newStack.setCount(getInfinityMatching(slot).getCount());
-			return newStack;
+			return getInfinityMatching(slot).getStack();
 		}
 
 		@Nonnull
 		@Override
-		public ItemStack insertItem(final int slot, @Nonnull final ItemStack stack, final boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull final ItemStack stack, final boolean simulate)
 		{
-			final int perfectSlot = findSlotFor(stack);
-			return perfectSlot == -1 ? stack : ItemStack.EMPTY;
+			if (slot == 243)
+				return stack;
+			final InfinityMatching infinityMatching = infinityMatchingList.get(slot);
+			slot = infinityMatching.isEmpty() || infinityMatching.matches(stack) ? slot : findSlotFor(stack);
+			if (slot == -1)
+				return stack;
+			if (!simulate)
+				setStackInSlot(slot, stack);
+			return ItemStack.EMPTY;
 		}
 
 		@Nonnull
 		@Override
-		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		public ItemStack extractItem(final int slot, final int amount, final boolean simulate)
 		{
 			if (slot == 243)
 				return ItemStack.EMPTY;
-			return ItemStack.EMPTY;
+			return getInfinityMatching(slot).extract(amount, simulate);
 		}
 
 		@Override
@@ -203,9 +203,12 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		}
 
 		@Override
-		public boolean isItemValid(final int slot, @Nonnull final ItemStack stack)
+		public boolean isItemValid(int slot, @Nonnull final ItemStack stack)
 		{
-			return slot != 243 || findSlotFor(stack) != -1;
+			if (slot == 243)
+				slot = findSlotFor(stack);
+			final InfinityMatching infinityMatching = slot != -1 ? infinityMatchingList.get(slot) : null;
+			return infinityMatching != null ? infinityMatching.isEmpty() || infinityMatching.matches(stack) : findSlotFor(stack) != -1;
 		}
 	}
 }

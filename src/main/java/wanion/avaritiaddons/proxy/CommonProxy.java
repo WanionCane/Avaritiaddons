@@ -26,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.Config;
@@ -96,6 +98,11 @@ public class CommonProxy implements IGuiHandler
 				GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_compressor"), null, new ItemStack(ItemBlockInfinityCompressor.INSTANCE, 1), "III", "ICI", "III", 'I', "ingotInfinity", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.neutronium_compressor, 1)));
 			else
 				GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_compressor"), null, new ItemStack(ItemBlockInfinityCompressor.INSTANCE, 1), "TTT", "TCT", "TTT", 'T', Ingredient.fromStacks(ModItems.infinity_catalyst), 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.neutronium_compressor, 1)));
+		}
+		OreDictionary.registerOre("glassInfinity", new ItemStack(ItemBlockInfinityGlass.INSTANCE, 1));
+		if (config.createInfinityGlassRecipe) {
+			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_glass"), null, new ItemStack(ItemBlockInfinityGlass.INSTANCE, 1), "GGG", "GIG", "GGG", 'G', "blockGlass", 'I', "blockInfinity");
+			GameRegistry.addShapelessRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_block"), null, new ItemStack(ModBlocks.resource, 1, 1), new OreIngredient("glassInfinity"));
 		}
 	}
 

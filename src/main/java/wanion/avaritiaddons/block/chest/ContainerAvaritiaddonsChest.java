@@ -10,23 +10,24 @@ package wanion.avaritiaddons.block.chest;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import wanion.lib.common.WContainer;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class ContainerAvaritiaddonsChest <C extends TileEntityAvaritiaddonsChest> extends WContainer<C>
 {
-	protected int playerInventoryEnds, playerInventoryStarts;
+	protected final int playerInventoryEnds, playerInventoryStarts;
 
-	public ContainerAvaritiaddonsChest(@Nonnull final C wTileEntity, final InventoryPlayer inventoryPlayer)
+	public ContainerAvaritiaddonsChest(@Nonnull final Supplier<List<Slot>> slotSupplier, @Nonnull final C wTileEntity, final InventoryPlayer inventoryPlayer)
 	{
 		super(wTileEntity);
 		wTileEntity.openInventory(inventoryPlayer.player);
-		for (int y = 0; y < 9; y++)
-			for (int x = 0; x < 27; x++)
-				addSlotToContainer(new Slot(wTileEntity, y * 27 + x, 8 + (18 * x), 18 + (18 * y)));
+		slotSupplier.get().forEach(this::addSlotToContainer);
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 9; x++)
 				addSlotToContainer(new Slot(inventoryPlayer, 9 + y * 9 + x, 170 + (18 * x), 194 + (18 * y)));

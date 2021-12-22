@@ -67,7 +67,7 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	@Override
 	public boolean hasCustomEntity(@Nonnull final ItemStack stack)
 	{
-		return !stack.isEmpty() && stack.getItemDamage() == 1;
+		return true;
 	}
 
 	@Override
@@ -79,15 +79,20 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack stack, @Nullable final World worldIn, @Nonnull final List<String> tooltip, @Nonnull final ITooltipFlag flagIn)
 	{
-		if (!stack.isEmpty() && stack.getItemDamage() == 0) {
-			final NBTTagCompound tag = stack.getTagCompound();
-			final NBTTagList list = tag != null ? tag.getTagList("Contents", 10) : null;
-			if (list == null || list.hasNoTags())
-				tooltip.add(I18n.format("avaritiaddons.tooltip.empty"));
-			else tooltip.add(I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
-		}
-		else if (!stack.isEmpty() && stack.getItemDamage() == 1)
+		final NBTTagCompound tag = !stack.isEmpty() && stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+		if (tag != null && stack.getItemDamage() == 0) {
+			final NBTTagList list = tag.getTagList("Contents", 10);
+			tooltip.add(list.hasNoTags() ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
+		} else if (tag != null && stack.getItemDamage() == 1) {
+			final NBTTagList infinityTag = tag.getTagList("matching", 10);
+			int count = 0;
+			for (int i = 0; i < infinityTag.tagCount(); i++) {
+				if (infinityTag.getCompoundTagAt(i).getInteger("count") > 0)
+					count++;
+			}
+			tooltip.add(count == 0 ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", count, 243));
 			tooltip.add(TextFormatting.RED + "WIP");
+		}
 	}
 
 	@Override

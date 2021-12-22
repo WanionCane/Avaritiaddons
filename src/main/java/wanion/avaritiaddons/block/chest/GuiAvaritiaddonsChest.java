@@ -22,8 +22,6 @@ public abstract class GuiAvaritiaddonsChest <C extends TileEntityAvaritiaddonsCh
 
 	public GuiAvaritiaddonsChest(@Nonnull final WContainer<C> wContainer)
 	{
-		super(wContainer, guiTexture);
-		xSize = 500;
-		ySize = 276;
+		super(wContainer, guiTexture, 500, 276);
 	}
 }

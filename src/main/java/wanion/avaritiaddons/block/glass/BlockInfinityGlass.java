@@ -9,18 +9,15 @@ package wanion.avaritiaddons.block.glass;
  */
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -28,12 +25,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import wanion.avaritiaddons.Avaritiaddons;
+import wanion.avaritiaddons.Config;
 import wanion.avaritiaddons.Reference;
 
 import javax.annotation.Nonnull;
 
 public class BlockInfinityGlass extends Block
 {
+	private static final int LIGHT_VALUE = Config.INSTANCE.infinityGlassLightValue;
 	public static final PropertyBool xEven = PropertyBool.create("xeven");
 	public static final PropertyBool yEven = PropertyBool.create("yeven");
 	public static final PropertyBool zEven = PropertyBool.create("zeven");
@@ -53,15 +52,15 @@ public class BlockInfinityGlass extends Block
 		setDefaultState(blockState.getBaseState().withProperty(xEven, true).withProperty(yEven, true).withProperty(zEven, true));
 	}
 
-	@Nonnull
 	@Override
+	@Nonnull
 	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateContainer(this, xEven, yEven, zEven);
 	}
 
-	@Nonnull
 	@Override
+	@Nonnull
 	public IBlockState getStateFromMeta(final int meta)
 	{
 		return this.getDefaultState().withProperty(xEven, (meta & 1) == 0).withProperty(yEven, (meta >> 1 & 1) == 0).withProperty(zEven, (meta >> 2 & 1) == 0);
@@ -77,9 +76,9 @@ public class BlockInfinityGlass extends Block
 		return meta;
 	}
 
-	@Nonnull
 	@Override
-	public IBlockState getStateForPlacement(@Nonnull final World worldIn, @Nonnull final BlockPos pos, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, @Nonnull final EntityLivingBase placer)
+	@Nonnull
+	public IBlockState getStateForPlacement(@Nonnull final World worldIn, @Nonnull final BlockPos pos, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final int meta, @Nonnull final EntityLivingBase placer, @Nonnull final EnumHand hand)
 	{
 		return getDefaultState().withProperty(xEven, (pos.getX() & 1) == 0).withProperty(yEven, (pos.getY() & 1) == 0).withProperty(zEven, (pos.getZ() & 1) == 0);
 	}
@@ -90,8 +89,8 @@ public class BlockInfinityGlass extends Block
 		return layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(@Nonnull final IBlockState state, @Nonnull final IBlockAccess world, @Nonnull final BlockPos pos, @Nonnull final EnumFacing side)
 	{
 		return world.getBlockState(pos.offset(side)).getBlock() != this && super.shouldSideBeRendered(state, world, pos, side);
@@ -112,7 +111,9 @@ public class BlockInfinityGlass extends Block
 	@Override
 	public int getLightValue(@Nonnull final IBlockState state, @Nonnull final IBlockAccess world, @Nonnull final BlockPos pos)
 	{
-		return 15;
+		final boolean isWorld = world instanceof World;
+		if (!isWorld)
+			return 0;
+		return ((World) world).provider.getDimension() == 0 ? LIGHT_VALUE : 0;
 	}
-
 }
