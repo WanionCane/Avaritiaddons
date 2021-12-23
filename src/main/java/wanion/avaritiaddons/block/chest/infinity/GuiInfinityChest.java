@@ -8,9 +8,9 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import morph.avaritia.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
@@ -20,18 +20,28 @@ import net.minecraftforge.fml.common.ModContainer;
 import wanion.avaritiaddons.block.chest.GuiAvaritiaddonsChest;
 import wanion.lib.client.gui.ITooltipSupplier;
 import wanion.lib.client.gui.ItemElement;
+import wanion.lib.client.gui.TextElement;
 import wanion.lib.client.gui.interaction.WInteraction;
 import wanion.lib.common.Util;
 import wanion.lib.common.WContainer;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.List;
 
 public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfinityChest>
 {
+	private final String infinityChestName = tileName + "?";
+	private final List<String> temporaryTooltip = Arrays.asList(
+			ModItems.COSMIC_RARITY.rarityColor + tileName,
+			I18n.format("avaritiaddons.infinity.chest.desc.line.1", tileName),
+			I18n.format("avaritiaddons.infinity.chest.desc.line.2")
+	);
+
 	public GuiInfinityChest(@Nonnull final WContainer<TileEntityInfinityChest> wContainer)
 	{
 		super(wContainer);
+		tileNameTextElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) -> temporaryTooltip).setColorSupplier(() -> 0xFFFFFF);
 	}
 
 	@Override
@@ -53,6 +63,12 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 		} else super.renderToolTip(itemStack, x, y);
 	}
 
+	@Override
+	protected TextElement getTileNameTextElement()
+	{
+		return new TextElement(() -> infinityChestName, this, 7, 7, true);
+	}
+
 	private int getLine(@Nonnull final List<String> tooltip, @Nonnull final ItemStack stack)
 	{
 		final ModContainer modContainer = Util.getModContainerFromStack(stack);
@@ -69,8 +85,8 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 	@Override
 	protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 		final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		GlStateManager.disableDepth();
 		for (int i = 0; i < 243; i++) {
 			final InfinitySlot infinitySlot = (InfinitySlot) inventorySlots.getSlot(i);
@@ -82,5 +98,6 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 			}
 		}
 		GlStateManager.enableDepth();
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 }
