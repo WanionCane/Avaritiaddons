@@ -8,26 +8,22 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import wanion.lib.common.matching.AbstractMatching;
-import wanion.lib.common.matching.Matching;
 import wanion.lib.common.matching.matcher.NbtMatcher;
 
 import javax.annotation.Nonnull;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 {
 	private final static int LAST_BIT = 1 << 31;
 	private final TileEntityInfinityChest tileEntityInfinityChest;
 	private ItemStack stack = ItemStack.EMPTY;
-	private int count;
+	private int count = 0;
 
 	public InfinityMatching(@Nonnull final TileEntityInfinityChest tileEntityInfinityChest, final int number)
 	{
@@ -38,21 +34,26 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 	{
 		super(null, number, tagToRead);
 		this.tileEntityInfinityChest = tileEntityInfinityChest;
-		setMatcher(new NbtMatcher(this));
+		setNbtMatcher();
+	}
+
+	@Nonnull
+	public TileEntityInfinityChest getTileEntityInfinityChest()
+	{
+		return tileEntityInfinityChest;
 	}
 
 	public void insert(@Nonnull final ItemStack stack)
 	{
 		if (matches(stack)) {
-			if ((count + stack.getCount() & LAST_BIT) == LAST_BIT)
+			if (((count += stack.getCount()) & LAST_BIT) == LAST_BIT)
 				count = Integer.MAX_VALUE;
-			else count += stack.getCount();
 		} else if (isEmpty()) {
 			this.count = stack.getCount();
 			this.stack = stack.copy();
 			this.stack.setCount(1);
 		}
-		setMatcher(new NbtMatcher(this));
+		setNbtMatcher();
 		markTileDirty();
 	}
 
@@ -77,11 +78,24 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 	}
 
 	@Override
+	public boolean isEmpty()
+	{
+		return count == 0 || super.isEmpty();
+	}
+
+	@Override
 	public ItemStack getStack()
 	{
+		if (count == 0)
+			return ItemStack.EMPTY;
 		final ItemStack newStack = stack.copy();
 		newStack.setCount(count);
 		return newStack;
+	}
+
+	public int getMaxStackSize()
+	{
+		return stack.getMaxStackSize();
 	}
 
 	public ItemStack getActualStack()
@@ -99,17 +113,17 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 	{
 		this.stack = stack;
 		this.count = count;
+		setNbtMatcher();
+	}
+
+	private void setNbtMatcher()
+	{
 		setMatcher(new NbtMatcher(this));
 	}
 
 	public int getCount()
 	{
 		return count;
-	}
-
-	public void setCount(final int count)
-	{
-		this.count = count;
 	}
 
 	private void markTileDirty()
@@ -130,14 +144,6 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 		else if (count >= 1_000_000_000)
 			return count / 1_000_000_000 + "B";
 		else return Integer.toString(count);
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Nonnull
-	public String getFormattedCount()
-	{
-		final String lang = Minecraft.getMinecraft().gameSettings.language;
-		return NumberFormat.getInstance(new Locale(lang.substring(0, 1), lang.substring(3, 4))).format(count);
 	}
 
 	@Override
@@ -167,9 +173,7 @@ public final class InfinityMatching extends AbstractMatching<InfinityMatching>
 			return true;
 		else if (obj instanceof InfinityMatching) {
 			final InfinityMatching infinityMatching = (InfinityMatching) obj;
-			if (infinityMatching.number == this.number)
-				return this.matcher.equals(infinityMatching.matcher) && matches(infinityMatching.stack) && this.count == infinityMatching.count;
-			else return false;
+			return infinityMatching.number == this.number && this.matcher.equals(infinityMatching.matcher) && matches(infinityMatching.stack) && this.count == infinityMatching.count;
 		} else return false;
 	}
 }

@@ -49,15 +49,6 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	}
 
 	@Override
-	public void getSubItems(@Nonnull final CreativeTabs tab, @Nonnull final NonNullList<ItemStack> items)
-	{
-		if (!this.isInCreativeTab(tab))
-			return;
-		items.add(new ItemStack(this, 1, 0));
-		items.add(new ItemStack(this, 1, 1));
-	}
-
-	@Override
 	@Nonnull
 	public String getUnlocalizedName(@Nonnull final ItemStack stack)
 	{
@@ -79,20 +70,13 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack stack, @Nullable final World worldIn, @Nonnull final List<String> tooltip, @Nonnull final ITooltipFlag flagIn)
 	{
-		final NBTTagCompound tag = !stack.isEmpty() && stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-		if (tag != null && stack.getItemDamage() == 0) {
-			final NBTTagList list = tag.getTagList("Contents", 10);
-			tooltip.add(list.hasNoTags() ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
-		} else if (tag != null && stack.getItemDamage() == 1) {
-			final NBTTagList infinityTag = tag.getTagList("matching", 10);
-			int count = 0;
-			for (int i = 0; i < infinityTag.tagCount(); i++) {
-				if (infinityTag.getCompoundTagAt(i).getInteger("count") > 0)
-					count++;
-			}
-			tooltip.add(count == 0 ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", count, 243));
+		final NBTTagCompound tag=  !stack.isEmpty() && stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+		if (tag == null)
+			return;
+		final NBTTagList list = stack.getItemDamage() == 0 ? tag.getTagList("Contents", 10) : tag.getTagList("matching", 10);
+		tooltip.add(list.hasNoTags() ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
+		if (stack.getItemDamage() == 1)
 			tooltip.add(TextFormatting.RED + "WIP");
-		}
 	}
 
 	@Override

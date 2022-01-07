@@ -18,14 +18,16 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -44,6 +46,7 @@ import wanion.lib.common.WrenchHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Random;
 
 public final class BlockAvaritiaddonsChest extends BlockContainer
@@ -63,6 +66,13 @@ public final class BlockAvaritiaddonsChest extends BlockContainer
 		setLightOpacity(0);
 		setResistance(2000F);
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(CHEST_TYPE, 0));
+	}
+
+	@Override
+	public void getSubBlocks(@Nonnull final CreativeTabs itemIn, @Nonnull final NonNullList<ItemStack> items)
+	{
+		items.add(new ItemStack(this, 1, 0));
+		items.add(new ItemStack(this, 1, 1));
 	}
 
 	@Override
@@ -225,7 +235,6 @@ public final class BlockAvaritiaddonsChest extends BlockContainer
 			else
 				return false;
 		} else if (!world.isRemote && entityPlayer.isSneaking() && WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand)) && world.getTileEntity(blockPos) instanceof TileEntityAvaritiaddonsChest) {
-			//breakBlock(world, blockPos, state);
 			world.setBlockToAir(blockPos);
 		}
 		return true;
@@ -247,12 +256,24 @@ public final class BlockAvaritiaddonsChest extends BlockContainer
 			final TileEntityAvaritiaddonsChest tileEntityAvaritiaddonsChest = (TileEntityAvaritiaddonsChest) tileEntity;
 			final ItemStack droppedStack = new ItemStack(this, 1, getMetaFromState(blockState) >> 2);
 			final NBTTagCompound nbtTagCompound = tileEntityAvaritiaddonsChest.writeCustomNBT(new NBTTagCompound());
+			if (tileEntityAvaritiaddonsChest instanceof TileEntityInfinityChest)
+				cleanInfinityNBT(nbtTagCompound);
 			if (tileEntityAvaritiaddonsChest instanceof TileEntityCompressedChest && nbtTagCompound.getTagList("Contents", 10).tagCount() > 0)
 				droppedStack.setTagCompound(nbtTagCompound);
-			else
+			else if (tileEntityAvaritiaddonsChest instanceof TileEntityInfinityChest && nbtTagCompound.getTagList("matching", 10).tagCount() > 0)
 				droppedStack.setTagCompound(nbtTagCompound);
 			world.spawnEntity(new EntityImmortalItem(world, blockPos.getX() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getY() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, blockPos.getZ() + Reference.RANDOM.nextFloat() * 0.8F + 0.1F, droppedStack));
 		}
 		super.breakBlock(world, blockPos, blockState);
+	}
+
+	private void cleanInfinityNBT(@Nonnull final NBTTagCompound infinityChestNBT)
+	{
+		final NBTTagList infinityList = infinityChestNBT.getTagList("matching", 10);
+		for (final Iterator<NBTBase> infinityIterator = infinityList.iterator(); infinityIterator.hasNext(); ) {
+			final NBTBase infinityNBT = infinityIterator.next();
+			if (infinityNBT instanceof NBTTagCompound && ((NBTTagCompound) infinityNBT).getInteger("count") == 0)
+				infinityIterator.remove();
+		}
 	}
 }

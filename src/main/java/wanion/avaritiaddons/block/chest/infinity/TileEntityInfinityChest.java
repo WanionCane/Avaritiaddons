@@ -8,8 +8,6 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -51,6 +49,11 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		final InfinityMatching infinityMatching = new InfinityMatching(this, number);
 		infinityMatchingList.add(infinityMatching);
 		matchingController.add(infinityMatching);
+	}
+
+	public InfinityChestInvWrapper getInfinityChestInvWrapper()
+	{
+		return infinityChestInvWrapper;
 	}
 
 	@Override
@@ -129,11 +132,11 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 		return ClientProxy.INFINITY_CHEST_ANIMATION.getCurrentFrame();
 	}
 
-	private class InfinityChestInvWrapper implements IItemHandlerModifiable
+	public class InfinityChestInvWrapper implements IItemHandlerModifiable
 	{
 		private InfinityChestInvWrapper() {}
 
-		private int findSlotFor(@Nonnull final ItemStack itemStack)
+		public int findSlotFor(@Nonnull final ItemStack itemStack)
 		{
 			for (final InfinityMatching infinityMatching : infinityMatchingList)
 				if (infinityMatching.accepts(itemStack) && infinityMatching.matches(itemStack))
@@ -144,7 +147,7 @@ public final class TileEntityInfinityChest extends TileEntityAvaritiaddonsChest
 			return -1;
 		}
 
-		private int findSlotFor(final int slot, @Nonnull final ItemStack itemStack)
+		public int findSlotFor(final int slot, @Nonnull final ItemStack itemStack)
 		{
 			return getInfinityMatching(slot).matches(itemStack) ? slot : findSlotFor(itemStack);
 		}

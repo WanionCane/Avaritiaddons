@@ -10,8 +10,10 @@ package wanion.avaritiaddons.block.chest.infinity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import wanion.avaritiaddons.block.chest.ContainerAvaritiaddonsChest;
 
 import javax.annotation.Nonnull;
@@ -20,6 +22,8 @@ import java.util.List;
 
 public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest<TileEntityInfinityChest>
 {
+	private final TileEntityInfinityChest.InfinityChestInvWrapper infinityChestInvWrapper = getTile().getInfinityChestInvWrapper();
+
 	public ContainerInfinityChest(@Nonnull final TileEntityInfinityChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
 	{
 		super(() -> {
@@ -32,6 +36,45 @@ public final class ContainerInfinityChest extends ContainerAvaritiaddonsChest<Ti
 				wTileEntity, inventoryPlayer);
 	}
 
+	@Override
+	@Nonnull
+	public ItemStack slotClick(final int slotId, final int dragType, @Nonnull final ClickType clickTypeIn, @Nonnull final EntityPlayer player)
+	{
+		final InfinityMatching infinityMatching;
+		{
+			final Slot slot = slotId >= 0 ? this.inventorySlots.get(slotId) : null;
+			if (!(slot instanceof InfinitySlot))
+				return super.slotClick(slotId, dragType, clickTypeIn, player);
+			infinityMatching = ((InfinitySlot) slot).getInfinityMatching();
+		}
+		final InventoryPlayer inventoryPlayer = player.inventory;
+		final ItemStack playerStack = inventoryPlayer.getItemStack();
+		if (!playerStack.isEmpty()) {
+			final int slotForStack = infinityChestInvWrapper.findSlotFor(slotId, playerStack);
+			if (slotForStack != -1) {
+				if (dragType == 0) {
+					infinityChestInvWrapper.insertItem(slotForStack, playerStack, false);
+					inventoryPlayer.setItemStack(ItemStack.EMPTY);
+					return ItemStack.EMPTY;
+				} else {
+					final ItemStack newPlayerStack = playerStack.copy();
+					playerStack.setCount(playerStack.getCount() - 1);
+					if (playerStack.isEmpty())
+						inventoryPlayer.setItemStack(ItemStack.EMPTY);
+					newPlayerStack.setCount(1);
+					infinityChestInvWrapper.insertItem(slotForStack, newPlayerStack, false);
+					return playerStack;
+				}
+			} else return playerStack;
+		} else {
+			final int maxStackSize = infinityMatching.getMaxStackSize();
+				final ItemStack extractedStack = infinityMatching.extract(dragType == 1 ? MathHelper.clamp(maxStackSize / 2, 1, maxStackSize) : maxStackSize, false);
+			inventoryPlayer.setItemStack(extractedStack);
+			return extractedStack;
+		}
+	}
+
+	@Override
 	@Nonnull
 	public ItemStack transferStackInSlot(@Nonnull final EntityPlayer entityPlayer, final int slot)
 	{

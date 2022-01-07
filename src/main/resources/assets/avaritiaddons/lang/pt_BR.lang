@@ -22,8 +22,4 @@ avaritiaddons.compressor.clear.note=Nota:
 avaritiaddons.compressor.clear.warning=Todo o progresso será perdido.
 avaritiaddons.compressor.trashcan=Habilitar modo Lixeira?
 
-// temporary
-avaritiaddons.infinity.chest.desc.line.1=Por enquanto, o %1$s não pode ser usado através de sua interface.
-avaritiaddons.infinity.chest.desc.line.2=Todo a E/S deve ser feita por automação.
-
 tile.avaritiaddons.infinity.glass.name=Vidro do Infinito

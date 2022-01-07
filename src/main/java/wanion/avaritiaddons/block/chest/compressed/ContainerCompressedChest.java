@@ -22,7 +22,7 @@ import java.util.List;
 @ChestContainer(rowSize = 27)
 public final class ContainerCompressedChest extends ContainerAvaritiaddonsChest<TileEntityCompressedChest>
 {
-	public ContainerCompressedChest(@Nonnull TileEntityCompressedChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
+	public ContainerCompressedChest(@Nonnull final TileEntityCompressedChest wTileEntity, @Nonnull final InventoryPlayer inventoryPlayer)
 	{
 		super(() -> {
 					final List<Slot> slotList = new ArrayList<>();
@@ -57,5 +57,4 @@ public final class ContainerCompressedChest extends ContainerAvaritiaddonsChest<
 		}
 		return itemstack != null ? itemstack : ItemStack.EMPTY;
 	}
-
 }

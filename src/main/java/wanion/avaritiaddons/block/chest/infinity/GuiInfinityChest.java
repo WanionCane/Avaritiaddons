@@ -8,7 +8,6 @@ package wanion.avaritiaddons.block.chest.infinity;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import morph.avaritia.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,28 +19,24 @@ import net.minecraftforge.fml.common.ModContainer;
 import wanion.avaritiaddons.block.chest.GuiAvaritiaddonsChest;
 import wanion.lib.client.gui.ITooltipSupplier;
 import wanion.lib.client.gui.ItemElement;
-import wanion.lib.client.gui.TextElement;
 import wanion.lib.client.gui.interaction.WInteraction;
 import wanion.lib.common.Util;
 import wanion.lib.common.WContainer;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfinityChest>
 {
-	private final String infinityChestName = tileName + "?";
-	private final List<String> temporaryTooltip = Arrays.asList(
-			ModItems.COSMIC_RARITY.rarityColor + tileName,
-			I18n.format("avaritiaddons.infinity.chest.desc.line.1", tileName),
-			I18n.format("avaritiaddons.infinity.chest.desc.line.2")
-	);
+	private final NumberFormat numberFormat;
 
 	public GuiInfinityChest(@Nonnull final WContainer<TileEntityInfinityChest> wContainer)
 	{
 		super(wContainer);
-		tileNameTextElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) -> temporaryTooltip).setColorSupplier(() -> 0xFFFFFF);
+		final String lang = Minecraft.getMinecraft().gameSettings.language;
+		this.numberFormat = NumberFormat.getInstance(new Locale(lang.substring(0, 1), lang.substring(3, 4)));
 	}
 
 	@Override
@@ -55,7 +50,7 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 				final List<String> tooltip = ItemElement.DEFAULT_ITEMSTACK_TOOLTIP_SUPPLIER.getTooltip(interaction, stackSupplier);
 				int line = getLine(tooltip, stack);
 				tooltip.add(line, "");
-				tooltip.add(++line, TextFormatting.GOLD + I18n.format("wanionlib.amount") + " " + TextFormatting.GRAY + infinitySlot.getInfinityMatching().getFormattedCount());
+				tooltip.add(++line, TextFormatting.GOLD + I18n.format("wanionlib.amount") + " " + TextFormatting.GRAY + this.numberFormat.format(infinitySlot.getInfinityMatching().getCount()));
 				return tooltip;
 			};
 			final WInteraction interaction = getLatestInteraction();
@@ -64,9 +59,28 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 	}
 
 	@Override
-	protected TextElement getTileNameTextElement()
+	protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
 	{
-		return new TextElement(() -> infinityChestName, this, 7, 7, true);
+		final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
+		GlStateManager.disableDepth();
+		for (int i = 0; i < 243; i++) {
+			final InfinitySlot infinitySlot;
+			{
+				final Slot slot = inventorySlots.getSlot(i);
+				if (!(slot instanceof InfinitySlot))
+					continue;
+				infinitySlot = (InfinitySlot) slot;
+			}
+			final InfinityMatching infinityMatching = infinitySlot.getInfinityMatching();
+			if (infinityMatching.getCount() > 1) {
+				final String simplifiedCount = infinityMatching.getSimplifiedCount();
+				final int countWidth = fontRenderer.getStringWidth(simplifiedCount);
+				drawString(fontRenderer, simplifiedCount, infinitySlot.xPos + 17 - countWidth, infinitySlot.yPos + 9, 0xFFFFFF);
+			}
+		}
+		GlStateManager.enableDepth();
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	private int getLine(@Nonnull final List<String> tooltip, @Nonnull final ItemStack stack)
@@ -80,24 +94,5 @@ public final class GuiInfinityChest extends GuiAvaritiaddonsChest<TileEntityInfi
 			if (tooltip.get(i).contains(modName))
 				return i;
 		return tooltip.size() - 1;
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY)
-	{
-		final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
-		GlStateManager.disableDepth();
-		for (int i = 0; i < 243; i++) {
-			final InfinitySlot infinitySlot = (InfinitySlot) inventorySlots.getSlot(i);
-			final InfinityMatching infinityMatching = infinitySlot.getInfinityMatching();
-			if (infinityMatching.getCount() > 1) {
-				final String simplifiedCount = infinityMatching.getSimplifiedCount();
-				final int countWidth = fontRenderer.getStringWidth(simplifiedCount);
-				drawString(fontRenderer, simplifiedCount, infinitySlot.xPos + 17 - countWidth, infinitySlot.yPos + 9, 0xFFFFFF);
-			}
-		}
-		GlStateManager.enableDepth();
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 }
