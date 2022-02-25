@@ -20,7 +20,7 @@ public final class Config
 {
 	public static final Config INSTANCE = new Config();
 
-	public final boolean createAutoExtremeTableRecipe, createCompressedChestRecipe, createInfinityChestRecipe, hardCompressedChestRecipe, hardInfinityChestRecipe, hardCompressedChestRecipeUsesNeutroniumCompressor, shouldUseRedstoneSingularity, shouldUseNeutroniumIngot, createInfinityCompressorRecipe, hardInfinityCompressorRecipe;
+	public final boolean createAutoExtremeTableRecipe, createCompressedChestRecipe, createInfinityChestRecipe, hardCompressedChestRecipe, compressedChestUsesObsidianChest, hardInfinityChestRecipe, hardCompressedChestRecipeUsesNeutroniumCompressor, shouldUseRedstoneSingularity, shouldUseNeutroniumIngot, createInfinityCompressorRecipe, hardInfinityCompressorRecipe;
 
 	// Infinity Glass
 	public final boolean createInfinityGlassRecipe;
@@ -36,10 +36,12 @@ public final class Config
 
 		createAutoExtremeTableRecipe = config.getBoolean("createAutoExtremeTableRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Auto Extreme Crafting Table?");
 		createCompressedChestRecipe = config.getBoolean("createCompressedChestRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Compressed Chest?");
+		compressedChestUsesObsidianChest = config.getBoolean("compressedChestUsesObsidianChest", Configuration.CATEGORY_GENERAL, true, "should the recipe for the Compressed Chest use Obisidian Chests from Iron Chests?");
 		createInfinityChestRecipe = config.getBoolean("createInfinityChestRecipe", Configuration.CATEGORY_GENERAL, true, "should be created a recipe for the Infinity Chest?");
 
 		hardCompressedChestRecipe = config.getBoolean("hardCompressedChestRecipe", Configuration.CATEGORY_GENERAL, false, "should be created an harder recipe for the Compressed Chest?");
 		hardInfinityChestRecipe = config.getBoolean("hardInfinityChestRecipe", Configuration.CATEGORY_GENERAL, false, "should be created an harder recipe for the Infinity Chest?");
+
 
 		hardCompressedChestRecipeUsesNeutroniumCompressor = config.getBoolean("hardCompressedChestRecipeUsesNeutroniumCompressor", Configuration.CATEGORY_GENERAL, true, "the hard recipe should be made in a Neutronium Compressor?");
 		howManyChestsShouldTheCompressorTake = config.getInt("howManyChestsShouldTheCompressorTake", Configuration.CATEGORY_GENERAL, 729, 9, Integer.MAX_VALUE, "how many chests it needs to create the Compressed Chest using the Neutronium Compressor?");

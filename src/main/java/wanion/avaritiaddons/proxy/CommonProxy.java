@@ -30,6 +30,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -70,11 +71,22 @@ public class CommonProxy implements IGuiHandler
 		int d = 0;
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterGhostTransferMessage.Handler.class, ExtremeAutoCrafterGhostTransferMessage.class, d++, Side.SERVER);
 		Avaritiaddons.networkWrapper.registerMessage(ExtremeAutoCrafterGhostTransferMessage.Handler.class, ExtremeAutoCrafterGhostTransferMessage.class, d, Side.CLIENT);
+	}
+
+	public void init() {}
+
+	public void postInit()
+	{
 		final Config config = Config.INSTANCE;
 		if (config.createAutoExtremeTableRecipe)
 			GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "extremeautocrafter"), null, new ItemStack(ItemBlockExtremeAutoCrafter.INSTANCE, 1), " S ", "NCN", " N ", 'S', config.shouldUseRedstoneSingularity ? Ingredient.fromStacks(ModItems.redstoneSingularity) : "blockRedstone", 'N', config.shouldUseNeutroniumIngot ? "blockCosmicNeutronium" : "nuggetCosmicNeutronium", 'C', Ingredient.fromStacks(new ItemStack(ModBlocks.extremeCraftingTable)));
 		if (config.createCompressedChestRecipe) {
-			if (config.hardCompressedChestRecipe) {
+			if (config.compressedChestUsesObsidianChest && Loader.isModLoaded("ironchest")) {
+				final Item iron_chest = Item.getByNameOrId("ironchest:iron_chest");
+				if (iron_chest != null)
+					GameRegistry.addShapedRecipe(new ResourceLocation(Reference.MOD_ID, "compressed_chest"), null, new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), "CCC", "CCC", "CCC", 'C', Ingredient.fromStacks(new ItemStack(iron_chest, 1, 6)));
+			}
+			else if (config.hardCompressedChestRecipe) {
 				if (config.hardCompressedChestRecipeUsesNeutroniumCompressor) {
 					final CompressorRecipe compressedChestRecipe = new CompressorRecipe(new ItemStack(ItemBlockAvaritiaddonsChest.INSTANCE, 1, 0), config.howManyChestsShouldTheCompressorTake, true, NonNullList.withSize(1, Ingredient.fromItem(Item.getItemFromBlock(Blocks.CHEST))));
 					compressedChestRecipe.setRegistryName(new ResourceLocation(Reference.MOD_ID, "compressed_chest"));
@@ -105,10 +117,6 @@ public class CommonProxy implements IGuiHandler
 			GameRegistry.addShapelessRecipe(new ResourceLocation(Reference.MOD_ID, "infinity_block"), null, new ItemStack(ModBlocks.resource, 1, 1), new OreIngredient("glassInfinity"));
 		}
 	}
-
-	public void init() {}
-
-	public void postInit() {}
 
 	@SubscribeEvent
 	public void registerItems(final RegistryEvent.Register<Item> event)

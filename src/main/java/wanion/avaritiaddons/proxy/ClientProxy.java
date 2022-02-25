@@ -59,6 +59,7 @@ public class ClientProxy extends CommonProxy
 
 	@Override
 	public void init() {
+		super.init();
 		WanionLib.getClientTickHandler().registerAnimation(INFINITY_CHEST_ANIMATION);
 	}
 

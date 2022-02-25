@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -73,6 +74,12 @@ public class Avaritiaddons
 	public void init(final FMLInitializationEvent event)
 	{
 		proxy.init();
+	}
+
+	@Mod.EventHandler
+	public void postInit(final FMLPostInitializationEvent event)
+	{
+		proxy.postInit();
 	}
 
 	@NetworkCheckHandler
