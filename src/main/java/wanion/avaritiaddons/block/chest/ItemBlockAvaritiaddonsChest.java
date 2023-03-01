@@ -75,8 +75,6 @@ public class ItemBlockAvaritiaddonsChest extends ItemBlock
 			return;
 		final NBTTagList list = stack.getItemDamage() == 0 ? tag.getTagList("Contents", 10) : tag.getTagList("matching", 10);
 		tooltip.add(list.hasNoTags() ? I18n.format("avaritiaddons.tooltip.empty") : I18n.format("avaritiaddons.tooltip.filling_range", list.tagCount(), 243));
-		if (stack.getItemDamage() == 1)
-			tooltip.add(TextFormatting.RED + "WIP");
 	}
 
 	@Override
