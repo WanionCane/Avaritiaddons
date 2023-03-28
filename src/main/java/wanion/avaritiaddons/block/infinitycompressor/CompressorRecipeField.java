@@ -37,8 +37,7 @@ public class CompressorRecipeField implements IField<CompressorRecipeField>
 		return "compressor.recipe.field";
 	}
 
-	public void addProgress(final int progressToAdd)
-	{
+	public void addProgress(final int progressToAdd) {
 		final int compressionCost = compressorRecipe.getCost();
 		progress += progressToAdd;
 		final int dif = progress - compressionCost;
@@ -51,6 +50,8 @@ public class CompressorRecipeField implements IField<CompressorRecipeField>
 				tileEntityInfinityCompressor.setInventorySlotContents(0, recipeResult.copy());
 			else
 				outputStack.setCount(outputStack.getCount() + recipeResult.getCount());
+			if (progress == 0)
+				setCompressorRecipe(null);
 		}
 	}
 
