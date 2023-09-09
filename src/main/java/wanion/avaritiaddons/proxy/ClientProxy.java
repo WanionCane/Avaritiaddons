@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 public class ClientProxy extends CommonProxy
 {
 	public static final ResourceLocation COMPRESSED_CHEST_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/entity/compressed_chest.png");
-	public static final ComplexHalfAnimation INFINITY_CHEST_ANIMATION;
+	public static final ComplexHalfAnimation<ResourceLocation> INFINITY_CHEST_ANIMATION;
 
 	static {
 		final ResourceLocation[] INFINITY_CHEST_FRAMES = new ResourceLocation[]{
@@ -54,7 +54,7 @@ public class ClientProxy extends CommonProxy
 				new ResourceLocation(Reference.MOD_ID, "textures/entity/infinity_chest/8.png")
 		};
 		final int[] INFINITY_CHEST_ANIMATION_STAGES = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 7, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1, 1};
-		INFINITY_CHEST_ANIMATION = new ComplexHalfAnimation(INFINITY_CHEST_FRAMES, INFINITY_CHEST_ANIMATION_STAGES);
+		INFINITY_CHEST_ANIMATION = new ComplexHalfAnimation<>(INFINITY_CHEST_FRAMES, INFINITY_CHEST_ANIMATION_STAGES);
 	}
 
 	@Override

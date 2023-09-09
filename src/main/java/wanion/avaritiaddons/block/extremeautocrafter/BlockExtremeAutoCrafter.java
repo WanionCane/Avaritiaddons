@@ -27,6 +27,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import wanion.avaritiaddons.Avaritiaddons;
 import wanion.avaritiaddons.Reference;
+import wanion.avaritiaddons.block.chest.TileEntityAvaritiaddonsChest;
+import wanion.avaritiaddons.block.chest.compressed.TileEntityCompressedChest;
+import wanion.lib.common.WrenchHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,12 +66,14 @@ public final class BlockExtremeAutoCrafter extends BlockContainer
 	@Override
 	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer entityPlayer, @Nonnull  final EnumHand hand, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ)
 	{
-		if (world != null) {
+		if (!world.isRemote && !entityPlayer.isSneaking() && !WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand))) {
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity instanceof TileEntityExtremeAutoCrafter)
 				FMLNetworkHandler.openGui(entityPlayer, Avaritiaddons.instance, Avaritiaddons.GUI_ID_EXTREME_AUTO_CRAFTER, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			else
 				return false;
+		} else if (!world.isRemote && entityPlayer.isSneaking() && WrenchHelper.INSTANCE.isWrench(entityPlayer.getHeldItem(hand)) && world.getTileEntity(blockPos) instanceof TileEntityExtremeAutoCrafter) {
+			world.setBlockToAir(blockPos);
 		}
 		return true;
 	}

@@ -28,7 +28,7 @@ public class RecipeResultItemBox extends ItemBoxElement
 	}
 
 	@Override
-	public void interaction(@Nonnull final WMouseInteraction wMouseInteraction)
+	public void interact(@Nonnull final WMouseInteraction wMouseInteraction)
 	{
 		ClearShapeMessage.sendToServer(getWContainer());
 		playPressSound();

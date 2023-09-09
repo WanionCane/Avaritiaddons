@@ -60,13 +60,14 @@ public class RecipeResultItemElement extends ItemElement
 	}
 
 	@Override
+	@Nonnull
 	public ITooltipSupplier getTooltipSupplier()
 	{
 		return stackSupplier.get().isEmpty() ? helpTooltipSupplier : super.getTooltipSupplier();
 	}
 
 	@Override
-	public void interaction(@Nonnull final WMouseInteraction wMouseInteraction)
+	public void interact(@Nonnull final WMouseInteraction wMouseInteraction)
 	{
 		if (stackSupplier.get().isEmpty()) {
 			final ItemStack playerStack = wMouseInteraction.getEntityPlayer().inventory.getItemStack();
